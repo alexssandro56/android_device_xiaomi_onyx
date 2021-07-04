@@ -7,4 +7,9 @@
 <resources>
     <!-- Xiaomi Parts -->
     <string name="app_name">Xiaomi Parts</string>
+
+    <!-- High Touch Polling -->
+    <string name="htsr_title">Touch Responsiveness</string>
+    <string name="htsr_enable_title">Increase Touch Responsiveness</string>
+    <string name="htsr_enable_summary">Increases touch polling rate to decrease latency</string>
 </resources>
