@@ -301,6 +301,7 @@ $(call soong_config_set_bool,lineage_health,charging_control_supports_bypass,fal
 # Logging
 SPAMMY_LOG_TAGS := \
     AiAiEcho \
+    ColorManager \
     MiStcImpl \
     SDM \
     SDM-histogram \
