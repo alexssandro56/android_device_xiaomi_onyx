@@ -30,7 +30,7 @@ avf.remote_attestation.enabled=false
 # Bluetooth
 bluetooth.profile.asha.central.enabled=true
 bluetooth.profile.bap.broadcast.assist.enabled=true
-bluetooth.profile.bap.broadcast.source.enabled=true
+bluetooth.profile.bap.broadcast.source.enabled=tru
 bluetooth.profile.bap.unicast.client.enabled=true
 bluetooth.profile.ccp.server.enabled=true
 bluetooth.profile.csip.set_coordinator.enabled=true
@@ -43,6 +43,8 @@ persist.bluetooth.leaudio_offload.disabled=false
 persist.sys.fflag.override.settings_bluetooth_hearing_aid=false
 persist.vendor.qcom.bluetooth.aptxadaptiver2_1_support=true
 persist.vendor.qti.btadvaudio.target.support.xpan=true
+persist.vendor.btstack.enable.twsplus=true
+persist.vendor.btstack.enable.twsplussho=true
 ro.bluetooth.a2dp_offload.supported=true
 
 # Camera
