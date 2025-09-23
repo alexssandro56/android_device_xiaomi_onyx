@@ -310,6 +310,10 @@ TARGET_COMMON_QTI_COMPONENTS := \
 PRODUCT_PACKAGES += \
     XiaomiParts
 
+# Parts
+PRODUCT_PACKAGES += \
+    XiaomiParts
+
 # Sensors
 PRODUCT_PACKAGES += \
     android.hardware.sensors-service.xiaomi-multihal \
