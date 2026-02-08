@@ -213,7 +213,7 @@ BOARD_VENDOR_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/test
 endif
 
 # Vendor security patch
-VENDOR_SECURITY_PATCH := 2025-11-01
+VENDOR_SECURITY_PATCH := 2026-01-01
 
 # Verified Boot
 BOARD_AVB_ENABLE := true
