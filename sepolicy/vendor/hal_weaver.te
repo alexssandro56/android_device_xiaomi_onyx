@@ -1,0 +1,1 @@
+allow vendor_hal_weaver_default tee_device:chr_file rw_file_perms;

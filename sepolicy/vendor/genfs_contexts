@@ -1,5 +1,11 @@
+# Audio
+genfscon sysfs /devices/platform/soc/soc:spf_core_platform/soc:spf_core_platform:lpass-cdc/wcd939x-codec/extcon u:object_r:sysfs_extcon:s0
+
 # Battery
 genfscon sysfs /class/qcom-battery u:object_r:vendor_sysfs_qcom_battery:s0
+genfscon sysfs /devices/platform/soc/soc:mca_business_battery/power_supply/battery u:object_r:vendor_sysfs_battery_supply:s0
+genfscon sysfs /devices/platform/soc/soc:mca_business_charger/power_supply/wireless u:object_r:vendor_sysfs_battery_supply:s0
+genfscon sysfs /devices/platform/soc/soc:smart_charge u:object_r:vendor_sysfs_qcom_battery:s0
 
 # Camera
 genfscon sysfs /csiphy_umd_paras/csiphy_umd_paras u:object_r:sysfs_csiphy_umd_paras:s0
@@ -24,19 +30,19 @@ genfscon sysfs /devices/platform/soc/9c0000.qcom,qupv3_i2c_geni_se/98c000.i2c/i2
 genfscon proc "/mv" u:object_r:procfs_memory:s0
 
 # MCA
-genfscon sysfs /devices/platform/soc/soc:mca_strategy_wireless_revchg_class u:object_r:vendor_sysfs_xm_power:s0
-genfscon sysfs /devices/platform/soc/soc:mca_strategy_basic_wireless_class u:object_r:vendor_sysfs_xm_power:s0
-genfscon sysfs /devices/platform/soc/soc:mca_strategy_quick_charge u:object_r:vendor_sysfs_xm_power:s0
-genfscon sysfs /devices/platform/soc/soc:mca_strategy_pd_auth u:object_r:vendor_sysfs_xm_power:s0
-genfscon sysfs /devices/platform/soc/soc:mca_charge_interface u:object_r:vendor_sysfs_xm_power:s0
-genfscon sysfs /devices/platform/soc/soc:mca_business_charger u:object_r:vendor_sysfs_xm_power:s0
-genfscon sysfs /devices/platform/soc/soc:mca_business_battery u:object_r:vendor_sysfs_xm_power:s0
-genfscon sysfs /devices/platform/soc/soc:strategy-fg u:object_r:vendor_sysfs_xm_power:s0
 genfscon sysfs /devices/platform/soc/soc:mca_bmd u:object_r:vendor_sysfs_xm_power:s0
+genfscon sysfs /devices/platform/soc/soc:mca_business_battery u:object_r:vendor_sysfs_xm_power:s0
+genfscon sysfs /devices/platform/soc/soc:mca_business_charger u:object_r:vendor_sysfs_xm_power:s0
+genfscon sysfs /devices/platform/soc/soc:mca_charge_interface u:object_r:vendor_sysfs_xm_power:s0
+genfscon sysfs /devices/platform/soc/soc:mca_strategy_basic_wireless_class u:object_r:vendor_sysfs_xm_power:s0
+genfscon sysfs /devices/platform/soc/soc:mca_strategy_pd_auth u:object_r:vendor_sysfs_xm_power:s0
+genfscon sysfs /devices/platform/soc/soc:mca_strategy_quick_charge u:object_r:vendor_sysfs_xm_power:s0
+genfscon sysfs /devices/platform/soc/soc:mca_strategy_wireless_revchg_class u:object_r:vendor_sysfs_xm_power:s0
+genfscon sysfs /devices/platform/soc/soc:strategy-fg u:object_r:vendor_sysfs_xm_power:s0
 genfscon sysfs /devices/virtual/xm_power u:object_r:vendor_sysfs_xm_power:s0
+genfscon sysfs /devices/virtual/xm_power/charger u:object_r:vendor_sysfs_xm_power:s0
 genfscon sysfs /devices/virtual/xm_power/charge_log u:object_r:vendor_sysfs_xm_power:s0
 genfscon sysfs /devices/virtual/xm_power/charge_pump u:object_r:vendor_sysfs_xm_power:s0
-genfscon sysfs /devices/virtual/xm_power/charger u:object_r:vendor_sysfs_xm_power:s0
 genfscon sysfs /devices/virtual/xm_power/fuelgauge u:object_r:vendor_sysfs_xm_power:s0
 genfscon sysfs /devices/virtual/xm_power/hw_monitor/ u:object_r:vendor_sysfs_xm_power:s0
 genfscon sysfs /devices/virtual/xm_power/mca_event u:object_r:vendor_sysfs_xm_power:s0
@@ -96,7 +102,9 @@ genfscon sysfs /devices/virtual/touch/touch_dev/update_rawdata u:object_r:sysfs_
 genfscon sysfs /devices/platform/soc/8c0000.qcom,qupv3_2_geni_se/88c000.i2c/i2c-11/11-0055/wakeup u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/8c0000.qcom,qupv3_2_geni_se/88c000.i2c/i2c-11/11-006f/wakeup u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a90000.spi/spi_master/spi4/spi4.0/wakeup u:object_r:sysfs_wakeup:s0
+genfscon sysfs /devices/platform/soc/ac0000.qcom,qupv3_0_geni_se/a90000.spi/spi_master/spi1/spi1.0/wakeup u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a94000.i2c/i2c-5/5-006b/wakeup u:object_r:sysfs_wakeup:s0
+genfscon sysfs /devices/platform/soc/ac0000.qcom,qupv3_1_geni_se/a98000.qcom,qup_uart/wakeup u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/c42d000.qcom,spmi/spmi-0/0-00/c42d000.qcom,spmi:qcom,pmk8550@0:pon_hlos@1300/c42d000.qcom,spmi:qcom,pmk8550@0:pon_hlos@1300:pwrkey-bark/wakeup u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/c42d000.qcom,spmi/spmi-0/0-00/c42d000.qcom,spmi:qcom,pmk8550@0:pon_hlos@1300/c42d000.qcom,spmi:qcom,pmk8550@0:pon_hlos@1300:pwrkey-resin-bark/wakeup u:object_r:sysfs_wakeup:s0
 genfscon sysfs /devices/platform/soc/soc:xiaomi_fingerprint/wakeup u:object_r:sysfs_wakeup:s0

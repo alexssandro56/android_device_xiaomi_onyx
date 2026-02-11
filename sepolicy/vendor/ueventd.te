@@ -1,1 +1,4 @@
 allow ueventd vendor_sysfs_xm_power:chr_file {create setattr};
+allow ueventd vendor_sysfs_xm_power:dir search;
+allow ueventd vendor_sysfs_xm_power:file rw_file_perms;
+allow ueventd vendor_sysfs_xm_power:file { open read write };
