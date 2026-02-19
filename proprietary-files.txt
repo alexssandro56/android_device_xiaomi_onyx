@@ -2703,6 +2703,9 @@ vendor/bin/vendor_modprobe.sh;MAKE_COPY_RULE_ONLY
 vendor/etc/fw_dir.ueventd.qcom.rc
 
 # Keymint
+odm/etc/init/android.hardware.security.keymint-service.strongbox.nxp.rc:vendor/etc/init/android.hardware.security.keymint-service.strongbox.nxp.rc
+odm/etc/init/android.hardware.weaver-service.nxp.rc:vendor/etc/init/android.hardware.weaver-service.nxp.rc
+odm/etc/permissions/android.hardware.hardware_keystore.jc-strongbox-keymint.nxp.xml:vendor/etc/permissions/android.hardware.hardware_keystore.jc-strongbox-keymint.nxp.xml
 vendor/bin/hw/android.hardware.security.keymint-service-qti
 vendor/etc/init/android.hardware.security.keymint-service-qti.rc
 vendor/etc/vintf/manifest/android.hardware.security.keymint-service-qti.xml
