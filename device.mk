@@ -231,9 +231,14 @@ PRODUCT_PACKAGES += \
     vendor.xiaomi.hardware.micharge-service-dummy
 
 # NFC
+TARGET_USES_NQ_NFC := true
+TARGET_ENABLE_PERIPHERAL_CONTROL := true
+$(call inherit-product, vendor/nxp/opensource/commonsys/packages/apps/Nfc/nfc_system_product.mk)
+$(call soong_config_set,nfc,board_secure_peripheral_framework,sun)
+
 PRODUCT_PACKAGES += \
-    android.hardware.nfc-service.nxp \
-    com.android.nfc_extras
+    android.hardware.nqnfc-service.nxp \
+    nfc_nci.nqx.default.hw
 
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.nfc.ese.xml:$(TARGET_COPY_OUT_ODM)/etc/permissions/android.hardware.nfc.ese.xml \
