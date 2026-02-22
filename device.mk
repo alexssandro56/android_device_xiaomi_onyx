@@ -73,14 +73,14 @@ PRODUCT_PACKAGES += \
     android.hardware.audio.core-V2-ndk.vendor \
     android.hardware.audio.core.sounddose-V1-ndk.vendor \
     libalsautilsv2.vendor \
-    libaudioaidlcommon.vendor \
+    libaudioutils_shim \
     libmediautils_vendor.vendor \
     libmemunreachable.vendor
-
+    
 AUDIO_HAL_DIR := hardware/qcom-caf/sm8750/audio/primary-hal
 
 PRODUCT_COPY_FILES += \
-    $(AUDIO_HAL_DIR)/configs/sun/audio_effects_config.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_tuna/audio_effects_config.xml \
+    $(LOCAL_PATH)/configs/audio/audio_effects_config.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_tuna/audio_effects_config.xml \
     $(LOCAL_PATH)/configs/audio/audio_module_config_primary.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/audio_module_config_primary.xml \
     $(LOCAL_PATH)/configs/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_tuna/audio_policy_configuration.xml
 
@@ -159,6 +159,10 @@ PRODUCT_PACKAGES += \
 # DSP
 PRODUCT_PACKAGES += \
     DSPVolumeSynchronizer
+
+# Dolby
+PRODUCT_PACKAGES += \
+    XiaomiDolby
 
 # Fastbootd
 PRODUCT_PACKAGES += \
@@ -295,9 +299,6 @@ endif
 
 # Media
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/media/media_codecs_tuna_v0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_tuna_v0.xml \
-    $(LOCAL_PATH)/configs/media/media_codecs_performance_tuna_v0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_performance_tuna_v0.xml \
-    $(LOCAL_PATH)/configs/media/video_system_specs.json:$(TARGET_COPY_OUT_VENDOR)/etc/media_tuna_v0/video_system_specs.json \
     $(LOCAL_PATH)/configs/media/media_profiles_tuna_v0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_profiles_tuna_v0.xml
 
 PRODUCT_COPY_FILES += \
