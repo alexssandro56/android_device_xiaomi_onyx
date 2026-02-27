@@ -1,2 +1,6 @@
 r_dir_file(system_app, vendor_sysfs_battery_supply)
 allow system_app proc_htsr:file { read write open getattr };
+
+# Color
+hal_client_domain(system_app, vendor_hal_displayfeature)
+binder_call(system_app, vendor_hal_displayfeature)
