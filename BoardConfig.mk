@@ -52,11 +52,11 @@ TARGET_SCREEN_DENSITY := 504
 # Filesystem
 TARGET_FS_CONFIG_GEN += $(DEVICE_PATH)/configs/config.fs
 
-# HIDL
+# VINTF
 DEVICE_FRAMEWORK_COMPATIBILITY_MATRIX_FILE += \
-    $(DEVICE_PATH)/configs/hidl/compatibility_matrix.device.xml
+    $(DEVICE_PATH)/configs/vintf/compatibility_matrix.device.xml
 
-DEVICE_MANIFEST_FILE += $(DEVICE_PATH)/configs/hidl/manifest.xml
+DEVICE_MANIFEST_FILE += $(DEVICE_PATH)/configs/vintf/manifest.xml
 
 # Kernel
 BOARD_USES_GENERIC_KERNEL_IMAGE := true
