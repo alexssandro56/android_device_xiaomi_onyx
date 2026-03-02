@@ -4,6 +4,6 @@
 //
 
 runtime_resource_overlay {
-    name: "CustomSettingsOverlayOnyx",
-    product_specific: true,
+    name: "LineageDialerOverlayOnyx",
+    system_ext_specific: true,
 }
