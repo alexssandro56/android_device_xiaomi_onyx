@@ -1,0 +1,3 @@
+# MIUI compat properties - must be defined in system-side contexts
+# since ro.miui.* is not a vendor-allowed prefix
+ro.miui.build.region u:object_r:vendor_miui_region_prop:s0
