@@ -100,6 +100,12 @@ on fs
     restorecon_recursive /mnt/rescue
 
 on post-fs
+    # Set WALT governor early so cpufreq walt/ nodes exist before power HAL starts
+    write /sys/devices/system/cpu/cpufreq/policy0/scaling_governor walt
+    write /sys/devices/system/cpu/cpufreq/policy2/scaling_governor walt
+    write /sys/devices/system/cpu/cpufreq/policy5/scaling_governor walt
+    write /sys/devices/system/cpu/cpufreq/policy7/scaling_governor walt
+
     #Execute virtualization manager
     on property:ro.vendor.vm.ssr.enable=
         enable vendor.qvirtservice_rs
