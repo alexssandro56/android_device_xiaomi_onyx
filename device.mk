@@ -236,6 +236,8 @@ PRODUCT_PACKAGES += \
     IPACM_Filter_cfg.xml
 
 # Init
+$(call soong_config_set,libinit,vendor_init_lib,//$(LOCAL_PATH):libinit_onyx)
+
 PRODUCT_PACKAGES += \
     charger_fw_fstab.qti \
     fstab.qcom \
