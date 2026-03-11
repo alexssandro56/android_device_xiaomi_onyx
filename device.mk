@@ -581,6 +581,7 @@ PERF_GOV_SUPPORTED := true
 PERF_DEFAULT_GOV := walt
 GPU_FREQS_PATH := /sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies
 GPU_MIN_FREQ_PATH := /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
+TORCH_STR_SUPPORTED := true
 
 # Display refresh rates
 TARGET_SUPPORTED_REFRESH_RATES := 60,90,120
