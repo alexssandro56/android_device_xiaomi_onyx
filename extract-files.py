@@ -370,6 +370,12 @@ blob_fixups: blob_fixups_user_type = {
 
     'vendor/etc/sensors/hals.conf': blob_fixup()
         .regex_replace('.*vl53l8.*\n?', ''),
+    'vendor/etc/init/vendor.qti.media.c2@1.0-service.rc': blob_fixup()
+        .regex_replace('writepid /dev/cpuset/foreground/tasks', 'task_profiles ProcessCapacityHigh'),
+    'vendor/etc/init/vendor.qti.media.c2audio@1.0-service.rc': blob_fixup()
+        .regex_replace('writepid /dev/cpuset/foreground/tasks', 'task_profiles ProcessCapacityHigh'),
+    'vendor/etc/init/vendor.qti.hardware.display.composer-service_xiaomi.rc': blob_fixup()
+        .regex_replace('writepid /dev/cpuset/system-background/tasks', 'task_profiles ServiceCapacityLow'),
 
     'vendor/lib64/android.hardware.bluetooth.audio-impl_onyx.so': blob_fixup()
         .replace_needed(
