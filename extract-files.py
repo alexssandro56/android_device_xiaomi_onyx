@@ -44,6 +44,7 @@ lib_fixups: lib_fixups_user_type = {
         'audiohalservice.qti',
         'libaudioserviceexampleimpl',
         'libmediautils_vendor',
+        'vendor.qti.hardware.display.composer-service',
     ): lib_fixup_device_suffix,
     (
 
