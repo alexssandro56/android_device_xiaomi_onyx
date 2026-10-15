@@ -156,10 +156,10 @@ vendor/lib64/vendor.qti.hardware.ListenSoundModelAidl-V1-ndk.so
 vendor/lib64/vendor.qti.hardware.qasr-V2-ndk.so
 
 # Audio - old AIDL dependencies
-vendor/lib64/android.hardware.bluetooth.audio-impl.so:vendor/lib64/android.hardware.bluetooth.audio-impl_prebuilt.so;FIX_SONAME
-vendor/lib64/libaudio_aidl_conversion_common_ndk.so:vendor/lib64/libaudio_aidl_conversion_common_ndk_prebuilt.so;DISABLE_DEPS;FIX_SONAME
+vendor/lib64/android.hardware.bluetooth.audio-impl.so:vendor/lib64/android.hardware.bluetooth.audio-impl_onyx.so;FIX_SONAME
+vendor/lib64/libaudio_aidl_conversion_common_ndk.so:vendor/lib64/libaudio_aidl_conversion_common_ndk_onyx.so;DISABLE_DEPS;FIX_SONAME
 vendor/lib64/libaudioserviceexampleimpl.so;MODULE_SUFFIX=_onyx;OVERRIDES=libaudioserviceexampleimpl
-vendor/lib64/libbluetooth_audio_session_aidl.so:vendor/lib64/libbluetooth_audio_session_aidl_prebuilt.so;FIX_SONAME
+vendor/lib64/libbluetooth_audio_session_aidl.so:vendor/lib64/libbluetooth_audio_session_aidl_onyx.so;FIX_SONAME
 
 # Audio configs
 odm/etc/audio/mis_powerop_configs.bin
@@ -1762,8 +1762,8 @@ vendor/lib64/libipebpsstriping170.so
 vendor/lib64/libipebpsstriping480.so
 vendor/lib64/libiqdbgmgr.so
 vendor/lib64/libisphwsetting.so
-vendor/lib64/libjpegdecoder.so:vendor/lib64/libjpegdecoder_prebuilt.so;FIX_SONAME
-vendor/lib64/libjpegencoder.so:vendor/lib64/libjpegencoder_prebuilt.so;FIX_SONAME
+vendor/lib64/libjpegdecoder.so:vendor/lib64/libjpegdecoder_onyx.so;FIX_SONAME
+vendor/lib64/libjpegencoder.so:vendor/lib64/libjpegencoder_onyx.so;FIX_SONAME
 vendor/lib64/libmctfengine_stub.so
 vendor/lib64/libmfGhostDetection.so
 vendor/lib64/libmfec.so
@@ -1824,7 +1824,7 @@ vendor/lib64/libsynx.so
 vendor/lib64/libtfestriping.so
 vendor/lib64/libthreadutils.so
 vendor/lib64/libubifocus.so
-vendor/lib64/libultrahdr.so:vendor/lib64/libultrahdr_prebuilt.so;FIX_SONAME
+vendor/lib64/libultrahdr.so:vendor/lib64/libultrahdr_onyx.so;FIX_SONAME
 vendor/lib64/libvideoml.so
 vendor/lib64/qsn1nrt430.bin
 vendor/lib64/qsn1nrt43180.bin
