@@ -1,26 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Whether to intercept inputs on screen off -->
-    <bool name="config_enableKeyHandler">true</bool>
-
-    <!-- Gestures' key codes. If the gesture is not supported set it to 0. -->
-    <integer name="config_doubleTapKeyCode">143</integer>
-    <integer name="config_singleTapKeyCode">354</integer>
-
-    <!-- Default settings for gestures:
-             0 - Disabled
-             1 - Wake
-             2 - Pulse
-             3 - Flashlight
-             4 - Airplane
-             5 - Play/Pause
-             6 - Next
-             7 - Previous
-             8 - Camera
-             9 - Dialer -->
-    <integer name="config_doubleTapDefault">1</integer>
-    <integer name="config_singleTapDefault">2</integer>
-
-    <!-- Fingerprint from stock ROM -->
+        <!-- Fingerprint from stock ROM -->
     <string name="config_stockFingerprint" translatable="false">POCO/onyx_global/onyx:15/AQ3A.250226.002/OS3.0.303.0.WOLMIXM:user/release-keys</string>
 </resources>
