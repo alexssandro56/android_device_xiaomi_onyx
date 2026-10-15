@@ -5,5 +5,5 @@
 
 runtime_resource_overlay {
     name: "NfcOverlayOnyx",
-    vendor: true,
+    device_specific: true,
 }

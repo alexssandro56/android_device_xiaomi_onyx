@@ -239,7 +239,7 @@ PRODUCT_PACKAGES += \
     CarrierConfigOverlayOnyx \
     DeviceAsWebcamResTarget \
     SystemUIOverlayOnyx \
-    TelephonyOverlayOnyx \
+    AOSPAFrameworkOverlayOnyx \
     FrameworkOverlayOnyx \
     FrameworkOverlayOnyxCN \
     FrameworkOverlayOnyxGL \
@@ -247,7 +247,6 @@ PRODUCT_PACKAGES += \
     SettingsOverlayOnyx \
     SettingsProviderOverlayOnyx \
     SettingsProviderOverlayOnyxCN \
-    SecureElementOverlayOnyx \
     WifiOverlayOnyx \
     WifiOverlayOnyxCN
 
@@ -284,7 +283,8 @@ TARGET_COMMON_QTI_COMPONENTS := \
     telephony \
     usb \
     wfd \
-    wlan
+    wlan \
+    overlay
 
 # Parts
 PRODUCT_PACKAGES += \

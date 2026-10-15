@@ -5,12 +5,12 @@
 
 runtime_resource_overlay {
     name: "SettingsProviderOverlayOnyx",
-    vendor: true,
+    device_specific: true,
 }
 
 runtime_resource_overlay {
     name: "SettingsProviderOverlayOnyxCN",
     manifest: "AndroidManifest-CN.xml",
     resource_dirs: ["res-CN"],
-    vendor: true,
+    device_specific: true,
 }

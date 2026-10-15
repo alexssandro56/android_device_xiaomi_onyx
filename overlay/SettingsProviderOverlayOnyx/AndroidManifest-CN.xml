@@ -7,7 +7,7 @@
           package="com.android.settingsproviders.onyx.cn">
     <overlay android:targetPackage="com.android.providers.settings"
              android:isStatic="true"
-             android:priority="2"
+             android:priority="700"
              android:requiredSystemPropertyName="ro.boot.hwc"
              android:requiredSystemPropertyValue="CN" />
 </manifest>

@@ -7,7 +7,7 @@
           package="android.overlay.onyx.global">
     <overlay android:targetPackage="android"
              android:isStatic="true"
-             android:priority="2"
+             android:priority="700"
              android:requiredSystemPropertyName="ro.boot.hwc"
              android:requiredSystemPropertyValue="GL"/>
 </manifest>

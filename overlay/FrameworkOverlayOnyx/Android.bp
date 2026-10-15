@@ -5,19 +5,19 @@
 
 runtime_resource_overlay {
     name: "FrameworkOverlayOnyx",
-    vendor: true,
+    device_specific: true,
 }
 
 runtime_resource_overlay {
     name: "FrameworkOverlayOnyxCN",
     manifest: "AndroidManifest-CN.xml",
     resource_dirs: ["res-CN"],
-    vendor: true,
+    device_specific: true,
 }
 
 runtime_resource_overlay {
     name: "FrameworkOverlayOnyxGL",
     manifest: "AndroidManifest-GL.xml",
     resource_dirs: ["res-GL"],
-    vendor: true,
+    device_specific: true,
 }
