@@ -2375,10 +2375,8 @@ vendor/lib64/libtinyxml2_1.so
 vendor/lib64/libvmfilexfer.so
 
 # Display (Postprocessing)
-vendor/bin/feature_enabler_client
 vendor/bin/hw/vendor.qti.hardware.display.color-service
 vendor/bin/ppd
-vendor/etc/init/feature_enabler_client.rc
 vendor/etc/init/vendor.qti.hardware.display.color-service.rc
 vendor/lib64/libdisp-aba.so
 
