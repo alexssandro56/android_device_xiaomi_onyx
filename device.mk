@@ -385,6 +385,10 @@ PRODUCT_PACKAGES += \
     vendor.qti.qspa-service \
     qspa_vendor.rc
 
+# QTI COMPONENTS
+TARGET_COMMON_QTI_COMPONENTS := \
+    alarm
+
 # Parts
 PRODUCT_PACKAGES += \
     XiaomiParts
