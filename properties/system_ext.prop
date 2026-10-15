@@ -1,5 +1,0 @@
-# Audio
-ro.audio.ihaladaptervendorextension_enabled=true
-
-# Bluetooth
-persist.bluetooth.leaudio.allow.multiple.context=false

@@ -6,24 +6,6 @@ ro.vendor.audio.dualadc.support=true
 ro.vendor.audio.gain.support=true
 ro.vendor.audio.support.sound.id=true
 
-# AVF
-avf.remote_attestation.enabled=false
-
-# Bluetooth
-bluetooth.profile.asha.central.enabled=true
-bluetooth.profile.bap.broadcast.assist.enabled=true
-bluetooth.profile.bap.broadcast.source.enabled=true
-bluetooth.profile.bap.unicast.client.enabled=true
-bluetooth.profile.ccp.server.enabled=true
-bluetooth.profile.csip.set_coordinator.enabled=true
-bluetooth.profile.hap.client.enabled=true
-bluetooth.profile.mcp.server.enabled=true
-bluetooth.profile.vcp.controller.enabled=true
-persist.bluetooth.leaudio_offload.disabled=false
-persist.sys.fflag.override.settings_bluetooth_hearing_aid=false
-persist.vendor.qcom.bluetooth.aptxadaptiver2_1_support=true
-persist.vendor.qti.btadvaudio.target.support.xpan=true
-
 # Camera
 ro.camera.enableCamera1MaxZsl=1
 ro.camerax.extensions.enabled=true
@@ -58,9 +40,6 @@ drm.service.enabled=true
 persist.vendor.fingerprint.type=udfps_optical
 persist.vendor.fingerprint.sensor_location=640|2518|105
 
-# FUSE
-persist.sys.fuse.passthrough.enable=true
-
 # Gatekeeper
 vendor.gatekeeper.disable_spu=true
 vendor.gatekeeper.is_security_level_spu=0
@@ -91,15 +70,6 @@ media.c2.hal.selection=aidl
 ro.mediaserver.64b.enable=true
 vendor.media.omx=0
 
-# Media (steps)
-ro.config.alarm_vol_steps=15
-ro.config.media_vol_default=10
-ro.config.system_vol_steps=15
-ro.config.vc_call_vol_steps=11
-
-# QSYSD
-persist.vendor.qcomsysd.enabled=1
-
 # RIL
 ro.vendor.radio.build_profile=miui
 ro.vendor.radio.build_region=global
@@ -114,6 +84,3 @@ sys.vendor.shutdown.waittime=500
 
 # SSR
 ro.vendor.vm.ssr.enable=false
-
-# WiFi
-wifi.aware.interface=wifi-aware0

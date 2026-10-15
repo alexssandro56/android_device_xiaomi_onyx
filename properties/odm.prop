@@ -1,6 +1,3 @@
-# Order
-ro.product.property_source_order=odm,vendor,product,system_ext,system
-
 # Audio
 media.stagefright.audio.deep=true
 persist.vendor.audio.fpsop.game.effect.speaker=false
@@ -25,7 +22,6 @@ ro.vendor.audio.meeting.mode=true
 ro.vendor.audio.onetrack.xiaoai.firstevent.support=false
 ro.vendor.audio.product.sleepmonitor.config=true
 ro.vendor.audio.sixth.monitor=true
-
 vendor.audio.cpu.sched.cpus=8
 vendor.audio.cpu.sched.cpuset.af=255
 vendor.audio.cpu.sched.cpuset.at=255
@@ -97,6 +93,9 @@ vendor.display.force_tonemapping=1
 vendor.display.idle_time=0
 vendor.display.support_function_timer=1
 vendor.display.support_video_mode_30hz_aod=0
+
+# Media
+ro.media.xml_variant.profiles=_tuna_v0
 
 # RIL
 persist.vendor.radio.dynamic_sar=1
