@@ -134,7 +134,7 @@ endif
 
 # Hypsy
 PRODUCT_PACKAGES += \
-    xiaomi.system.hypsys.common-service-dummy
+    xiaomi.system.hypsys.common-service
 
 # Health
 PRODUCT_PACKAGES += \
