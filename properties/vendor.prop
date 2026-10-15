@@ -65,9 +65,6 @@ persist.sys.fuse.passthrough.enable=true
 vendor.gatekeeper.disable_spu=true
 vendor.gatekeeper.is_security_level_spu=0
 
-# GPS
-persist.backup.ntpServer=0.pool.ntp.org
-
 # Graphics
 debug.sf.enable_transaction_tracing=false
 debug.sf.region_sampling_period_ns=200000000

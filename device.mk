@@ -127,10 +127,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     ANGLE
 
-# GNSS
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.location.gps.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.location.gps.xml
-
 # GMS
 ifeq ($(WITH_GMS),true)
     $(call inherit-product-if-exists, vendor/gms/products/gms.mk)
@@ -314,7 +310,8 @@ TARGET_COMMON_QTI_COMPONENTS := \
     audio \
     av \
     bt \
-    display
+    display \
+    gps
 
 # Parts
 PRODUCT_PACKAGES += \
