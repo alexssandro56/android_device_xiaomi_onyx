@@ -111,6 +111,11 @@ PRODUCT_VENDOR_PROPERTIES += \
 SYSTEM_OPTIMIZE_JAVA := true
 SYSTEMUI_OPTIMIZE_JAVA := true
 
+# Fastbootd
+PRODUCT_PACKAGES += \
+    android.hardware.fastboot-service.example_recovery \
+    fastbootd
+
 # Fingerprint
 $(call soong_config_set,XIAOMI_BIOMETRICS_FINGERPRINT,IMPL_VER,V2)
 PRODUCT_PACKAGES += \
