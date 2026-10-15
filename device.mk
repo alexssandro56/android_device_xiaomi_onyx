@@ -289,7 +289,8 @@ TARGET_COMMON_QTI_COMPONENTS := \
     bt \
     display \
     gps \
-    init
+    init \
+    perf
 
 # Parts
 PRODUCT_PACKAGES += \

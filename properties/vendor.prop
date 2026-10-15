@@ -97,12 +97,6 @@ ro.config.media_vol_default=10
 ro.config.system_vol_steps=15
 ro.config.vc_call_vol_steps=11
 
-# Perf
-ro.vendor.extension_library=libqti-perfd-client.so
-
-# QSPM
-ro.vendor.qspm.enable=true
-
 # QSYSD
 persist.vendor.qcomsysd.enabled=1
 
