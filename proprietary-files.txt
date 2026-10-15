@@ -255,8 +255,7 @@ vendor/lib64/libxpan_wifi_hal.so
 vendor/lib64/vendor.qti.hardware.bluetooth.xpanprovider-V1-ndk.so
 vendor/lib64/vendor.qti.hardware.bluetooth_sar-V1-ndk.so
 vendor/lib64/vendor.qti.hardware.bttpi-V3-ndk.so
-vendor/lib64/vendor.qti.hardware.fm-V1-ndk.so
-vendor/lib64/vendor.qti.hardware.fm@1.0.so
+vendor/lib64/vendor.qti.hardware.fm-V1-ndk.so;MODULE_SUFFIX=_vendor
 
 # CaCert
 vendor/app/CACertService/CACertService.apk
