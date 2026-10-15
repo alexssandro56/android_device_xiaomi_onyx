@@ -6,9 +6,6 @@ media.stagefright.thumbnail.prefer_hw_codecs=true
 ro.media.recorder-max-base-layer-fps=60
 ro.media.xml_variant.profiles=_tuna_v0
 
-# QTI
-ro.vendor.qti.va_aosp.support=1
-
 # Radio
 persist.vendor.data.mode=concurrent
 ril.subscription.types=NV,RUIM

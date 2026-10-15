@@ -36,7 +36,7 @@ odm/lib/rfsa/adsp/libmialgo_bokeh_depth_cdsp_skel.so
 odm/lib/rfsa/adsp/libmialgo_bokeh_effect_cdsp_skel.so
 odm/lib/rfsa/adsp/libmialgo_mc_bokeh_cdsp_skel.so
 odm/lib/rfsa/adsp/libmialgo_tracker_cdsp_skel.so
-vendor/lib/rfsa/adsp/activity.napp_header
+vendor/lib/rfsa/adsp/activity.napp_header;MODULE=activity.napp_header
 vendor/lib/rfsa/adsp/activity.so
 vendor/lib/rfsa/adsp/chre_qsh_shim.so
 vendor/lib/rfsa/adsp/libCalculator_skel.so
@@ -56,7 +56,7 @@ vendor/lib/rfsa/adsp/libmialgo_basic_cdsp_skel.so
 vendor/lib/rfsa/adsp/libmialgo_rfs_cdsp_skel.so
 vendor/lib/rfsa/adsp/libmlawbpostproc_dsp_skel.so
 vendor/lib/rfsa/adsp/libtracker_6dof_skel_8450.so
-vendor/lib/rfsa/adsp/nearby.napp_header
+vendor/lib/rfsa/adsp/nearby.napp_header;MODULE=nearby.napp_header
 vendor/lib/rfsa/adsp/nearby.so
 
 # Audio

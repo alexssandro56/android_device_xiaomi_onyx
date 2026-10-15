@@ -101,7 +101,6 @@ debug.sf.earlyGl.sf.duration=16600000
 debug.sf.enable_advanced_sf_phase_offset=1
 debug.sf.enable_gl_backpressure=1
 debug.sf.enable_transaction_tracing=false
-debug.sf.frame_rate_multiple_threshold=120
 debug.sf.latch_unsignaled=0
 debug.sf.late.app.duration=16600000
 debug.sf.late.sf.duration=10500000
@@ -174,15 +173,11 @@ vendor.media.omx=0
 # Media (steps)
 ro.config.alarm_vol_steps=15
 ro.config.media_vol_default=10
-ro.config.media_vol_steps=15
 ro.config.system_vol_steps=15
 ro.config.vc_call_vol_steps=11
 
 # Perf
 ro.vendor.extension_library=libqti-perfd-client.so
-
-# QCOM
-ro.soc.manufacturer=QTI
 
 # QSPM
 ro.vendor.qspm.enable=true

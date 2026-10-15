@@ -97,9 +97,6 @@
 # MliPay
 /(odm|vendor/odm|system/vendor)/bin/mlipayd u:object_r:hal_mlipay_default_exec:s0
 
-# QRTR
-/(vendor|system/vendor)/bin/qrtr-lookup u:object_r:vendor_qrtr_exec:s0
-
 # Sensors
 /vendor/bin/hw/android\.hardware\.sensors-service\.xiaomi-multihal                                                   u:object_r:hal_sensors_default_exec:s0
 
