@@ -149,38 +149,15 @@ PRODUCT_PACKAGES += \
 
 # Init
 PRODUCT_PACKAGES += \
-    charger_fw_fstab.qti \
     fstab.qcom \
-    fstab.zram
-
-PRODUCT_PACKAGES += \
-    ueventd-odm-onyx.rc \
-    ueventd-odm.rc \
-    ueventd.qcom.rc
-
-PRODUCT_PACKAGES += \
-    init.onyx.rc \
-    init.qcom.rc \
-    init.qti.kernel.rc \
-    init.recovery.qcom.rc \
-    init.target.rc
-
-PRODUCT_PACKAGES += \
-    init.class_main.sh \
-    init.kernel.init_boot-memory.sh \
-    init.kernel.post_boot-memory.sh \
-    init.kernel.post_boot-tuna.sh \
-    init.kernel.post_boot-tuna_default_2_3_2_1.sh \
-    init.kernel.post_boot.sh \
-    init.qcom.class_core.sh \
-    init.qcom.early_boot.sh \
-    init.qcom.post_boot.sh \
-    init.qcom.sh \
-    init.qti.kernel.sh
+    fstab.qcom.vendor_ramdisk \
+    init.target.rc \
+    init.xiaomi.rc \
+    ueventd.xiaomi.rc
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/etc/fstab.qcom:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/first_stage_ramdisk/fstab.qcom \
-    $(LOCAL_PATH)/rootdir/etc/fstab.zram:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.zram
+    $(LOCAL_PATH)/init/fstab.qcom:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/first_stage_ramdisk/fstab.qcom \
+    $(LOCAL_PATH)/init/init.recovery.qcom.rc:$(TARGET_COPY_OUT_RECOVERY)/root/init.recovery.qcom.rc
 
 # IR
 PRODUCT_PACKAGES += \
@@ -311,7 +288,8 @@ TARGET_COMMON_QTI_COMPONENTS := \
     av \
     bt \
     display \
-    gps
+    gps \
+    init
 
 # Parts
 PRODUCT_PACKAGES += \

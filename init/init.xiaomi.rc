@@ -1,0 +1,104 @@
+on post-fs-data
+    # Fingerprint
+    mkdir /data/vendor/misc 01771 system system
+    mkdir /data/vendor/misc/mi_fp 0770 system system
+    mkdir /persist/mi_fp 0770 system system
+    mkdir /mnt/vendor/persist/mi_fp 0770 system system
+    mkdir /data/vendor/fpc 0770 system system
+    mkdir /data/vendor/fpdump 0770 system system
+    mkdir /data/vendor/goodix 0770 system system
+    mkdir /data/vendor/fpdata 0770 system system
+    mkdir /data/vendor/fingerprint 0770 system system
+    mkdir /mnt/vendor/persist/goodix 0770 system system
+    mkdir /mnt/vendor/persist/fingerprint 0770 system system
+    mkdir /data/vendor/fpdump/qfs4008 0770 system system
+    mkdir /mnt/vendor/persist/fingerprint/meta 0770 system system
+    mkdir /mnt/vendor/persist/fingerprint/jiiov 0770 system system
+
+    #Create folder of camera
+    mkdir /data/vendor/camera 0777 camera camera
+    mkdir /data/vendor/camera/offlinelog 0777 cameraserver audio
+    mkdir /data/vendor/camera/aftersalelog 0777 cameraserver audio
+    mkdir /data/vendor/camera/overlay 0777 cameraserver audio
+    # MIUI ADD: Camera_CameraSkyNet
+    chmod 0666 /dev/camlog
+    #END Camera_CameraSkyNet
+
+    # MIUI ADD: Camera_CamSched
+    chmod 0666 /dev/mi_cam_sched
+    # END Camera_CamSched
+
+    # Create directory for modem
+    mkdir /data/vendor/modem 0777 root root
+    mkdir /data/vendor/modem/diag_logs 0777 root root
+
+    #Create folder of memory
+    mkdir /data/vendor/memory 0777 system system
+    mkdir /data/vendor/memory/error_history 0777 system system
+
+    # Create directory used by video subsystem
+    mkdir /data/vendor/video 0777 audio audio
+    write /data/vendor/video/videohalPid 0
+    chown audio audio /data/vendor/video/videohalPid
+    chmod 0777 /data/vendor/video/videohalPid
+    write /data/vendor/video/vppservicePid 0
+    chown audio audio /data/vendor/video/vppservicePid
+    chmod 0777 /data/vendor/video/vppservicePid
+
+    # Create the directory used by qrtr-lookup
+    mkdir /data/vendor/qrtr 0775 system system
+
+on early-boot
+    # Fingerprint
+    chown system graphics /sys/bus/platform/devices/soc:xiaomi_fingerprint/fingerdown
+    chmod 0664 /sys/bus/platform/devices/soc:xiaomi_fingerprint/fingerdown
+
+on boot
+    # Fingerprint
+    chmod 0666 /dev/xiaomi-fp
+    chown system system /dev/xiaomi-fp
+    chmod 0666 /dev/mifp_id
+    chown system system /dev/mifp_id
+    chmod 0666 /dev/input/event2
+    chown system system /sys/bus/platform/devices/soc:xiaomi_fingerprint/intr2
+    chmod 0666 /sys/bus/platform/devices/soc:xiaomi_fingerprint/intr2
+
+#for online boot cpu
+on property:sys.boot_completed=1
+    wait /sys/class/thermal/thermal_message/boot_complete
+    write /sys/class/thermal/thermal_message/boot_complete 2
+    write /dev/kmsg "start qrtr-lookup after Boot completed "
+    start qrtr-lookup
+
+service vendor.sensors-hal-multihal /vendor/bin/hw/android.hardware.sensors-service.xiaomi-multihal
+    override
+    class hal
+    user system
+    group system wakelock context_hub input uhid
+    task_profiles ServiceCapacityLow
+    socket audio_us_socket_1 seqpacket 0666 system system
+    capabilities BLOCK_SUSPEND
+    rlimit rtprio 10 10
+
+service vendor.audio-hal-aidl /vendor/bin/hw/audiohalservice.qti
+    override
+    class hal
+    user audioserver
+    group audio media mediadrm drmrpc inet net_bt net_bt_admin net_bw_acct wakelock context_hub oem_2901 oem_2912 system
+    capabilities BLOCK_SUSPEND SYS_NICE
+    # setting RLIMIT_RTPRIO allows binder RT priority inheritance
+    rlimit rtprio 10 10
+    ioprio rt 4
+    task_profiles ProcessCapacityHigh HighPerformance
+    writepid /dev/cpuset/foreground/tasks /dev/stune/foreground/tasks
+    socket audio_holder_socket_0 seqpacket 0666 system system
+    socket audio_agm_socket_0 seqpacket 0666 system system
+    socket audio_us_socket_0 seqpacket 0666 system system
+    onrestart restart audioserver
+
+service qrtr-lookup /vendor/bin/qrtr-lookup
+    class core
+    user system
+    group system
+    disabled
+    oneshot

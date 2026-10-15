@@ -2118,6 +2118,7 @@ odm/lib64/camera/com.qti.sensormodule.onyx_aac_imx882_wide_ii.bin|a7744a5e6b25b9
 # Charger
 vendor/bin/batterysecret
 vendor/etc/init/hw/init.batterysecret.rc
+vendor/etc/charger_fw_fstab.qti
 
 # Computer vision
 vendor/etc/eva/facedetection/bias.dat
@@ -2693,11 +2694,18 @@ vendor/lib64/libhdcp2p2prov.so
 vendor/lib64/libhdcpsrm.so
 vendor/lib64/libmm-hdcpmgr.so
 
-# Kernel
-vendor/bin/init.qti.write.sh
-vendor/bin/system_dlkm_modprobe.sh
-vendor/bin/vendor_modprobe.sh
-vendor/etc/init/hw/init.qti.kernel.target.rc
+# Init
+vendor/bin/init.kernel.post_boot-tuna.sh
+vendor/bin/init.kernel.post_boot-tuna_1_3_2_1.sh
+vendor/bin/init.kernel.post_boot-tuna_2_2_2_1.sh
+vendor/bin/init.kernel.post_boot-tuna_2_3_1_1.sh
+vendor/bin/init.kernel.post_boot-tuna_2_3_2_0.sh
+vendor/bin/init.kernel.post_boot-tuna_default_2_3_2_1.sh
+vendor/bin/init.kernel.post_boot.sh;MAKE_COPY_RULE_ONLY
+vendor/bin/init.qcom.sh;MAKE_COPY_RULE_ONLY
+vendor/bin/system_dlkm_modprobe.sh;MAKE_COPY_RULE_ONLY
+vendor/bin/vendor_modprobe.sh;MAKE_COPY_RULE_ONLY
+vendor/etc/fw_dir.ueventd.qcom.rc
 
 # Keymint
 vendor/bin/hw/android.hardware.security.keymint-service-qti
