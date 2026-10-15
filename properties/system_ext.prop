@@ -3,7 +3,3 @@ ro.audio.ihaladaptervendorextension_enabled=true
 
 # Bluetooth
 persist.bluetooth.leaudio.allow.multiple.context=false
-
-# Radio
-ro.telephony.sim_slots.count=2
-telephony.active_modems.max_count=2

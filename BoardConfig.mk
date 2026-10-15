@@ -160,7 +160,7 @@ TARGET_RECOVERY_PIXEL_FORMAT := RGBX_8888
 TARGET_USERIMAGES_USE_F2FS := true
 
 # RIL
-ENABLE_VENDOR_RIL_SERVICE := true
+SOONG_CONFIG_rfs_mpss_firmware_symlink_target := modem_firmware
 
 # Sepolicy
 BOARD_VENDOR_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/vendor

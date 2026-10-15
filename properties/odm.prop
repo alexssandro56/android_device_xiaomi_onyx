@@ -99,14 +99,10 @@ vendor.display.support_function_timer=1
 vendor.display.support_video_mode_30hz_aod=0
 
 # RIL
-ro.telephony.default_network=33,33
 persist.vendor.radio.dynamic_sar=1
 
 # Sensor
 persist.vendor.sensors.debug.hal_trigger_crash=true
-
-# SSR
-persist.vendor.ssr.restart_level=ALL_ENABLE
 
 # Thermal
 persist.vendor.tracking.dfs=true
