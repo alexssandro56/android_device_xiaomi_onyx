@@ -1,28 +1,10 @@
 # Audio
-aaudio.hw_burst_min_usec=2000
-aaudio.mmap_exclusive_policy=2
-aaudio.mmap_policy=2
 persist.vendor.audio.misound.disable=true
-ro.audio.flinger_standbytime_ms=2000
 ro.audio.monitorRotation=true
 ro.vendor.audio.btsamplerate.adaptive=true
 ro.vendor.audio.dualadc.support=true
 ro.vendor.audio.gain.support=true
 ro.vendor.audio.support.sound.id=true
-vendor.audio.adm.buffering.ms=2
-vendor.audio.c2.preferred=true
-vendor.audio.compress_capture.aac=true
-vendor.audio.feature.a2dp_offload.enable=true
-vendor.audio.feature.battery_listener.enable=true
-vendor.audio.feature.dmabuf.cma.memory.enable=false
-vendor.audio.feature.hfp.enable=true
-vendor.audio.hdr.record.enable=false
-vendor.audio.hdr.spf.record.enable=false
-vendor.audio.offload.buffer.size.kb=32
-vendor.audio.volume.headset.gain.depcal=true
-vendor.audio_hal.period_size=192
-vendor.qc2audio.per_frame.flac.dec.enabled=true
-vendor.qc2audio.suspend.enabled=true
 
 # AVF
 avf.remote_attestation.enabled=false
@@ -37,13 +19,10 @@ bluetooth.profile.csip.set_coordinator.enabled=true
 bluetooth.profile.hap.client.enabled=true
 bluetooth.profile.mcp.server.enabled=true
 bluetooth.profile.vcp.controller.enabled=true
-persist.bluetooth.a2dp_offload.cap=sbc-aac-aptx-aptxhd-ldac-lhdc-mihc
-persist.bluetooth.a2dp_offload.disabled=false
 persist.bluetooth.leaudio_offload.disabled=false
 persist.sys.fflag.override.settings_bluetooth_hearing_aid=false
 persist.vendor.qcom.bluetooth.aptxadaptiver2_1_support=true
 persist.vendor.qti.btadvaudio.target.support.xpan=true
-ro.bluetooth.a2dp_offload.supported=true
 
 # Camera
 ro.camera.enableCamera1MaxZsl=1
@@ -164,7 +143,6 @@ vendor.keymint.retry_timer=5
 ro.hardware.keystore_desede=true
 
 # Media
-debug.c2.use_dmabufheaps=1
 debug.stagefright.c2inputsurface=-1
 media.c2.hal.selection=aidl
 ro.mediaserver.64b.enable=true

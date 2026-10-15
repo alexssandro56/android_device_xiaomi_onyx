@@ -71,6 +71,8 @@ odm/etc/audio/misound_karaokemix_res.bin
 odm/etc/audio/misoundsa_spk_config.bin
 odm/etc/init/init.awinic.rc
 odm/etc/init/init.cirrus.rc
+odm/etc/init/init.tfa.rc
+odm/etc/init/init.ti.rc
 odm/lib64/libaudioroute_ext.so
 odm/lib64/libawcal.so
 odm/lib64/libcrussp.so
@@ -78,18 +80,28 @@ odm/lib64/libsiaalgocal.so
 odm/lib64/libtfacal.so
 odm/lib64/libwindns.so
 odm/lib64/vendor.xiaomi.hardware.mediaeventgatherservice-V1-ndk.so
+vendor/bin/hw/audiohalservice.qti;MODULE_SUFFIX=_onyx;OVERRIDES=audiohalservice.qti
 vendor/etc/audio_cloud_control_white_list.xml
+vendor/etc/init/audiohalservice_qti.rc
 vendor/etc/models/acd/environment.eai
 vendor/etc/models/acd/event.eai
 vendor/etc/models/acd/music.eai
 vendor/etc/models/acd/speech.eai
+vendor/etc/vintf/manifest/audioeffectservice_qti.xml
+vendor/etc/vintf/manifest/manifest_audio_qti_services.xml
+vendor/etc/vintf/manifest/manifest_audiocorehal_default.xml
 vendor/etc/vintf/manifest/qasr_vintf.xml
+vendor/etc/vintf/manifest/soundtrigger.qti.xml
 vendor/lib64/hw/audio.primary.default.so
-vendor/lib64/hw/libaudiocorehal.default.so;DISABLE_DEPS;REQUIRED=manifest_audiocorehal_default.xml
+vendor/lib64/hw/libaudiocorehal.default.so
 vendor/lib64/hw/libaudiocorehal.qti.so;DISABLE_DEPS
-vendor/lib64/hw/libaudioeffecthal.qti.so;DISABLE_DEPS;REQUIRED=audioeffectservice_qti.xml
+vendor/lib64/hw/libaudioeffecthal.qti.so
+vendor/lib64/hw/libsoundtriggerhal.qti.so
 vendor/lib64/libPeripheralStateUtils.so
 vendor/lib64/libVoiceSdk.so
+vendor/lib64/lib_bt_aptx.so
+vendor/lib64/lib_bt_ble.so
+vendor/lib64/lib_bt_bundle.so
 vendor/lib64/lib_bt_lhdc.so
 vendor/lib64/lib_bt_mihc.so
 vendor/lib64/libadm.so
@@ -100,20 +112,27 @@ vendor/lib64/libar-pal.so
 vendor/lib64/libarmemlog.so
 vendor/lib64/libats.so
 vendor/lib64/libaudio_log_utils.so
+vendor/lib64/libaudiochargerlistener.so
 vendor/lib64/libaudiocloudctrl.so
-vendor/lib64/libaudioplatformconverter.qti.so;DISABLE_DEPS
+vendor/lib64/libaudioplatformconverter.qti.so
 vendor/lib64/libav_miwnsencoder.so
+vendor/lib64/libbatterylistener.so
 vendor/lib64/libcapiv2svacnnvendor.so
 vendor/lib64/libcapiv2svarnnvendor.so
 vendor/lib64/libcapiv2udk7vendor.so
 vendor/lib64/libcapiv2uvvendor.so
+vendor/lib64/libcustomva_intf.so
 vendor/lib64/libeai_fixed.so
 vendor/lib64/libeai_float.so
+vendor/lib64/libfmpal.so
+vendor/lib64/libhfp_pal.so
+vendor/lib64/libhotword_intf.so
 vendor/lib64/liblistensoundmodel2vendor.so
 vendor/lib64/liblistensoundmodelaidl.so
 vendor/lib64/liblx-ar_util.so
 vendor/lib64/liblx-osal.so
 vendor/lib64/libmcs.so
+vendor/lib64/libmediautils_vendor.so;MODULE_SUFFIX=_onyx
 vendor/lib64/libmidatabase.so
 vendor/lib64/libmikaraoke.so
 vendor/lib64/libmis6.so
@@ -122,12 +141,16 @@ vendor/lib64/libmisops.so
 vendor/lib64/libmisoundsa.so
 vendor/lib64/libpal_net_if.so
 vendor/lib64/libpalclient.so
+vendor/lib64/libpaleventnotifier.so
+vendor/lib64/libpalipcservice.so
 vendor/lib64/libqasr.so
-vendor/lib64/libqtigefar.so;DISABLE_DEPS
+vendor/lib64/libqtigefar.so
+vendor/lib64/libsndcardparser.so
 vendor/lib64/libtensorflowlite_c.so:vendor/lib64/libtensorflowlite_c_vendor.so;FIX_SONAME
 vendor/lib64/libtiantongpal.so
 vendor/lib64/libvui_dmgr.so
 vendor/lib64/libvui_dmgr_client.so
+vendor/lib64/libvui_intf.so
 vendor/lib64/libxlog.so
 vendor/lib64/vendor.qti.hardware.ListenSoundModelAidl-V1-ndk.so
 vendor/lib64/vendor.qti.hardware.qasr-V2-ndk.so
@@ -135,10 +158,11 @@ vendor/lib64/vendor.qti.hardware.qasr-V2-ndk.so
 # Audio - old AIDL dependencies
 vendor/lib64/android.hardware.bluetooth.audio-impl.so:vendor/lib64/android.hardware.bluetooth.audio-impl_prebuilt.so;FIX_SONAME
 vendor/lib64/libaudio_aidl_conversion_common_ndk.so:vendor/lib64/libaudio_aidl_conversion_common_ndk_prebuilt.so;DISABLE_DEPS;FIX_SONAME
-vendor/lib64/libaudioserviceexampleimpl.so;DISABLE_DEPS
+vendor/lib64/libaudioserviceexampleimpl.so;MODULE_SUFFIX=_onyx;OVERRIDES=libaudioserviceexampleimpl
 vendor/lib64/libbluetooth_audio_session_aidl.so:vendor/lib64/libbluetooth_audio_session_aidl_prebuilt.so;FIX_SONAME
 
 # Audio configs
+odm/etc/audio/mis_powerop_configs.bin
 odm/etc/audio/sku_tuna/adsp_sleep_monitor.conf
 odm/etc/audio/sku_tuna/mixer_paths_overlay_dynamic.xml
 odm/etc/audio/sku_tuna/mixer_paths_overlay_static.xml
@@ -157,24 +181,41 @@ odm/firmware/aw882xx_acf.bin
 odm/firmware/sipa.bin
 
 # Audio graph manager
+vendor/bin/agmcap
+vendor/bin/agmcompresscap
+vendor/bin/agmcompressplay
+vendor/bin/agmhostless
+vendor/bin/agmplay
+vendor/bin/agmvoiceui
+vendor/bin/cplay
 vendor/lib64/libagm.so
+vendor/lib64/libagm_mixer_plugin.so
+vendor/lib64/libagm_pcm_plugin.so
 vendor/lib64/libagmclient.so
 vendor/lib64/libagmipcservice.so
 vendor/lib64/libagmmixer.so
 vendor/lib64/libmisight.so
 
 # Audio soundfx
+vendor/lib64/soundfx/libaudiopreprocessing.so
 vendor/lib64/soundfx/libbundleaidl.so;DISABLE_DEPS
+vendor/lib64/soundfx/libbundlewrapper.so
+vendor/lib64/soundfx/libdownmix.so
 vendor/lib64/soundfx/libdownmixaidl.so;DISABLE_DEPS
 vendor/lib64/soundfx/libdynamicsprocessingaidl.so;DISABLE_DEPS
+vendor/lib64/soundfx/libdynproc.so
+vendor/lib64/soundfx/libeffectproxy.so
+vendor/lib64/soundfx/libldnhncr.so
 vendor/lib64/soundfx/libloudnessenhanceraidl.so;DISABLE_DEPS
-vendor/lib64/soundfx/libqcompostprocbundle.so;DISABLE_DEPS
-vendor/lib64/soundfx/libqcomvisualizer.so;DISABLE_DEPS
-vendor/lib64/soundfx/libqcomvoiceprocessing.so;DISABLE_DEPS
-vendor/lib64/soundfx/libquasar.so;DISABLE_DEPS
+vendor/lib64/soundfx/libmiwndnsprocessingaidl.so
+vendor/lib64/soundfx/libqcompostprocbundle.so
+vendor/lib64/soundfx/libqcomvisualizer.so
+vendor/lib64/soundfx/libqcomvoiceprocessing.so
+vendor/lib64/soundfx/libquasar.so
 vendor/lib64/soundfx/libreverbaidl.so;DISABLE_DEPS
+vendor/lib64/soundfx/libvisualizer.so
 vendor/lib64/soundfx/libvisualizeraidl.so;DISABLE_DEPS
-vendor/lib64/soundfx/libvolumelistener.so;DISABLE_DEPS
+vendor/lib64/soundfx/libvolumelistener.so
 
 # Audio soundfx (Spatializer Model)
 odm/etc/audio/hrtf5c.bin
@@ -192,7 +233,7 @@ vendor/etc/vintf/manifest/manifest_btaudiocoreservices_qti.xml
 vendor/etc/vintf/manifest/vendor.qti.hardware.bluetooth.xpanprovider.xml
 vendor/lib64/btaudio_offload_if.so
 vendor/lib64/hw/android.hardware.bluetooth.audio-impl-qti.so
-vendor/lib64/hw/android.hardware.bluetooth.audio_sw.so;DISABLE_DEPS
+vendor/lib64/hw/android.hardware.bluetooth.audio_sw.so
 vendor/lib64/hw/android.hardware.bluetooth.lmp_event-impl-qti.so
 vendor/lib64/hw/android.hardware.bluetooth@1.0-impl-qti.so
 vendor/lib64/hw/android.hardware.bluetooth@aidl-impl-qti.so

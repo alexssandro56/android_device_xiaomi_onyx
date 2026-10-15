@@ -3,7 +3,6 @@ af.fast_track_multiplier=1
 audio.deep_buffer.media=true
 audio.offload.min.duration.secs=30
 audio.offload.video=true
-media.stagefright.audio.deep=true
 
 # Bluetooth
 bluetooth.device_id.product_id=0x1200
