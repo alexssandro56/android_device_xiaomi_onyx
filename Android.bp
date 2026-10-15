@@ -12,19 +12,74 @@ install_symlink {
 }
 
 install_symlink {
-    name: "firmware_wlan_mac.bin_symlink",
+    name: "firmware_wlan_mac.bin_symlink-kiwi_v2",
+    vendor: true,
+    installed_location: "firmware/wlan/qca_cld/kiwi_v2/wlan_mac.bin",
+    symlink_target: "/mnt/vendor/persist/wlan/wlan_mac.bin",
+}
+
+install_symlink {
+    name: "firmware_WCNSS_qcom_cfg.ini_symlink-kiwi_v2",
+    vendor: true,
+    installed_location: "firmware/wlan/qca_cld/kiwi_v2/WCNSS_qcom_cfg.ini",
+    symlink_target: "/vendor/etc/wifi/kiwi_v2/WCNSS_qcom_cfg.ini",
+}
+
+install_symlink {
+    name: "firmware_wlan_mac.bin_symlink-peach",
+    vendor: true,
+    installed_location: "firmware/wlan/qca_cld/peach/wlan_mac.bin",
+    symlink_target: "/mnt/vendor/persist/wlan/wlan_mac.bin",
+}
+
+install_symlink {
+    name: "firmware_WCNSS_qcom_cfg.ini_symlink-peach",
+    vendor: true,
+    installed_location: "firmware/wlan/qca_cld/peach/WCNSS_qcom_cfg.ini",
+    symlink_target: "/vendor/etc/wifi/peach/WCNSS_qcom_cfg.ini",
+}
+
+install_symlink {
+    name: "firmware_wlan_mac.bin_symlink-peach_v2",
+    vendor: true,
+    installed_location: "firmware/wlan/qca_cld/peach_v2/wlan_mac.bin",
+    symlink_target: "/mnt/vendor/persist/wlan/wlan_mac.bin",
+}
+
+install_symlink {
+    name: "firmware_WCNSS_qcom_cfg.ini_symlink-peach_v2",
+    vendor: true,
+    installed_location: "firmware/wlan/qca_cld/peach_v2/WCNSS_qcom_cfg.ini",
+    symlink_target: "/vendor/etc/wifi/peach_v2/WCNSS_qcom_cfg.ini",
+}
+
+install_symlink {
+    name: "firmware_wlan_mac.bin_symlink-wcn7750",
     vendor: true,
     installed_location: "firmware/wlan/qca_cld/wcn7750/wlan_mac.bin",
     symlink_target: "/mnt/vendor/persist/wlan/wlan_mac.bin",
 }
 
 install_symlink {
-    name: "firmware_WCNSS_qcom_cfg.ini_symlink",
+    name: "firmware_WCNSS_qcom_cfg.ini_symlink-wcn7750",
     vendor: true,
     installed_location: "firmware/wlan/qca_cld/wcn7750/WCNSS_qcom_cfg.ini",
     symlink_target: "/vendor/etc/wifi/wcn7750/WCNSS_qcom_cfg.ini",
 }
 
+install_symlink {
+    name: "firmware_wlan_mac.bin_symlink-qca6750",
+    vendor: true,
+    installed_location: "firmware/wlan/qca_cld/qca6750/wlan_mac.bin",
+    symlink_target: "/mnt/vendor/persist/wlan/wlan_mac.bin",
+}
+
+install_symlink {
+    name: "firmware_WCNSS_qcom_cfg.ini_symlink-qca6750",
+    vendor: true,
+    installed_location: "firmware/wlan/qca_cld/qca6750/WCNSS_qcom_cfg.ini",
+    symlink_target: "/vendor/etc/wifi/qca6750/WCNSS_qcom_cfg.ini",
+}
 
 install_symlink {
     name: "rfs_msm_mpss_readonly_mbnconfig_symlink",

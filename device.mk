@@ -217,10 +217,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     vendor.xiaomi.hardware.micharge-service-dummy
 
-# Network
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.software.ipsec_tunnels.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.ipsec_tunnels.xml
-
 # NFC
 PRODUCT_PACKAGES += \
     android.hardware.nfc-service.nxp \
@@ -287,7 +283,8 @@ TARGET_COMMON_QTI_COMPONENTS := \
     perf \
     telephony \
     usb \
-    wfd
+    wfd \
+    wlan
 
 # Parts
 PRODUCT_PACKAGES += \
@@ -350,30 +347,17 @@ PRODUCT_COPY_FILES += \
 
 # WiFi
 PRODUCT_PACKAGES += \
-    android.hardware.wifi-service \
-    hostapd \
-    hostapd_cli \
-    libwifi-hal-qcom \
-    wpa_cli \
-    wpa_supplicant \
-    wpa_supplicant.conf
-
-PRODUCT_PACKAGES += \
-    firmware_wlanmdsp.otaupdate_symlink \
-    firmware_wlan_mac.bin_symlink \
-    firmware_WCNSS_qcom_cfg.ini_symlink
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/wifi/p2p_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/p2p_supplicant_overlay.conf \
-    $(LOCAL_PATH)/configs/wifi/vendor_cmd.xml:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/vendor_cmd.xml \
-    $(LOCAL_PATH)/configs/wifi/WCNSS_qcom_cfg.ini:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wcn7750/WCNSS_qcom_cfg.ini \
-    $(LOCAL_PATH)/configs/wifi/wpa_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wpa_supplicant_overlay.conf
-
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.wifi.direct.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.direct.xml \
-    frameworks/native/data/etc/android.hardware.wifi.passpoint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.passpoint.xml \
-    frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml \
-    frameworks/native/data/etc/android.hardware.wifi.aware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.aware.xml
+    firmware_WCNSS_qcom_cfg.ini_symlink-kiwi_v2 \
+    firmware_WCNSS_qcom_cfg.ini_symlink-peach \
+    firmware_WCNSS_qcom_cfg.ini_symlink-peach_v2 \
+    firmware_WCNSS_qcom_cfg.ini_symlink-wcn7750 \
+    firmware_WCNSS_qcom_cfg.ini_symlink-qca6750 \
+    firmware_wlan_mac.bin_symlink-kiwi_v2 \
+    firmware_wlan_mac.bin_symlink-peach \
+    firmware_wlan_mac.bin_symlink-peach_v2 \
+    firmware_wlan_mac.bin_symlink-wcn7750 \
+    firmware_wlan_mac.bin_symlink-qca6750 \
+    firmware_wlanmdsp.otaupdate_symlink
 
 # Game Turbo
 $(call inherit-product-if-exists, packages/apps/NotGameTurbo/notgameturbo.mk)

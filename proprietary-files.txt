@@ -3526,10 +3526,6 @@ odm/firmware/vpu30_2v.mbn
 odm/firmware/aw8697_haptic.bin
 odm/firmware/aw8697_rtp_1.bin
 
-# WiFi
-vendor/bin/cnss-daemon
-vendor/etc/init/init.vendor.wlan.rc
-
 # WiFi Display (vendor)
 vendor/bin/wfdhdcphalservice
 vendor/bin/wfdvndservice
