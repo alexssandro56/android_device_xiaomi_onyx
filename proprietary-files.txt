@@ -1774,9 +1774,9 @@ vendor/lib64/libmialgoengine.so
 vendor/lib64/libmialgoengine_custom.so
 vendor/lib64/libmicamGlobalPool.so
 vendor/lib64/libmicamera_adapter.so
-vendor/lib64/libmicamera_aidl_device.so;DISABLE_DEPS
-vendor/lib64/libmicamera_aidl_provider.so;DISABLE_DEPS
-vendor/lib64/libmicamera_aidl_utils.so;DISABLE_DEPS
+vendor/lib64/libmicamera_aidl_device.so
+vendor/lib64/libmicamera_aidl_provider.so
+vendor/lib64/libmicamera_aidl_utils.so
 vendor/lib64/libmicamera_fps_checker.so
 vendor/lib64/libmicamera_hal_core.so
 vendor/lib64/libmicamera_hal_policy.so
