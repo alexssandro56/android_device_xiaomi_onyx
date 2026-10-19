@@ -13,7 +13,7 @@ android_app {
     static_libs: [
         "androidx.core_core",
         "androidx.preference_preference",
-        "vendor.xiaomi.hardware.displayfeature-V2-java",
+        "vendor.xiaomi.hardware.displayfeature_aidl-V2-java",
     ],
     required: [
     ],
