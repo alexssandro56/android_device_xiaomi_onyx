@@ -8,6 +8,7 @@ cc_library {
     name: "libudfpshandler",
     vendor: true,
     srcs: ["UdfpsHandler.cpp"],
+    local_include_dirs: ["include"],
     shared_libs: [
         "libbase",
     ],
