@@ -227,10 +227,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     vendor.qti.hardware.memtrack-service
 
-# Micharge
-PRODUCT_PACKAGES += \
-    vendor.xiaomi.hardware.micharge-service-dummy
-
 # NFC
 TARGET_USES_NQ_NFC := true
 TARGET_ENABLE_PERIPHERAL_CONTROL := true
