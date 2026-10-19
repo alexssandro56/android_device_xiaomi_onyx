@@ -234,7 +234,7 @@ PRODUCT_PACKAGES += \
 # NFC
 TARGET_USES_NQ_NFC := true
 TARGET_ENABLE_PERIPHERAL_CONTROL := true
-$(call inherit-product, vendor/nxp/opensource/commonsys/packages/apps/Nfc/nfc_system_product.mk)
+$(call inherit-product, vendor/nxp/opensource/commonsys/libnfc_vendor_extn/nfc_system_product_nxp.mk)
 $(call soong_config_set,nfc,board_secure_peripheral_framework,sun)
 
 PRODUCT_PACKAGES += \
