@@ -93,26 +93,6 @@ BOARD_BOOTCONFIG := \
     androidboot.hypervisor.protected_vm.supported=true \
     androidboot.vendor.qspa=true
 
-# Kernel modules
-# Use the load lists shipped with the prebuilt kernel so they always match
-# the modules that are actually in device/xiaomi/onyx-kernel.
-KERNEL_MODULES_PATH := device/xiaomi/onyx-kernel
-first_stage_modules := $(strip $(shell cat $(KERNEL_MODULES_PATH)/vendor_ramdisk/modules.load))
-recovery_modules := $(strip $(shell cat $(KERNEL_MODULES_PATH)/vendor_ramdisk/modules.load.recovery))
-vendor_dlkm_modules := $(strip $(shell cat $(KERNEL_MODULES_PATH)/vendor_dlkm/modules.load))
-gki_modules := $(strip $(shell cat $(KERNEL_MODULES_PATH)/system_dlkm/flatten/lib/modules/modules.load))
-kunit_modules := $(strip $(shell cat $(DEVICE_PATH)/modules/modules.list.kunit))
-
-BOARD_SYSTEM_KERNEL_MODULES_LOAD := $(gki_modules)
-BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(KERNEL_MODULES_PATH)/vendor_dlkm/modules.blocklist
-BOARD_VENDOR_KERNEL_MODULES_LOAD := $(vendor_dlkm_modules)
-BOARD_VENDOR_RAMDISK_KERNEL_MODULES_BLOCKLIST_FILE := $(KERNEL_MODULES_PATH)/vendor_ramdisk/modules.blocklist
-BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(first_stage_modules)
-BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(recovery_modules)
-
-BOOT_KERNEL_MODULES := $(first_stage_modules)
-SYSTEM_KERNEL_MODULES := $(gki_modules) $(kunit_modules)
-
 # Partitions
 BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296
 BOARD_DTBOIMG_PARTITION_SIZE := 25165824
