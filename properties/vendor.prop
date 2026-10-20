@@ -84,3 +84,7 @@ sys.vendor.shutdown.waittime=500
 
 # SSR
 ro.vendor.vm.ssr.enable=false
+# Battery, FRP and media (from the chrisl7 onyx tree)
+debug.c2.use_dmabufheaps=1
+persist.vendor.batteryantiaging=1
+ro.frp.pst=/dev/block/bootdevice/by-name/frp
