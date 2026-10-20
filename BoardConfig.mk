@@ -82,6 +82,10 @@ BOARD_KERNEL_CMDLINE := \
     mtdoops.fingerprint=$(AOSPA_VERSION) \
     video=vfb:640x400,bpp=32,memsize=3072000
 
+# Don't ratelimit userspace writes to kmsg, so init and vendor_modprobe
+# logs reach the oops partition (mtdoops) during bring-up.
+BOARD_KERNEL_CMDLINE += printk.devkmsg=on
+
 BOARD_BOOTCONFIG := \
     androidboot.hardware=qcom \
     androidboot.memcg=1 \
