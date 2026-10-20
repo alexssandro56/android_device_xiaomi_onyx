@@ -82,7 +82,6 @@ BOARD_KERNEL_CMDLINE := \
     mtdoops.fingerprint=$(AOSPA_VERSION) \
     video=vfb:640x400,bpp=32,memsize=3072000
 
-
 BOARD_BOOTCONFIG := \
     androidboot.hardware=qcom \
     androidboot.memcg=1 \
@@ -92,6 +91,21 @@ BOARD_BOOTCONFIG := \
     androidboot.hypervisor.protected_vm.supported=true \
     androidboot.vendor.qspa=true
 BOARD_BOOTCONFIG += androidboot.selinux=permissive
+
+# Kernel modules
+# Don't load mem-offline, as the other onyx trees do since the
+# OS3.0.303.0 kernel. The module stays installed. The lists come from
+# kernel-platform.mk, which the product config includes before this file.
+# Only filter lists that are already set, so a different include order
+# leaves them alone instead of emptying them.
+ifneq ($(BOARD_VENDOR_KERNEL_MODULES),)
+BOARD_VENDOR_KERNEL_MODULES_LOAD := \
+    $(filter-out %/mem-offline.ko,$(BOARD_VENDOR_KERNEL_MODULES))
+endif
+ifneq ($(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD),)
+BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := \
+    $(filter-out %/mem-offline.ko,$(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD))
+endif
 
 # Partitions
 BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296
