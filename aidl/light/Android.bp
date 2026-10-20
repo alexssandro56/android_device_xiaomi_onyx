@@ -5,6 +5,10 @@
 
 cc_binary {
     name: "android.hardware.light-service.onyx",
+    overrides: [
+        "android.hardware.lights-service.qti",
+        "vendor.qti.hardware.lights.service",
+    ],
     defaults: ["hidl_defaults"],
     vendor: true,
     relative_install_path: "hw",
