@@ -25,3 +25,10 @@ prebuilt_etc {
     src: "ueventd.xiaomi.rc",
     device_specific: true,
 }
+
+prebuilt_etc {
+    name: "init.onyx.bootlog.rc",
+    src: "init.onyx.bootlog.rc",
+    sub_dir: "init",
+    system_ext_specific: true,
+}

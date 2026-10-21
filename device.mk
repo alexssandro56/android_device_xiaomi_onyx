@@ -169,6 +169,12 @@ PRODUCT_PACKAGES += \
     init.xiaomi.rc \
     ueventd.xiaomi.rc
 
+# Save boot logs to /metadata/bootlog during bring-up
+ifneq ($(TARGET_BUILD_VARIANT),user)
+PRODUCT_PACKAGES += \
+    init.onyx.bootlog.rc
+endif
+
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/init/fstab.qcom:$(TARGET_COPY_OUT_VENDOR_RAMDISK)/first_stage_ramdisk/fstab.qcom \
     $(LOCAL_PATH)/init/init.recovery.qcom.rc:$(TARGET_COPY_OUT_RECOVERY)/root/init.recovery.qcom.rc
