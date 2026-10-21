@@ -86,6 +86,11 @@ BOARD_KERNEL_CMDLINE := \
 # logs reach the oops partition (mtdoops) during bring-up.
 BOARD_KERNEL_CMDLINE += printk.devkmsg=on
 
+# Reboot into recovery instead of the bootloader when init hits a fatal
+# error (first stage mount failure, critical service crash loop), so the
+# pstore logs can be pulled over adb during bring-up.
+BOARD_KERNEL_CMDLINE += androidboot.init_fatal_reboot_target=recovery
+
 BOARD_BOOTCONFIG := \
     androidboot.hardware=qcom \
     androidboot.memcg=1 \
