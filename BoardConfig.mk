@@ -171,6 +171,7 @@ TARGET_USERIMAGES_USE_F2FS := true
 SOONG_CONFIG_rfs_mpss_firmware_symlink_target := modem_firmware
 
 # Sepolicy
+include device/xiaomi/sepolicy/SEPolicy.mk
 BOARD_VENDOR_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/vendor
 SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/public
 SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += $(DEVICE_PATH)/sepolicy/private
