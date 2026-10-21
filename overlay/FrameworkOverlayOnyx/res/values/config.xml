@@ -447,6 +447,13 @@
     <!-- If true, the display will be shifted around in ambient mode. -->
     <bool name="config_enableBurnInProtection">true</bool>
 
+    <!-- Burn-in protection offsets, in pixels. The defaults are 0, which keeps
+         the display in place. -->
+    <integer name="config_burnInProtectionMinHorizontalOffset">-10</integer>
+    <integer name="config_burnInProtectionMaxHorizontalOffset">10</integer>
+    <integer name="config_burnInProtectionMinVerticalOffset">-10</integer>
+    <integer name="config_burnInProtectionMaxVerticalOffset">10</integer>
+
     <!-- The bounding path of the cutout region of the main built-in display.
          Must either be empty if there is no cutout region, or a string that is parsable by
          {@link android.util.PathParser}.
