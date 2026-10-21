@@ -1,0 +1,9 @@
+# The NXP StrongBox, Weaver and AuthSecret HALs reach the eSE through the
+# vendor stable OMAPI service that com.android.se registers.
+allow hal_authsecret_default secure_element_service:service_manager find;
+allow vendor_hal_keymint_strongbox secure_element_service:service_manager find;
+allow vendor_hal_weaver_default secure_element_service:service_manager find;
+
+binder_call(hal_authsecret_default, secure_element)
+binder_call(vendor_hal_keymint_strongbox, secure_element)
+binder_call(vendor_hal_weaver_default, secure_element)
