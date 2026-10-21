@@ -332,6 +332,12 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     workloadclassifier-power-allowlist.xml
 
+# device/qcom/common's sun perf config only lists SM8750 (618). Add SM8735
+# (639), which has the same 6+2 cluster layout, as stock does. device.mk is
+# inherited before aospa-target.mk, so this copy wins.
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/perf/targetconfig.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/targetconfig.xml
+
 # Sensors
 PRODUCT_PACKAGES += \
     android.frameworks.sensorservice@1.0.vendor \
