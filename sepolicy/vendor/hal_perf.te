@@ -1,2 +1,4 @@
 allow vendor_hal_perf_default vendor_sysfs_xm_power:dir r_dir_perms;
 allow vendor_hal_perf_default vendor_sysfs_xm_power:file rw_file_perms;
+allow vendor_hal_perf_default proc_walt:dir search;
+allow vendor_hal_perf_default proc_walt:file rw_file_perms;

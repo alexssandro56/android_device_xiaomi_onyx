@@ -20,3 +20,6 @@ dontaudit fsck block_device:blk_file rw_file_perms;
 dontaudit fsck sysfs:file r_file_perms;
 dontaudit { kernel vendor_modprobe } block_device:dir search;
 dontaudit vold { mnt_product_file vendor_qmcs_file vendor_spunvm_file }:dir { ioctl r_dir_perms };
+
+# Framework code in app processes probes display feature props
+dontaudit appdomain vendor_displayfeature_prop:file r_file_perms;
