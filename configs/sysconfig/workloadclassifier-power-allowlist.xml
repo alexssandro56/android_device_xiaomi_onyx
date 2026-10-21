@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: Paranoid Android
+     SPDX-License-Identifier: Apache-2.0
+-->
+<config>
+    <!-- WLCReceiver starts WLCService from a worker thread after
+         onReceive() returns, which background start restrictions block. -->
+    <allow-in-power-save package="com.qualcomm.qti.workloadclassifier" />
+</config>

@@ -327,6 +327,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     XiaomiParts
 
+# Perf
+PRODUCT_PACKAGES += \
+    workloadclassifier-power-allowlist.xml
+
 # Sensors
 PRODUCT_PACKAGES += \
     android.frameworks.sensorservice@1.0.vendor \
