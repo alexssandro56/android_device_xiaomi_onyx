@@ -2549,6 +2549,7 @@ vendor/bin/loc_launcher
 vendor/bin/lowi-server
 vendor/bin/mlid
 vendor/bin/slim_daemon
+vendor/bin/snapdragon_services
 vendor/bin/xtra-daemon
 vendor/bin/xtwifi-client
 vendor/etc/apdr.conf
@@ -2848,6 +2849,7 @@ vendor/lib64/libperipheral_client.so
 vendor/bin/qcc-vendor
 vendor/etc/init/init.qccvendor.rc
 vendor/etc/vintf/manifest/vendor.qti.qccvndhal_aidl-service.xml
+vendor/etc/vintf/manifest/snapdragon_services.xml
 vendor/lib64/libqcc_file_agent.so
 vendor/lib64/libqcc_sdk.so
 vendor/lib64/vendor.qti.qccsyshal_aidl-V1-ndk.so;MODULE_SUFFIX=_vendor
@@ -2972,6 +2974,7 @@ vendor/etc/init/port-bridge.rc
 vendor/etc/init/qcrilNrd.rc
 vendor/etc/init/qwesd.rc
 vendor/etc/init/shsusrd.rc
+vendor/etc/init/snapdragon_services.rc
 vendor/etc/init/ssgtzd.rc
 vendor/etc/init/tlpd.rc
 vendor/etc/init/vendor.qti.rmt_storage.rc
@@ -3189,6 +3192,7 @@ vendor/lib64/vendor.qti.ims.rcsconfig@2.1.so;MODULE_SUFFIX=_vendor
 vendor/lib64/vendor.qti.ims.rcssipaidlservice-V1-ndk.so;MODULE_SUFFIX=_vendor
 vendor/lib64/vendor.qti.ims.rcsuceaidlservice-V1-ndk.so;MODULE_SUFFIX=_vendor
 vendor/lib64/vendor.qti.ims.uceaidlservice-V1-ndk.so;MODULE_SUFFIX=_vendor
+vendor/lib64/vendor.qti.snapdragonServices-V1-ndk.so
 vendor/lib64/vendor.qti.syshealthmon-V1-ndk.so
 
 # Secure element
