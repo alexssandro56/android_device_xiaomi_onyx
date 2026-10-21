@@ -1,0 +1,1 @@
+allow tee vendor_ufs_bsg_device:chr_file rw_file_perms;

@@ -32,6 +32,7 @@ type migt_dev, dev_type, mlstrustedobject;
 type sysfs_migt, fs_type, sysfs_type;
 
 # Memory
+type sysfs_reserve_pool, fs_type, sysfs_type;
 type procfs_memory, fs_type, proc_type;
 
 # Sensor
@@ -51,6 +52,9 @@ type sysfs_touch_suspend, fs_type, sysfs_type;
 type sysfs_tp_virtual_prox, fs_type, sysfs_type;
 type touchreport_data_file, data_file_type, file_type;
 type vendor_data_touchreport_file, data_file_type, file_type;
+
+# Perf helper
+type sysfs_perf_helper, fs_type, sysfs_type;
 
 # Walt
 type proc_walt, fs_type, proc_type;

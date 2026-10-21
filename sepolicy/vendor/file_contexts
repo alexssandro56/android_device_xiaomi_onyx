@@ -91,6 +91,7 @@
 
 # Metis/Migt
 /dev/metis u:object_r:migt_dev:s0
+/dev/metis_link u:object_r:migt_dev:s0
 /dev/migt u:object_r:migt_dev:s0
 /sys/module/metis/parameters(/.*)? u:object_r:sysfs_migt:s0
 
@@ -157,3 +158,9 @@
 # Dolby
 /data/vendor/dolby(/.*)? u:object_r:vendor_data_file:s0
 /vendor/bin/hw/vendor\.dolby\.dms\.service u:object_r:hal_aidl_dms_default_exec:s0
+
+# MIEV
+/dev/miev u:object_r:vendor_miev_device:s0
+
+# UFS BSG (qseecomd talks to RPMB through it)
+/dev/0:0:0:0 u:object_r:vendor_ufs_bsg_device:s0

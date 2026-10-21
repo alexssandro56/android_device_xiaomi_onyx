@@ -10,3 +10,9 @@ type vendor_fingerprint_device, dev_type;
 
 # Touchfeature
 type touchfeature_device, dev_type;
+
+# MIEV
+type vendor_miev_device, dev_type;
+
+# UFS BSG
+type vendor_ufs_bsg_device, dev_type;

@@ -51,3 +51,6 @@ allow vendor_hal_citsensorservice_xiaomi_server vendor_hal_citsensorservice_xiao
 allow vendor_hal_citsensorservice_xiaomi_server vendor_hal_citsensorservice_xiaomi_client:fd *;
 allow vendor_hal_citsensorservice_xiaomi_server vendor_hal_citsensorservice_xiaomi_service:service_manager { add find };
 dontaudit vendor_hal_citsensorservice_xiaomi_default system_prop:file read;
+
+get_prop(vendor_hal_citsensorservice_xiaomi_default, vendor_qc_aon_prop)
+dontaudit vendor_hal_citsensorservice_xiaomi_default default_prop:file r_file_perms;

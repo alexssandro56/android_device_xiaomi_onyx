@@ -118,3 +118,9 @@ genfscon sysfs /devices/platform/soc/soc:qcom,dsi-display-primary/wakeup u:objec
 
 # Walt
 genfscon proc /sys/walt u:object_r:proc_walt:s0
+
+# Perf helper
+genfscon sysfs /module/perf_helper/sched_assi u:object_r:sysfs_perf_helper:s0
+
+# Reserve pool
+genfscon sysfs /kernel/reserve_pool u:object_r:sysfs_reserve_pool:s0
