@@ -85,14 +85,17 @@ BOARD_KERNEL_CMDLINE := \
     sysctl.kernel.firmware_config.force_sysfs_fallback=1 \
     video=vfb:640x400,bpp=32,memsize=3072000
 
+# Bring-up debugging, kept out of user builds.
+ifneq ($(TARGET_BUILD_VARIANT),user)
 # Don't ratelimit userspace writes to kmsg, so init and vendor_modprobe
-# logs reach the oops partition (mtdoops) during bring-up.
+# logs reach the oops partition (mtdoops).
 BOARD_KERNEL_CMDLINE += printk.devkmsg=on
 
 # Reboot into recovery instead of the bootloader when init hits a fatal
 # error (first stage mount failure, critical service crash loop), so the
-# pstore logs can be pulled over adb during bring-up.
+# pstore logs can be pulled over adb.
 BOARD_KERNEL_CMDLINE += androidboot.init_fatal_reboot_target=recovery
+endif
 
 BOARD_BOOTCONFIG := \
     androidboot.hardware=qcom \
