@@ -23,4 +23,8 @@
     <!-- Radius of the software rounded corners at the bottom of the display in its natural
         orientation. If zero, the value of rounded_corner_radius is used. -->
     <dimen name="rounded_corner_radius_bottom">@dimen/rounded_corner_radius</dimen>
+
+    <!-- Float variant of the fast auto-brightness ramp rate, used by the
+         brightness-as-float code path. Value extracted from stock HyperOS. -->
+    <dimen name="config_brightnessRampRateFast">0.41590282</dimen>
 </resources>
