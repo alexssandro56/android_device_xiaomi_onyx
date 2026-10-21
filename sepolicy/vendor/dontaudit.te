@@ -3,3 +3,14 @@ dontaudit untrusted_app ashmem_device:chr_file open;
 dontaudit {
   hal_camera_default
 } default_prop:file r_file_perms;
+
+# Perf/QSPM lookups from framework code in privileged apps
+dontaudit priv_app {
+  vendor_hal_perf2_service
+  vendor_hal_qspmhal_service
+}:service_manager find;
+dontaudit priv_app {
+  vendor_hal_perf_default
+  vendor_hal_qspmhal_default
+}:binder call;
+dontaudit priv_app device:dir open;
