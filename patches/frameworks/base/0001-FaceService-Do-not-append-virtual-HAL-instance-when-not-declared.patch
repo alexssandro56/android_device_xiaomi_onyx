@@ -1,0 +1,55 @@
+From 9cfc93542fd540c956b3ccdffb1a6ac29188ab85 Mon Sep 17 00:00:00 2001
+From: ronardnx <dragosh.rotaru.dragosh@gmail.com>
+Date: Sun, 18 Oct 2026 06:40:36 +0300
+Subject: [PATCH] FaceService: Do not append virtual HAL instance when not
+ declared
+
+Only query declared instances from ServiceManager and use
+waitForDeclaredService to avoid entering an infinite 1s loop
+when no virtual HAL is present on the device.
+
+Signed-off-by: ronardnx <dragosh.rotaru.dragosh@gmail.com>
+---
+ .../hardware/face/FaceSensorConfigurations.java      |  2 +-
+ .../server/biometrics/sensors/face/FaceService.java  | 12 +-----------
+ 2 files changed, 2 insertions(+), 12 deletions(-)
+
+diff --git a/core/java/android/hardware/face/FaceSensorConfigurations.java b/core/java/android/hardware/face/FaceSensorConfigurations.java
+index 4d3e46735761..e4544b2535fc 100644
+--- a/core/java/android/hardware/face/FaceSensorConfigurations.java
++++ b/core/java/android/hardware/face/FaceSensorConfigurations.java
+@@ -185,7 +185,7 @@ public class FaceSensorConfigurations implements Parcelable {
+             Slog.i(TAG, "getIFace fqName is mapped: " + fqName + "->" + fqNameMapped);
+             try {
+                 IVirtualHal vhal = IVirtualHal.Stub.asInterface(
+-                        Binder.allowBlocking(ServiceManager.waitForService(fqNameMapped)));
++                        Binder.allowBlocking(ServiceManager.waitForDeclaredService(fqNameMapped)));
+                 return vhal != null ? vhal.getFaceHal() : null;
+             } catch (RemoteException e) {
+                 Slog.e(TAG, "Remote exception in vhal.getFaceHal() call" + fqNameMapped);
+diff --git a/services/core/java/com/android/server/biometrics/sensors/face/FaceService.java b/services/core/java/com/android/server/biometrics/sensors/face/FaceService.java
+index a34791f70533..0c7e5d8a337d 100644
+--- a/services/core/java/com/android/server/biometrics/sensors/face/FaceService.java
++++ b/services/core/java/com/android/server/biometrics/sensors/face/FaceService.java
+@@ -814,17 +814,7 @@ public class FaceService extends SystemService {
+      * @return instance names
+      */
+     public static String[] getDeclaredInstances() {
+-        String[] a = ServiceManager.getDeclaredInstances(IFace.DESCRIPTOR);
+-        Slog.i(TAG, "Before:getDeclaredInstances: IFace instance found, a.length="
+-                + a.length);
+-        if (!ArrayUtils.contains(a, "virtual")) {
+-            // Now, the virtual hal is registered with IVirtualHal interface and it is also
+-            //   moved from vendor to system_ext partition without a device manifest. So
+-            //   if the old vhal is not declared, add here.
+-            a = ArrayUtils.appendElement(String.class, a, "virtual");
+-        }
+-        Slog.i(TAG, "After:getDeclaredInstances: a.length=" + a.length);
+-        return a;
++        return ServiceManager.getDeclaredInstances(IFace.DESCRIPTOR);
+     }
+ 
+     void syncEnrollmentsNow() {
+-- 
+2.43.0
+
