@@ -224,6 +224,15 @@ TARGET_HEALTH_CHARGING_CONTROL_CHARGING_DISABLED := 1
 TARGET_HEALTH_CHARGING_CONTROL_CHARGING_PATH := /sys/class/xm_power/charger/smart_charge/smart_night
 TARGET_HEALTH_CHARGING_CONTROL_SUPPORTS_BYPASS := false
 
+# vendor.lineage.health-service.default reads these from the lineage_health
+# namespace, but vendor/aospa only exports them as aospaGlobalVars. Without a
+# charging path the HAL keeps probing the generic nodes forever and never
+# registers, which blocks system_server in HealthInterfaceService.
+$(call soong_config_set,lineage_health,charging_control_charging_path,$(TARGET_HEALTH_CHARGING_CONTROL_CHARGING_PATH))
+$(call soong_config_set,lineage_health,charging_control_charging_enabled,$(TARGET_HEALTH_CHARGING_CONTROL_CHARGING_ENABLED))
+$(call soong_config_set,lineage_health,charging_control_charging_disabled,$(TARGET_HEALTH_CHARGING_CONTROL_CHARGING_DISABLED))
+$(call soong_config_set_bool,lineage_health,charging_control_supports_bypass,$(TARGET_HEALTH_CHARGING_CONTROL_SUPPORTS_BYPASS))
+
 # Kernel
 KERNEL_PREBUILT_DIR := device/xiaomi/onyx-kernel
 

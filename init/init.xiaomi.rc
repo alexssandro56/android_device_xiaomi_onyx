@@ -110,3 +110,8 @@ on property:sys.shutdown.requested=0userrequested
 
 on property:sys.shutdown.requested=0thermal,battery
     write /sys/class/xm_power/charger/charger_partition/charger_partition_poweroffmode 1
+
+# Charging control node used by vendor.lineage.health
+on boot
+    chown system system /sys/class/xm_power/charger/smart_charge/smart_night
+    chmod 0660 /sys/class/xm_power/charger/smart_charge/smart_night
