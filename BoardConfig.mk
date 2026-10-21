@@ -107,7 +107,6 @@ BOARD_BOOTCONFIG := \
     androidboot.load_modules_parallel=true \
     androidboot.hypervisor.protected_vm.supported=true \
     androidboot.vendor.qspa=true
-BOARD_BOOTCONFIG += androidboot.selinux=permissive
 
 # Kernel modules
 # Don't load mem-offline, as the other onyx trees do since the
