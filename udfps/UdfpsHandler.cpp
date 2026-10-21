@@ -11,15 +11,22 @@
 #include <android-base/unique_fd.h>
 
 #include <poll.h>
-#include <string.h>
 #include <sys/ioctl.h>
 #include <fstream>
 #include <thread>
 
 #include <display/drm/mi_disp.h>
-#include <touch/xiaomi_touch.h>
 
 #include "UdfpsHandler.h"
+
+#define CMD_DATA_BUF_SIZE 256
+
+#define COMMON_DATA_CMD 0
+#define SELECT_TOUCH_ID 3
+#define SET_CUR_VALUE 0
+
+#define Touch_Fod_Enable 10
+#define THP_FOD_DOWNUP_CTL 1001
 
 #define COMMAND_NIT 10
 #define PARAM_NIT_FOD 1
@@ -29,40 +36,68 @@
 #define PARAM_FOD_PRESSED 1
 #define PARAM_FOD_RELEASED 0
 
-#define DISP_FEATURE_PATH "/dev/mi_display/disp_feature"
+#define FOD_STATUS_OFF 0
+#define FOD_STATUS_ON 1
+
 #define TOUCH_DEV_PATH "/dev/xiaomi-touch"
+#define TOUCH_MAGIC 0x54
+
+#define DISP_FEATURE_PATH "/dev/mi_display/disp_feature"
+
+#define FOD_PRESS_STATUS_PATH "/sys/class/touch/touch_dev/fod_press_status"
+
+typedef struct {
+    int8_t touch_id;
+    uint8_t cmd;
+    uint16_t mode;
+    uint16_t data_len;
+    int32_t data_buf[CMD_DATA_BUF_SIZE];
+} touch_base;
+
+#define TOUCH_IOC_SELECT_TOUCH_ID _IOW(TOUCH_MAGIC, SELECT_TOUCH_ID, int)
+#define TOUCH_IOC_COMMON_DATA _IOW(TOUCH_MAGIC, COMMON_DATA_CMD, touch_base)
 
 using ::aidl::android::hardware::biometrics::fingerprint::AcquiredInfo;
 
 namespace {
 
-static std::shared_ptr<disp_event_resp> parseDispEvent(int fd) {
-    // mi_disp hands out whole events, like DRM: a read() into a buffer smaller
-    // than the pending event returns 0 and leaves it queued, so poll() keeps
-    // waking up. Read the header and data in one go.
-    char buf[1024];
-    ssize_t size = read(fd, buf, sizeof(buf));
-    if (size < static_cast<ssize_t>(sizeof(disp_event))) {
-        LOG(ERROR) << "unexpected display event size: " << size;
+static bool readBool(int fd) {
+    char c;
+    int rc;
+
+    rc = lseek(fd, 0, SEEK_SET);
+    if (rc) {
+        LOG(ERROR) << "failed to seek fd, err: " << rc;
+        return false;
+    }
+
+    rc = read(fd, &c, sizeof(char));
+    if (rc != 1) {
+        LOG(ERROR) << "failed to read bool from fd, err: " << rc;
+        return false;
+    }
+
+    return c != '0';
+}
+
+static disp_event_resp* parseDispEvent(int fd) {
+    static char event_data[1024] = {0};
+    ssize_t size;
+
+    memset(event_data, 0x0, sizeof(event_data));
+    size = read(fd, event_data, sizeof(event_data));
+    if (size < 0) {
+        LOG(ERROR) << "read fod event failed";
         return nullptr;
     }
 
-    disp_event header;
-    memcpy(&header, buf, sizeof(header));
-    if (header.length < sizeof(header) || header.length > size) {
-        LOG(ERROR) << "invalid display event length: " << header.length << ", read: " << size;
+    if (size < sizeof(struct disp_event)) {
+        LOG(ERROR) << "Invalid event size " << size << ", expect at least "
+                   << sizeof(struct disp_event);
         return nullptr;
     }
 
-    std::shared_ptr<disp_event_resp> response(static_cast<disp_event_resp*>(malloc(header.length)),
-                                              free);
-    if (!response) {
-        LOG(ERROR) << "failed to allocate memory for display event response";
-        return nullptr;
-    }
-    memcpy(response.get(), buf, header.length);
-
-    return response;
+    return (struct disp_event_resp*)&event_data[0];
 }
 
 struct disp_base displayBasePrimary = {
@@ -70,7 +105,7 @@ struct disp_base displayBasePrimary = {
         .disp_id = MI_DISP_PRIMARY,
 };
 
-common_data_t touchDataPrimary = {
+touch_base touchDataPrimary = {
         .touch_id = MI_DISP_PRIMARY,
         .cmd = SET_CUR_VALUE,
         .mode = 0,
@@ -87,7 +122,40 @@ class XiaomiOnyxUdfpsHandler : public UdfpsHandler {
         touch_fd_ = android::base::unique_fd(open(TOUCH_DEV_PATH, O_RDWR));
         disp_fd_ = android::base::unique_fd(open(DISP_FEATURE_PATH, O_RDWR));
 
-        ioctl(touch_fd_.get(), TOUCH_IOC_SELECT_TOUCH_ID, MI_DISP_PRIMARY);
+        // Thread to notify fingeprint hwmodule about fod presses
+        std::thread([this]() {
+            int fd = open(FOD_PRESS_STATUS_PATH, O_RDONLY);
+            if (fd < 0) {
+                LOG(ERROR) << "failed to open " << FOD_PRESS_STATUS_PATH << " , err: " << fd;
+                return;
+            }
+
+            struct pollfd fodPressStatusPoll = {
+                    .fd = fd,
+                    .events = POLLERR | POLLPRI,
+                    .revents = 0,
+            };
+
+            while (true) {
+                int rc = poll(&fodPressStatusPoll, 1, -1);
+                if (rc < 0) {
+                    LOG(ERROR) << "failed to poll " << FOD_PRESS_STATUS_PATH << ", err: " << rc;
+                    continue;
+                }
+
+                bool pressed = readBool(fd);
+                mDevice->extCmd(mDevice, COMMAND_FOD_PRESS_STATUS,
+                                pressed ? PARAM_FOD_PRESSED : PARAM_FOD_RELEASED);
+
+                // Request HBM
+                struct disp_local_hbm_req displayLhbmRequest = {
+                        .base = displayBasePrimary,
+                        .local_hbm_value = pressed ? LHBM_TARGET_BRIGHTNESS_WHITE_1000NIT
+                                              : LHBM_TARGET_BRIGHTNESS_OFF_FINGER_UP,
+                };
+                ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &displayLhbmRequest);
+            }
+        }).detach();
 
         // Thread to listen for fod ui changes
         std::thread([this]() {
@@ -120,8 +188,8 @@ class XiaomiOnyxUdfpsHandler : public UdfpsHandler {
                     continue;
                 }
 
-                std::shared_ptr<disp_event_resp> response = parseDispEvent(fd.get());
-                if (!response) {
+                struct disp_event_resp* response = parseDispEvent(fd);
+                if (response == nullptr) {
                     continue;
                 }
 
@@ -142,38 +210,15 @@ class XiaomiOnyxUdfpsHandler : public UdfpsHandler {
     }
 
     void onFingerDown(uint32_t /*x*/, uint32_t /*y*/, float /*minor*/, float /*major*/) {
-        if (mAuthSuccess) return;
         LOG(INFO) << __func__;
-        mDevice->extCmd(mDevice, COMMAND_FOD_PRESS_STATUS, PARAM_FOD_PRESSED);
-
-        common_data_t data = touchDataPrimary;
-        data.mode = THP_FOD_DOWNUP_CTL;
-        data.data_buf[0] = 1;
-        ioctl(touch_fd_.get(), TOUCH_IOC_COMMON_DATA, &data);
-
-        // Request HBM
-        struct disp_local_hbm_req displayLhbmRequest = {
-                .base = displayBasePrimary,
-                .local_hbm_value = LHBM_TARGET_BRIGHTNESS_WHITE_1000NIT,
-        };
-        ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &displayLhbmRequest);
+        // Ensure touchscreen is aware of the press state, ideally this is not needed
+        setFingerDown(true);
     }
 
     void onFingerUp() {
         LOG(INFO) << __func__;
-        mDevice->extCmd(mDevice, COMMAND_FOD_PRESS_STATUS, PARAM_FOD_RELEASED);
-
-        common_data_t data = touchDataPrimary;
-        data.mode = THP_FOD_DOWNUP_CTL;
-        data.data_buf[0] = 0;
-        ioctl(touch_fd_.get(), TOUCH_IOC_COMMON_DATA, &data);
-
-        // Disable HBM
-        struct disp_local_hbm_req displayLhbmRequest = {
-                .base = displayBasePrimary,
-                .local_hbm_value = LHBM_TARGET_BRIGHTNESS_OFF_FINGER_UP,
-        };
-        ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &displayLhbmRequest);
+        // Ensure touchscreen is aware of the press state, ideally this is not needed
+        setFingerDown(false);
     }
 
     void onAcquired(int32_t result, int32_t vendorCode) {
@@ -189,34 +234,54 @@ class XiaomiOnyxUdfpsHandler : public UdfpsHandler {
             case AcquiredInfo::TOO_BRIGHT:
             case AcquiredInfo::IMMOBILE:
             case AcquiredInfo::LIFT_TOO_SOON:
-                onFingerUp();
-                break;
+                {
+                    struct disp_local_hbm_req displayLhbmRequest = {
+                        .base = displayBasePrimary,
+                        .local_hbm_value = LHBM_TARGET_BRIGHTNESS_OFF_FINGER_UP,
+                    };
+                    ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &displayLhbmRequest);
+                    break;
+                }
             default:
                 break;
+        }
+
+        /* vendorCode
+         * 21: waiting for finger
+         * 22: finger down
+         * 23: finger up
+         */
+        if (vendorCode == 21) {
+            setFodStatus(FOD_STATUS_ON);
         }
     }
 
     void cancel() {
         LOG(INFO) << __func__;
-        onFingerUp();
     }
-
-    void onAuthenticationSucceeded() {
-        mAuthSuccess = true;
-        onFingerUp();
-        std::thread([this]() {
-            std::this_thread::sleep_for(std::chrono::milliseconds(500));
-            mAuthSuccess = false;
-        }).detach();
-    }
-
-    void onAuthenticationFailed() { onFingerUp(); }
 
   private:
     fingerprint_device_t* mDevice;
     android::base::unique_fd touch_fd_;
     android::base::unique_fd disp_fd_;
-    bool mAuthSuccess = false;
+
+    void setFodStatus(int value) {
+        ioctl(touch_fd_.get(), TOUCH_IOC_SELECT_TOUCH_ID, MI_DISP_PRIMARY);
+        touch_base data = {
+            .mode = Touch_Fod_Enable,
+            .data_buf = {value},
+        };
+        ioctl(touch_fd_.get(), TOUCH_IOC_COMMON_DATA, &data);
+    }
+
+    void setFingerDown(bool pressed) {
+        ioctl(touch_fd_.get(), TOUCH_IOC_SELECT_TOUCH_ID, MI_DISP_PRIMARY);
+        touch_base data = {
+            .mode = THP_FOD_DOWNUP_CTL,
+            .data_buf = {pressed ? 1 : 0},
+        };
+        ioctl(touch_fd_.get(), TOUCH_IOC_COMMON_DATA, &data);
+    }
 };
 
 static UdfpsHandler* create() {
