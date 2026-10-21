@@ -121,3 +121,22 @@ on boot
     chown system system /sys/class/xm_power/charger/smart_charge/smart_night
     chmod 0660 /sys/class/xm_power/charger/smart_charge/smart_night
 
+# init.qti.kernel.sh starts msm_irqbalance whenever the binary exists. Stock
+# doesn't ship it on sun and it exits right away, so don't restart it forever.
+service vendor.msm_irqbalance /vendor/bin/msm_irqbalance -f /system/vendor/etc/msm_irqbalance.conf
+    override
+    class core
+    user root
+    group root
+    disabled
+    oneshot
+
+# The HIDL qccsyshal can't register without hwservicemanager and crash loops.
+# The AIDL qccsyshal_aidl-service provides the HAL.
+service qccsyshal@1.2-service /system_ext/bin/qccsyshal@1.2-service
+    override
+    class hal
+    user system
+    group system
+    disabled
+    oneshot
