@@ -2,6 +2,6 @@ binder_call(system_server, hal_touchfeature_xiaomi_default)
 
 allow system_server hal_touchfeature_xiaomi_default:process signal;
 
-# SnapdragonServices
-allow system_server vendor_hal_snapx_service:service_manager find;
-binder_call(system_server, vendor_hal_snapx_default)
+# SnapdragonServices (system_server access is neverallowed by QCOM)
+dontaudit system_server vendor_hal_snapx_service:service_manager find;
+dontaudit system_server vendor_hal_snapx_default:binder call;
