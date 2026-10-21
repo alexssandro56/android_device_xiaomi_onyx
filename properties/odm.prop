@@ -1,5 +1,6 @@
 # Audio
 media.stagefright.audio.deep=true
+persist.vendor.audio.effectimplenter=dolby
 persist.vendor.audio.fpsop.game.effect.speaker=false
 persist.vendor.audio.fpsop.game.effect.switch=true
 persist.vendor.audio.fpsop.game.effect=true

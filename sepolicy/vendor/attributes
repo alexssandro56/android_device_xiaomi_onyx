@@ -34,3 +34,8 @@ attribute hal_micharge_client;
 attribute hal_touchfeature_xiaomi;
 attribute hal_touchfeature_xiaomi_client;
 attribute hal_touchfeature_xiaomi_server;
+
+# Dolby
+attribute hal_aidl_dms;
+attribute hal_aidl_dms_client;
+attribute hal_aidl_dms_server;

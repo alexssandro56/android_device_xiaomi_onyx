@@ -429,12 +429,15 @@ blob_fixups: blob_fixups_user_type = {
         'vendor/lib64/soundfx/libbundleaidl.so',
         'vendor/lib64/soundfx/libdlbvolaidl.so',
         'vendor/lib64/soundfx/libhwdapaidl.so',
+        'vendor/lib64/libswspatializeraidl_ext.so',
         'vendor/lib64/soundfx/libmiwndnsprocessingaidl.so',
-        'vendor/lib64/soundfx/libswgamedapaidl.so'
+        'vendor/lib64/soundfx/libswgamedapaidl.so',
+        'vendor/lib64/soundfx/libswspatializeraidl.so'
     ): blob_fixup()
         .replace_needed('android.hardware.audio.effect-V3-ndk.so', 'android.hardware.audio.effect-V2-ndk.so')
         .replace_needed('android.media.audio.common.types-V2-ndk.so', 'android.media.audio.common.types-V3-ndk.so')
         .replace_needed('android.media.audio.common.types-V4-ndk.so', 'android.media.audio.common.types-V3-ndk.so')
+        .replace_needed('android.media.audio.common.types-V6-ndk.so', 'android.media.audio.common.types-V3-ndk.so')
         .replace_needed('libaudio_aidl_conversion_common_ndk.so', 'libaudio_aidl_conversion_common_ndk_onyx.so')
         .replace_needed('libbluetooth_audio_session_aidl.so', 'libbluetooth_audio_session_aidl_onyx.so'),
 

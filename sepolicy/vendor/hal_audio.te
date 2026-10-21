@@ -19,3 +19,6 @@ allow hal_audio_default hal_mediaeventgatherservice_service:service_manager find
 allow hal_audio_default hal_micharge_service:service_manager find;
 
 set_prop(hal_audio_default, vendor_audio_prop)
+
+# Dolby
+hal_client_domain(hal_audio_default, hal_aidl_dms)
