@@ -4,8 +4,16 @@
         <fqname>IGatekeeper/default</fqname>
     </hal>
     <hal format="aidl">
+        <name>android.hardware.media.c2</name>
+        <fqname>IComponentStore/default9</fqname>
+    </hal>
+    <hal format="aidl">
         <name>android.hardware.secure_element</name>
         <fqname>ISecureElement/eSE1</fqname>
+    </hal>
+    <hal format="aidl">
+        <name>vendor.dolby.dms</name>
+        <fqname>IDms/default</fqname>
     </hal>
     <hal format="aidl">
         <name>vendor.xiaomi.hardware.fx.tunnel</name>
