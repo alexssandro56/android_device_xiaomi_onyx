@@ -32,13 +32,12 @@ PRODUCT_SYSTEM_SERVER_DEBUG_INFO := false
 # A/B
 $(call inherit-product, $(SRC_TARGET_DIR)/product/virtual_ab_ota/vabc_features.mk)
 PRODUCT_VIRTUAL_AB_COMPRESSION_METHOD := lz4
-PRODUCT_RO_FILE_SYSTEM := erofs
 PRODUCT_VENDOR_PROPERTIES += ro.virtual_ab.compression.threads=true
 
 AB_OTA_POSTINSTALL_CONFIG += \
     RUN_POSTINSTALL_system=true \
     POSTINSTALL_PATH_system=system/bin/otapreopt_script \
-    FILESYSTEM_TYPE_system=erofs \
+    FILESYSTEM_TYPE_system=ext4 \
     POSTINSTALL_OPTIONAL_system=true
 
 AB_OTA_POSTINSTALL_CONFIG += \
