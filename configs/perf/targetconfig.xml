@@ -60,4 +60,27 @@
 
     </Config1>
 
+    <!-- tuna (SM8735) shares the sun BSP, so keep Target="sun" for the other
+         perf configs, but it has pineapple's 2+3+2+1 cluster layout. -->
+    <Config2>
+
+         <TargetInfo
+             Target="sun"
+             NumClusters="4"
+             TotalNumCores="8"
+             SocIds="655,681,694"
+             SynCore="1"
+             CoreCtlCpu="4"
+             MinCoreOnline="0"
+             CpufreqGov="1"
+             TargetMaxArgsPerReq="64"
+        />
+
+         <ClustersInfo Id="0" NumCores="2" Type="little" />
+         <ClustersInfo Id="1" NumCores="3" Type="big" />
+         <ClustersInfo Id="2" NumCores="2" Type="titanium" />
+         <ClustersInfo Id="3" NumCores="1" Type="prime" />
+
+    </Config2>
+
 </TargetConfig>

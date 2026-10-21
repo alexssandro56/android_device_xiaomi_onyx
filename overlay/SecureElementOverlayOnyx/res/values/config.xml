@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <!-- The NXP StrongBox, Weaver and AuthSecret HALs reach the eSE through
+         the vendor stable OMAPI service. -->
+    <bool name="secure_element_vintf_enabled">true</bool>
+</resources>

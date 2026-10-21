@@ -210,6 +210,7 @@ PRODUCT_SOONG_NAMESPACES += \
     hardware/nxp/weaver/generic
 
 PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/hal_uuid_map.xml:$(TARGET_COPY_OUT_VENDOR)/etc/hal_uuid_map_config.xml \
     $(LOCAL_PATH)/configs/hal_uuid_map.xml:$(TARGET_COPY_OUT_VENDOR)/etc/hal_uuid_map_onyx.xml
 
 PRODUCT_COPY_FILES += \
@@ -282,6 +283,7 @@ PRODUCT_PACKAGES += \
     FrameworkOverlayOnyxCN \
     FrameworkOverlayOnyxGL \
     NfcOverlayOnyx \
+    SecureElementOverlayOnyx \
     SettingsOverlayOnyx \
     SettingsProviderOverlayOnyx \
     SettingsProviderOverlayOnyxCN \
@@ -338,7 +340,7 @@ PRODUCT_PACKAGES += \
     workloadclassifier-power-allowlist.xml
 
 # device/qcom/common's sun perf config only lists SM8750 (618). Add SM8735
-# (639), which has the same 6+2 cluster layout, as stock does. device.mk is
+# (tuna: 655, 681, 694) with its own 2+3+2+1 cluster layout. device.mk is
 # inherited before aospa-target.mk, so this copy wins.
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/perf/targetconfig.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/targetconfig.xml
