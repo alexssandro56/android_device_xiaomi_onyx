@@ -2694,6 +2694,7 @@ vendor/bin/init.kernel.post_boot-tuna_default_2_3_2_1.sh
 vendor/bin/init.kernel.post_boot.sh;MAKE_COPY_RULE_ONLY
 vendor/bin/init.qcom.sh;MAKE_COPY_RULE_ONLY
 vendor/bin/system_dlkm_modprobe.sh;MAKE_COPY_RULE_ONLY
+vendor/bin/ufs_ffu.sh;MAKE_COPY_RULE_ONLY
 vendor/bin/vendor_modprobe.sh;MAKE_COPY_RULE_ONLY
 vendor/etc/fw_dir.ueventd.qcom.rc
 
