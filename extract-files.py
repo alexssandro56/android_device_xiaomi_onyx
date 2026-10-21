@@ -176,6 +176,8 @@ def blob_fixup_graphic_buffer_size(
 
 
 blob_fixups: blob_fixups_user_type = {
+    'vendor/etc/seccomp_policy/qesdksec.policy': blob_fixup()
+        .add_line_if_missing('lseek: 1'),
     (
         'odm/bin/hw/vendor.xiaomi.hw.touchfeature-service',
         'odm/lib64/libadaptivehdr.so',
