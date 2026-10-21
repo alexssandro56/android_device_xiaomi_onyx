@@ -102,3 +102,11 @@ service qrtr-lookup /vendor/bin/qrtr-lookup
     group system
     disabled
     oneshot
+
+# ABL only enters off-mode charging when power_off_mode in the charger partition is 1,
+# and the MCA driver resets it on every boot. Set it on shutdown like MiuiBatteryServiceImpl.
+on property:sys.shutdown.requested=0userrequested
+    write /sys/class/xm_power/charger/charger_partition/charger_partition_poweroffmode 1
+
+on property:sys.shutdown.requested=0thermal,battery
+    write /sys/class/xm_power/charger/charger_partition/charger_partition_poweroffmode 1
