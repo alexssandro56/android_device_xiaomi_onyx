@@ -11,6 +11,7 @@
 #include <android-base/unique_fd.h>
 
 #include <poll.h>
+#include <string.h>
 #include <sys/ioctl.h>
 #include <fstream>
 #include <thread>
@@ -36,10 +37,20 @@ using ::aidl::android::hardware::biometrics::fingerprint::AcquiredInfo;
 namespace {
 
 static std::shared_ptr<disp_event_resp> parseDispEvent(int fd) {
+    // mi_disp hands out whole events, like DRM: a read() into a buffer smaller
+    // than the pending event returns 0 and leaves it queued, so poll() keeps
+    // waking up. Read the header and data in one go.
+    char buf[1024];
+    ssize_t size = read(fd, buf, sizeof(buf));
+    if (size < static_cast<ssize_t>(sizeof(disp_event))) {
+        LOG(ERROR) << "unexpected display event size: " << size;
+        return nullptr;
+    }
+
     disp_event header;
-    ssize_t headerSize = read(fd, &header, sizeof(header));
-    if (headerSize < sizeof(header)) {
-        LOG(ERROR) << "unexpected display event header size: " << headerSize;
+    memcpy(&header, buf, sizeof(header));
+    if (header.length < sizeof(header) || header.length > size) {
+        LOG(ERROR) << "invalid display event length: " << header.length << ", read: " << size;
         return nullptr;
     }
 
@@ -49,19 +60,7 @@ static std::shared_ptr<disp_event_resp> parseDispEvent(int fd) {
         LOG(ERROR) << "failed to allocate memory for display event response";
         return nullptr;
     }
-    response->base = header;
-
-    int dataLength = response->base.length - sizeof(response->base);
-    if (dataLength < 0) {
-        LOG(ERROR) << "invalid data length: " << response->base.length;
-        return nullptr;
-    }
-
-    ssize_t dataSize = read(fd, &response->data, dataLength);
-    if (dataSize < dataLength) {
-        LOG(ERROR) << "unexpected display event data size: " << dataSize;
-        return nullptr;
-    }
+    memcpy(response.get(), buf, header.length);
 
     return response;
 }
