@@ -4,21 +4,17 @@
 
 on post-fs
     mkdir /metadata/bootlog 0777 root root
-    rm /metadata/bootlog/dmesg.prev.txt
-    rm /metadata/bootlog/logcat.prev.txt
-    rename /metadata/bootlog/dmesg.txt /metadata/bootlog/dmesg.prev.txt
-    rename /metadata/bootlog/logcat.txt /metadata/bootlog/logcat.prev.txt
     start onyx_bootlog_dmesg
     start onyx_bootlog_logcat
 
-service onyx_bootlog_dmesg /system/bin/sh -c "/system/bin/dmesg -w > /metadata/bootlog/dmesg.txt"
+service onyx_bootlog_dmesg /system/bin/sh -c "cd /metadata/bootlog && mv -f dmesg.txt dmesg.prev.txt; /system/bin/dmesg -w > dmesg.txt"
     user root
     group root
     seclabel u:r:su:s0
     disabled
     oneshot
 
-service onyx_bootlog_logcat /system/bin/sh -c "while true; do /system/bin/logcat -b all -v threadtime >> /metadata/bootlog/logcat.txt; sleep 1; done"
+service onyx_bootlog_logcat /system/bin/sh -c "cd /metadata/bootlog && mv -f logcat.txt logcat.prev.txt; while true; do /system/bin/logcat -b all -v threadtime >> logcat.txt; sleep 1; done"
     user root
     group root
     seclabel u:r:su:s0
