@@ -250,14 +250,9 @@ PRODUCT_PACKAGES += \
     vendor.qti.hardware.memtrack-service
 
 # NFC
-TARGET_USES_NQ_NFC := true
-TARGET_ENABLE_PERIPHERAL_CONTROL := true
-$(call inherit-product, vendor/nxp/opensource/commonsys/libnfc_vendor_extn/nfc_system_product_nxp.mk)
-$(call soong_config_set,nfc,board_secure_peripheral_framework,sun)
-
 PRODUCT_PACKAGES += \
-    android.hardware.nqnfc-service.nxp \
-    nfc_nci.nqx.default.hw
+    android.hardware.nfc-service.nxp \
+    com.android.nfc_extras
 
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.nfc.ese.xml:$(TARGET_COPY_OUT_ODM)/etc/permissions/android.hardware.nfc.ese.xml \
