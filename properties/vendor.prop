@@ -5,10 +5,8 @@ ro.vendor.audio.btsamplerate.adaptive=true
 ro.vendor.audio.dualadc.support=true
 ro.vendor.audio.gain.support=true
 ro.vendor.audio.support.sound.id=true
-vendor.audio.feature.a2dp_offload.enable=true
 
 # Bluetooth
-persist.bluetooth.a2dp_offload.cap=sbc-aac-aptx-aptxhd-ldac-lhdc-mihc
 persist.bluetooth.a2dp_offload.disabled=false
 ro.bluetooth.a2dp_offload.supported=true
 
