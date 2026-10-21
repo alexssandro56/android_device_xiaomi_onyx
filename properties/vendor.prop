@@ -58,6 +58,12 @@ vendor.display.disable_system_load_check=1
 # Incremental FS
 ro.incremental.enable=yes
 
+# Kernel modules
+# init.qti.kernel.target.rc blocks post-fs-data on this prop, which only
+# vendor_modprobe.sh sets after every vendor_dlkm module loads. Stock and
+# the Lineage onyx trees only wait for it in charger mode.
+vendor.all.modules.ready=1
+
 # Keymint
 vendor.keymint.retry_timer=5
 
