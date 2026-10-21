@@ -2309,7 +2309,7 @@ vendor/etc/init/vendor.qti.hardware.display.composer-service.rc
 vendor/etc/snapdragon_color_libs_config.xml
 vendor/etc/vintf/manifest/mapper.qti.xml
 vendor/etc/vintf/manifest/vendor.qti.hardware.display.composer-service3_v3.xml
-vendor/lib64/vendor.qti.hardware.display.composer3-V1-ndk.so;MODULE_SUFFIX=_onyx
+vendor/lib64/vendor.qti.hardware.display.composer3-V1-ndk.so:vendor/lib64/vendor.qti.hardware.display.composer3-V1-ndk_onyx.so
 vendor/lib64/hw/gralloc.default.so
 vendor/lib64/hw/mapper.qti.so
 vendor/lib64/libBlAlgointf.so

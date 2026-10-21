@@ -249,7 +249,6 @@ blob_fixups: blob_fixups_user_type = {
         'odm/lib64/camera/plugins/com.xiaomi.plugin.offlineyuvsplit.so',
         'odm/lib64/libmiXmlParser.so',
         'vendor/bin/hw/vendor.qti.camera.provider-service_64',
-        'vendor/bin/hw/vendor.qti.hardware.display.composer-service',
         'vendor/bin/poweropt-service',
         'vendor/lib64/libaodoptfeature.so',
         'vendor/lib64/libapengine.so',
@@ -269,6 +268,15 @@ blob_fixups: blob_fixups_user_type = {
             'libtinyxml2.so',
             'libtinyxml2-v34.so'
     ),
+
+    'vendor/bin/hw/vendor.qti.hardware.display.composer-service': blob_fixup()
+        .replace_needed('libtinyxml2.so', 'libtinyxml2-v34.so')
+        .replace_needed(
+            'vendor.qti.hardware.display.composer3-V1-ndk.so',
+            'vendor.qti.hardware.display.composer3-V1-ndk_onyx.so'
+    ),
+    'vendor/lib64/vendor.qti.hardware.display.composer3-V1-ndk_onyx.so': blob_fixup()
+        .fix_soname(),
 
     'odm/lib64/camera/plugins/com.xiaomi.plugin.beautydeformation.so': blob_fixup()
         .call(
