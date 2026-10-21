@@ -32,3 +32,10 @@ prebuilt_etc {
     sub_dir: "init",
     system_ext_specific: true,
 }
+
+prebuilt_etc {
+    name: "init.onyx.overrides.rc",
+    src: "init.onyx.overrides.rc",
+    sub_dir: "init",
+    product_specific: true,
+}

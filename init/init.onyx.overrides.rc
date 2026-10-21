@@ -1,0 +1,11 @@
+# The HIDL qccsyshal can't register without hwservicemanager and crash loops.
+# The AIDL qccsyshal_aidl-service provides the HAL. A vendor rc can't define a
+# service that runs a system_ext binary, so override it from product, which
+# init parses after system_ext.
+service qccsyshal@1.2-service /system_ext/bin/qccsyshal@1.2-service
+    override
+    class hal
+    user system
+    group system
+    disabled
+    oneshot

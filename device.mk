@@ -165,6 +165,7 @@ PRODUCT_PACKAGES += \
     fstab.qcom \
     fstab.qcom.vendor_ramdisk \
     init.target.rc \
+    init.onyx.overrides.rc \
     init.xiaomi.rc \
     ueventd.xiaomi.rc
 

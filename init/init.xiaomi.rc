@@ -131,16 +131,6 @@ service vendor.msm_irqbalance /vendor/bin/msm_irqbalance -f /system/vendor/etc/m
     disabled
     oneshot
 
-# The HIDL qccsyshal can't register without hwservicemanager and crash loops.
-# The AIDL qccsyshal_aidl-service provides the HAL.
-service qccsyshal@1.2-service /system_ext/bin/qccsyshal@1.2-service
-    override
-    class hal
-    user system
-    group system
-    disabled
-    oneshot
-
 # The odm touchfeature rc runs /odm/etc/tp_kmsg_init.sh, a touch debug log
 # script that isn't in the proprietary files. vendor rc files are parsed
 # first, so this definition replaces it.
