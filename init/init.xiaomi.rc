@@ -140,3 +140,12 @@ service qccsyshal@1.2-service /system_ext/bin/qccsyshal@1.2-service
     group system
     disabled
     oneshot
+
+# The odm touchfeature rc runs /odm/etc/tp_kmsg_init.sh, a touch debug log
+# script that isn't in the proprietary files. vendor rc files are parsed
+# first, so this definition replaces it.
+service touch-kmsg-init-sh /system/vendor/bin/sh /odm/etc/tp_kmsg_init.sh
+    class main
+    group root system
+    disabled
+    oneshot
