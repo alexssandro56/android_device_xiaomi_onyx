@@ -1,0 +1,30 @@
+From 710ea5733e0e8ea7f728a8b10b2eca8469eadcdd Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 21 Oct 2026 21:20:38 +0000
+Subject: [PATCH] thermal: Use quiet_therm as the tuna skin sensor
+
+Xiaomi onyx (SM8735) has no sys-therm-3 thermal zone, so the HAL drops
+the skin sensor and the framework gets no temperature thresholds.
+quiet_therm is the skin sensor Xiaomi uses on this board.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+---
+ thermalConfig.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/thermalConfig.cpp b/thermalConfig.cpp
+index 62a2959..63abbff 100644
+--- a/thermalConfig.cpp
++++ b/thermalConfig.cpp
+@@ -2487,7 +2487,7 @@ namespace thermal {
+ 	std::vector<struct target_therm_cfg> tuna_specific = {
+ 		{
+ 			TemperatureType::SKIN,
+-			{ "sys-therm-3" },
++			{ "quiet_therm" },
+ 			"skin",
+ 			{
+ 			[LIGHT] = 48000,
+-- 
+2.43.0
+
