@@ -4,8 +4,14 @@
      SPDX-License-Identifier: Apache-2.0
 -->
 <resources>
+    <!-- Keep the clock and the system icons clear of the 156px rounded corners -->
+    <dimen name="rounded_corner_content_padding">44px</dimen>
+
     <!-- the padding on the start of the statusbar -->
-    <dimen name="status_bar_padding_start">34px</dimen>
+    <dimen name="status_bar_padding_start">12px</dimen>
+
+    <!-- the padding on the end of the statusbar -->
+    <dimen name="status_bar_padding_end">12px</dimen>
 
     <dimen name="keyguard_indication_margin_bottom">130dp</dimen>
 
