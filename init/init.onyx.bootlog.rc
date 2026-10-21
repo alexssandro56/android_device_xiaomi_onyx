@@ -20,3 +20,24 @@ service onyx_bootlog_logcat /system/bin/sh -c "cd /metadata/bootlog && mv -f log
     seclabel u:r:su:s0
     disabled
     oneshot
+
+# Off-mode charging never reaches post-fs. Keep its logs in separate files,
+# so booting to Android afterwards doesn't rotate them away.
+on charger
+    mkdir /metadata/bootlog 0777 root root
+    start onyx_chglog_dmesg
+    start onyx_chglog_logcat
+
+service onyx_chglog_dmesg /system/bin/sh -c "cd /metadata/bootlog && /system/bin/dmesg -w > charger_dmesg.txt"
+    user root
+    group root
+    seclabel u:r:su:s0
+    disabled
+    oneshot
+
+service onyx_chglog_logcat /system/bin/sh -c "cd /metadata/bootlog && while true; do /system/bin/logcat -b all -v threadtime >> charger_logcat.txt; sleep 1; done"
+    user root
+    group root
+    seclabel u:r:su:s0
+    disabled
+    oneshot
