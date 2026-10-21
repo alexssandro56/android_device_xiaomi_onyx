@@ -118,8 +118,6 @@ ro.vendor.touch.touchscheduler.enable=true
 import /odm/etc/odm_${ro.boot.hwc}.prop
 
 # Display (from the chrisl7 onyx tree)
-ro.surface_flinger.set_display_power_timer_ms=1000
-ro.surface_flinger.set_idle_timer_ms=80
 ro.surface_flinger.set_touch_timer_ms=200
 ro.surface_flinger.use_content_detection_for_refresh_rate=true
 ro.vendor.display.type=oled
