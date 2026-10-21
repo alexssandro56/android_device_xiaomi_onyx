@@ -98,20 +98,20 @@ PRODUCT_PACKAGES += \
 
 # Dalvik
 PRODUCT_VENDOR_PROPERTIES += \
-    dalvik.vm.heapstartsize?=24m \
-    dalvik.vm.heapgrowthlimit?=512m \
-    dalvik.vm.heapsize?=512m \
-    dalvik.vm.heaptargetutilization?=0.5 \
-    dalvik.vm.heapminfree?=8m \
-    dalvik.vm.heapmaxfree?=96m \
-    dalvik.vm.enable_time_based_gc_trigger?=true \
-    dalvik.vm.jitmaxsize?=256m \
-    dalvik.vm.jitinitialsize?=32m \
-    dalvik.vm.parallel-image-loading?=true \
-    dalvik.vm.madvise.vdexfile.size?=209715200 \
-    dalvik.vm.madvise.odexfile.size?=209715200 \
-    dalvik.vm.usap_pool_enabled?=true \
-    dalvik.vm.usap_pool_size_max?=5
+    dalvik.vm.heapstartsize=24m \
+    dalvik.vm.heapgrowthlimit=512m \
+    dalvik.vm.heapsize=512m \
+    dalvik.vm.heaptargetutilization=0.5 \
+    dalvik.vm.heapminfree=8m \
+    dalvik.vm.heapmaxfree=96m \
+    dalvik.vm.enable_time_based_gc_trigger=true \
+    dalvik.vm.jitmaxsize=256m \
+    dalvik.vm.jitinitialsize=32m \
+    dalvik.vm.parallel-image-loading=true \
+    dalvik.vm.madvise.vdexfile.size=209715200 \
+    dalvik.vm.madvise.odexfile.size=209715200 \
+    dalvik.vm.usap_pool_enabled=true \
+    dalvik.vm.usap_pool_size_max=5
 
 # Enable whole-program R8 Java optimizations for SystemUI and system_server,
 # but also allow explicit overriding for testing and development.
