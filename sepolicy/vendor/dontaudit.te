@@ -37,4 +37,3 @@ dontaudit gpuservice fs_bpf:file getattr;
 dontaudit untrusted_app_all { mnt_vendor_file mnt_product_file }:dir { getattr search };
 dontaudit untrusted_app_all vendor_sysfs_kgsl:file r_file_perms;
 dontaudit vendor_qrtr vendor_data_file:dir write;
-dontaudit vendor_diag-router vendor_data_file:dir write;
