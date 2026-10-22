@@ -75,6 +75,15 @@ BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_PAGESIZE := 4096
 BOARD_KERNEL_IMAGE_NAME := Image
 
+BOARD_USES_QCOM_MERGE_DTBS_SCRIPT := true
+
+TARGET_KERNEL_SOURCE := kernel/xiaomi/onyx
+TARGET_KERNEL_CONFIG := \
+    gki_defconfig \
+    vendor/custom.config \
+    vendor/sun_perf.config \
+    vendor/onyx_perf.config
+
 BOARD_BOOT_HEADER_VERSION := 4
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
 
@@ -109,19 +118,56 @@ BOARD_BOOTCONFIG := \
     androidboot.vendor.qspa=true
 
 # Kernel modules
-# Don't load mem-offline, as the other onyx trees do since the
-# OS3.0.303.0 kernel. The module stays installed. The lists come from
-# kernel-platform.mk, which the product config includes before this file.
-# Only filter lists that are already set, so a different include order
-# leaves them alone instead of emptying them.
-ifneq ($(BOARD_VENDOR_KERNEL_MODULES),)
-BOARD_VENDOR_KERNEL_MODULES_LOAD := \
-    $(filter-out %/mem-offline.ko,$(BOARD_VENDOR_KERNEL_MODULES))
-endif
-ifneq ($(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD),)
-BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := \
-    $(filter-out %/mem-offline.ko,$(BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD))
-endif
+first_stage_modules := $(strip $(shell sed 's/#.*$$//;/^$$/d' $(TARGET_KERNEL_SOURCE)/modules.list.msm.sun $(DEVICE_PATH)/modules/modules.list.first_stage))
+second_stage_modules := $(strip $(shell cat $(DEVICE_PATH)/modules/modules.list.second_stage))
+vendor_dlkm_modules := $(strip $(shell cat $(DEVICE_PATH)/modules/modules.list.vendor_dlkm))
+
+bzl-modules = $(shell sed -n '$(foreach b,$(1),/^$(b)/,/^]/p;)' $(TARGET_KERNEL_SOURCE)/modules.bzl | sed -n 's,^[[:space:]]*".*/\([^"]*\)".*,\1,p')
+gki_modules := $(strip $(call bzl-modules,_COMMON_GKI _ARM64_GKI))
+kunit_modules := $(strip $(call bzl-modules,_KUNIT_FRAMEWORK _KUNIT_COMMON _KUNIT_CLK))
+
+BOARD_SYSTEM_KERNEL_MODULES_LOAD := $(gki_modules)
+BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := $(TARGET_KERNEL_SOURCE)/modules.vendor_blocklist.msm.sun
+BOARD_VENDOR_KERNEL_MODULES_LOAD := $(second_stage_modules) $(vendor_dlkm_modules)
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES_BLOCKLIST_FILE := $(BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE)
+BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(first_stage_modules)
+BOARD_VENDOR_RAMDISK_RECOVERY_KERNEL_MODULES_LOAD := $(first_stage_modules) $(second_stage_modules)
+
+BOOT_KERNEL_MODULES := $(first_stage_modules) $(second_stage_modules)
+SYSTEM_KERNEL_MODULES := $(gki_modules) $(kunit_modules)
+
+TARGET_KERNEL_EXT_MODULE_ROOT := kernel/xiaomi/onyx-modules
+TARGET_KERNEL_EXT_MODULES := \
+    qcom/opensource/mmrm-driver \
+    qcom/opensource/mm-drivers/hw_fence \
+    qcom/opensource/mm-drivers/msm_ext_display \
+    qcom/opensource/mm-drivers/sync_fence \
+    qcom/opensource/audio-kernel \
+    qcom/opensource/securemsm-kernel \
+    qcom/opensource/synx-kernel \
+    qcom/opensource/camera-kernel \
+    qcom/opensource/data-kernel/drivers/smem-mailbox \
+    qcom/opensource/datarmnet-ext/mem \
+    qcom/opensource/dataipa/drivers/platform/msm \
+    qcom/opensource/datarmnet/core \
+    qcom/opensource/datarmnet-ext/aps \
+    qcom/opensource/datarmnet-ext/offload \
+    qcom/opensource/datarmnet-ext/perf \
+    qcom/opensource/datarmnet-ext/perf_tether \
+    qcom/opensource/datarmnet-ext/sch \
+    qcom/opensource/datarmnet-ext/shs \
+    qcom/opensource/datarmnet-ext/wlan \
+    qcom/opensource/display-drivers/msm \
+    qcom/opensource/dsp-kernel \
+    qcom/opensource/eva-kernel \
+    qcom/opensource/graphics-kernel \
+    qcom/opensource/spu-kernel \
+    qcom/opensource/touch-drivers \
+    qcom/opensource/video-driver \
+    qcom/opensource/wlan/platform \
+    qcom/opensource/wlan/qcacld-3.0/.wcn7750 \
+    qcom/opensource/bt-kernel \
+    nxp/opensource/driver
 
 # Partitions
 BOARD_BOOTIMAGE_PARTITION_SIZE := 100663296

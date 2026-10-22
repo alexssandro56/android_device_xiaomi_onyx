@@ -1,0 +1,48 @@
+//
+// SPDX-FileCopyrightText: Paranoid Android
+// SPDX-License-Identifier: Apache-2.0
+//
+
+// The vendor HALs look for the header libraries the prebuilt kernel used to
+// ship. Assemble them from the kernel and the techpack headers built from
+// source instead.
+
+cc_library_headers {
+    name: "qti_kernel_headers",
+    vendor: true,
+    recovery_available: true,
+    header_libs: [
+        "generated_kernel_headers",
+        "qti_audio_kernel_uapi",
+        "qti_display_kernel_headers",
+        "qti_ipa_kernel_headers",
+    ],
+    export_header_lib_headers: [
+        "generated_kernel_headers",
+        "qti_audio_kernel_uapi",
+        "qti_display_kernel_headers",
+        "qti_ipa_kernel_headers",
+    ],
+}
+
+cc_library_headers {
+    name: "audio_kernel_headers",
+    vendor: true,
+    recovery_available: true,
+    header_libs: [
+        "generated_kernel_headers",
+        "qti_audio_kernel_uapi",
+    ],
+    export_header_lib_headers: [
+        "generated_kernel_headers",
+        "qti_audio_kernel_uapi",
+    ],
+}
+
+cc_library_headers {
+    name: "libubwcp_headers",
+    vendor: true,
+    recovery_available: true,
+    header_libs: ["qti_ubwcp_kernel_headers"],
+    export_header_lib_headers: ["qti_ubwcp_kernel_headers"],
+}

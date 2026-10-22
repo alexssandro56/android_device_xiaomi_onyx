@@ -241,7 +241,13 @@ $(call soong_config_set,lineage_health,charging_control_charging_disabled,$(TARG
 $(call soong_config_set_bool,lineage_health,charging_control_supports_bypass,$(TARGET_HEALTH_CHARGING_CONTROL_SUPPORTS_BYPASS))
 
 # Kernel
-KERNEL_PREBUILT_DIR := device/xiaomi/onyx-kernel
+# Built from source (TARGET_KERNEL_SOURCE), so skip device/qcom/common's
+# prebuilt kernel platform.
+TARGET_USES_KERNEL_PLATFORM := false
+
+PRODUCT_SOONG_NAMESPACES += \
+    kernel/xiaomi/onyx \
+    kernel/xiaomi/onyx-modules
 
 PRODUCT_ENABLE_UFFD_GC := true
 
