@@ -355,7 +355,10 @@ PRODUCT_PACKAGES += \
 
 # The touch driver reports a double tap by notifying gesture_double_tap_state
 # rather than sending a key, so double tap to wake needs the sensor to poll it.
+# It only applies gestures when the panel suspends, before doze registers the
+# sensor, so XiaomiParts keeps the gesture armed instead of the sensor.
 $(call soong_config_set_bool,SENSORS_XIAOMI,USES_DOUBLE_TAP_SENSOR,true)
+$(call soong_config_set_bool,SENSORS_XIAOMI,DOUBLE_TAP_SENSOR_SKIP_ENABLE,true)
 $(call soong_config_set_bool,SENSORS_XIAOMI,USES_UDFPS_SENSOR,true)
 
 PRODUCT_COPY_FILES += \
