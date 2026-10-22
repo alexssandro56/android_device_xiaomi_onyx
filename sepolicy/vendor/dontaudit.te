@@ -8,7 +8,6 @@ dontaudit {
 dontaudit appdomain {
   vendor_hal_perf2_service
   vendor_hal_qspmhal_service
-  vendor_perf_service
 }:service_manager find;
 dontaudit priv_app {
   vendor_hal_perf_default
@@ -28,7 +27,6 @@ dontaudit { bootanim surfaceflinger system_server } vendor_displayfeature_prop:f
 
 # Optional lookups and probes that work without the access
 dontaudit platform_app default_android_service:service_manager find;
-dontaudit platform_app bluetooth_lea_prop:file r_file_perms;
 dontaudit system_server vendor_default_prop:file r_file_perms;
 # CachedAppOptimizer freezes binder on every binder device, vndbinder included
 dontaudit system_server vndbinder_device:chr_file write;
