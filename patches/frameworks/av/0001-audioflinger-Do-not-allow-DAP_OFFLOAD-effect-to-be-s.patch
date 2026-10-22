@@ -1,0 +1,45 @@
+From 5ec23681051cf442632073add33f1d49decb5eff Mon Sep 17 00:00:00 2001
+From: unmoved21 <unmoved2121@gmail.com>
+Date: Thu, 22 Oct 2026 09:06:02 +0000
+Subject: [PATCH] audioflinger: Do not allow DAP_OFFLOAD effect to be suspended
+
+Dolby Atmos offload (type fa81dbde-588b-11ed-9b6a-0242ac120002) is
+treated like the other Dolby effects: never suspended on the output mix.
+
+Change-Id: I451f39686e7a505c8040e1ca04bc874d550881ec
+
+[Alex: Adapted to AOSPA, which has no DAP_SW or ViperFx entries]
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QY97AsgNLyAwQpzrsxC9zt
+---
+ services/audioflinger/Effects.cpp | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/services/audioflinger/Effects.cpp b/services/audioflinger/Effects.cpp
+index 3bc0de7..4a58fa9 100644
+--- a/services/audioflinger/Effects.cpp
++++ b/services/audioflinger/Effects.cpp
+@@ -2978,6 +2978,11 @@ static const effect_uuid_t SL_IID_DAP_ = { 0x46d279d9, 0x9be7, 0x453d, 0x9d7c,
+                                          { 0xef, 0x93, 0x7f, 0x67, 0x55, 0x87 } };
+ const effect_uuid_t * const SL_IID_DAP = &SL_IID_DAP_;
+ 
++// Dolby Atmos offload
++static const effect_uuid_t SL_IID_DAP_OFFLOAD_ = { 0xfa81dbde, 0x588b, 0x11ed, 0x9b6a,
++                                                 { 0x02, 0x42, 0xac, 0x12, 0x00, 0x02 } };
++const effect_uuid_t * const SL_IID_DAP_OFFLOAD = &SL_IID_DAP_OFFLOAD_;
++
+ // Dirac
+ static const effect_uuid_t SL_IID_DIRAC_ = { 0xec7178ec, 0xe5e1, 0x4432, 0xa3f4,
+                                            { 0x46, 0x57, 0xe6, 0x79, 0x52, 0x10 } };
+@@ -3003,6 +3008,7 @@ bool EffectChain::isEffectEligibleForSuspend(const effect_descriptor_t& desc)
+           (memcmp(&desc.type, SL_IID_VISUALIZATION, sizeof(effect_uuid_t)) == 0) ||
+           (memcmp(&desc.type, SL_IID_VOLUME, sizeof(effect_uuid_t)) == 0) ||
+           (memcmp(&desc.type, SL_IID_DAP, sizeof(effect_uuid_t)) == 0) ||
++          (memcmp(&desc.type, SL_IID_DAP_OFFLOAD, sizeof(effect_uuid_t)) == 0) ||
+           (memcmp(&desc.type, SL_IID_DIRAC, sizeof(effect_uuid_t)) == 0) ||
+           (memcmp(&desc.type, SL_IID_DYNAMICSPROCESSING, sizeof(effect_uuid_t)) == 0)))) {
+         return false;
+-- 
+2.43.0
+
