@@ -120,6 +120,9 @@ import /odm/etc/odm_${ro.boot.hwc}.prop
 
 # Display (from the chrisl7 onyx tree)
 ro.surface_flinger.set_touch_timer_ms=200
-ro.surface_flinger.use_content_detection_for_refresh_rate=true
+# Every 120<->60Hz switch makes the panel driver swap gamma tables, which flashes for a
+# frame. Content detection toggles the rate on every 60fps layer, so only switch on
+# touch and idle.
+ro.surface_flinger.use_content_detection_for_refresh_rate=false
 ro.vendor.display.type=oled
 sys.displayfeature.entry.enable=true
