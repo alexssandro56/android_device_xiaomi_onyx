@@ -163,4 +163,4 @@
 /dev/miev u:object_r:vendor_miev_device:s0
 
 # UFS BSG (qseecomd talks to RPMB through it)
-/dev/0:0:0:0 u:object_r:vendor_ufs_bsg_device:s0
+/dev/0:0:0:[0-9]+ u:object_r:vendor_ufs_bsg_device:s0

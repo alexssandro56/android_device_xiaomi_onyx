@@ -1,1 +1,5 @@
 allow tee vendor_ufs_bsg_device:chr_file rw_file_perms;
+
+# qseecomd reads the partition tables of the UFS LUNs it serves
+allow tee { vendor_gpt_block_device vendor_xbl_block_device }:blk_file r_file_perms;
+dontaudit tee boot_block_device:blk_file r_file_perms;

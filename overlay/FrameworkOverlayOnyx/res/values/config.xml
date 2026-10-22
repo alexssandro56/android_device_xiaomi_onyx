@@ -487,6 +487,14 @@
          fp screen off unlock-->
     <bool name="config_screen_off_udfps_default_on">true</bool>
 
+    <!-- Type of the udfps long press sensor that wakes the fingerprint unlock with the
+         screen off (sensors.xiaomi, polls fod_press_status). -->
+    <string name="config_dozeUdfpsLongPressSensorType" translatable="false">co.aospa.sensor.udfps</string>
+
+    <!-- Shows the double tap gesture toggle. There is no double tap sensor: XiaomiParts
+         arms the gesture in the touch IC, which wakes the screen by itself. -->
+    <string name="config_dozeDoubleTapSensorType" translatable="false">co.aospa.sensor.double_tap</string>
+
     <!-- Indicate available ColorDisplayManager.COLOR_MODE_xxx. -->
     <integer-array name="config_availableColorModes">
         <item>258</item> <!-- vivid -->

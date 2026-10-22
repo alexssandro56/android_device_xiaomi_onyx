@@ -352,6 +352,11 @@ PRODUCT_PACKAGES += \
     sensors.dynamic_sensor_hal \
     sensors.xiaomi
 
+# The touch driver only exposes fod_press_status, so only the UDFPS sensor
+# (co.aospa.sensor.udfps) has something to poll. Double tap is armed through
+# TouchFeature in XiaomiParts and wakes the screen with KEY_WAKEUP.
+$(call soong_config_set_bool,SENSORS_XIAOMI,USES_UDFPS_SENSOR,true)
+
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/sensors/hals.conf:$(TARGET_COPY_OUT_ODM)/etc/sensors/hals.conf
 

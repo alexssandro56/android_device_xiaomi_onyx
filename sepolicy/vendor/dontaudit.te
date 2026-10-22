@@ -4,10 +4,11 @@ dontaudit {
   hal_camera_default
 } default_prop:file r_file_perms;
 
-# Perf/QSPM lookups from framework code in privileged apps
-dontaudit priv_app {
+# Perf/QSPM lookups from framework code (BoostFramework) in app processes
+dontaudit appdomain {
   vendor_hal_perf2_service
   vendor_hal_qspmhal_service
+  vendor_perf_service
 }:service_manager find;
 dontaudit priv_app {
   vendor_hal_perf_default
@@ -23,3 +24,17 @@ dontaudit vold { mnt_product_file vendor_qmcs_file vendor_spunvm_file }:dir { io
 
 # Framework code in app processes probes display feature props
 dontaudit appdomain vendor_displayfeature_prop:file r_file_perms;
+dontaudit { bootanim surfaceflinger } vendor_displayfeature_prop:file r_file_perms;
+
+# Optional lookups and probes that work without the access
+dontaudit platform_app default_android_service:service_manager find;
+dontaudit platform_app bluetooth_lea_prop:file r_file_perms;
+dontaudit system_server vendor_default_prop:file r_file_perms;
+dontaudit hal_camera_default system_data_file:dir search;
+dontaudit init debugfs_tracing_debug:dir mounton;
+dontaudit kernel self:capability net_bind_service;
+dontaudit gpuservice fs_bpf:file getattr;
+dontaudit untrusted_app_all { mnt_vendor_file mnt_product_file vm_data_file }:dir { getattr search };
+dontaudit untrusted_app_all vendor_sysfs_kgsl:file r_file_perms;
+dontaudit vendor_qrtr vendor_data_file:dir write;
+dontaudit vendor_diag-router vendor_data_file:dir write;
