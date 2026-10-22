@@ -52,11 +52,13 @@ object DoubleTapController {
     }
 
     private fun update(context: Context) {
+        // Unset means on (config_dozeDoubleTapGestureEnabled), so match it here or the
+        // toggle shows as enabled while the gesture stays disarmed.
         val enabled =
             Settings.Secure.getIntForUser(
                 context.contentResolver,
                 Settings.Secure.DOZE_DOUBLE_TAP_GESTURE,
-                0,
+                1,
                 UserHandle.USER_CURRENT,
             ) != 0
         if (DEBUG) Log.d(TAG, "double tap enabled=$enabled")

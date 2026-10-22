@@ -495,6 +495,9 @@
          arms the gesture in the touch IC, which wakes the screen by itself. -->
     <string name="config_dozeDoubleTapSensorType" translatable="false">co.aospa.sensor.double_tap</string>
 
+    <!-- Double tap is on until the user turns it off. XiaomiParts assumes the same default. -->
+    <bool name="config_dozeDoubleTapGestureEnabled">true</bool>
+
     <!-- Indicate available ColorDisplayManager.COLOR_MODE_xxx. -->
     <integer-array name="config_availableColorModes">
         <item>258</item> <!-- vivid -->
