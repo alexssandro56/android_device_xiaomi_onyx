@@ -9,6 +9,9 @@ ro.vendor.audio.support.sound.id=true
 # Bluetooth
 persist.bluetooth.a2dp_offload.disabled=false
 ro.bluetooth.a2dp_offload.supported=true
+# aptX Adaptive R2.1 (96 kHz) and R2.2 (Lossless), encoded by the QTI offload provider
+persist.vendor.qcom.bluetooth.aptxadaptiver2_1_support=true
+persist.vendor.qcom.bluetooth.aptxadaptiver2_2_support=true
 
 # Camera
 ro.camera.enableCamera1MaxZsl=1
