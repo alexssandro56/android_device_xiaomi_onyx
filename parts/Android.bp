@@ -14,7 +14,6 @@ android_app {
         "androidx.core_core",
         "androidx.preference_preference",
         "vendor.xiaomi.hardware.displayfeature_aidl-V2-java",
-        "vendor.xiaomi.hw.touchfeature-V1-java",
     ],
     required: [
     ],

@@ -353,9 +353,9 @@ PRODUCT_PACKAGES += \
     sensors.dynamic_sensor_hal \
     sensors.xiaomi
 
-# The touch driver only exposes fod_press_status, so only the UDFPS sensor
-# (co.aospa.sensor.udfps) has something to poll. Double tap is armed through
-# TouchFeature in XiaomiParts and wakes the screen with KEY_WAKEUP.
+# The touch driver reports a double tap by notifying gesture_double_tap_state
+# rather than sending a key, so double tap to wake needs the sensor to poll it.
+$(call soong_config_set_bool,SENSORS_XIAOMI,USES_DOUBLE_TAP_SENSOR,true)
 $(call soong_config_set_bool,SENSORS_XIAOMI,USES_UDFPS_SENSOR,true)
 
 PRODUCT_COPY_FILES += \

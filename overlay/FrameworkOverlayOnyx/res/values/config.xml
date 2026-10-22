@@ -491,11 +491,10 @@
          screen off (sensors.xiaomi, polls fod_press_status). -->
     <string name="config_dozeUdfpsLongPressSensorType" translatable="false">co.aospa.sensor.udfps</string>
 
-    <!-- Shows the double tap gesture toggle. There is no double tap sensor: XiaomiParts
-         arms the gesture in the touch IC, which wakes the screen by itself. -->
+    <!-- Type of the double tap sensor. Leave as is if no double tap sensor is supported -->
     <string name="config_dozeDoubleTapSensorType" translatable="false">co.aospa.sensor.double_tap</string>
 
-    <!-- Double tap is on until the user turns it off. XiaomiParts assumes the same default. -->
+    <!-- Double tap is on until the user turns it off -->
     <bool name="config_dozeDoubleTapGestureEnabled">true</bool>
 
     <!-- Indicate available ColorDisplayManager.COLOR_MODE_xxx. -->
