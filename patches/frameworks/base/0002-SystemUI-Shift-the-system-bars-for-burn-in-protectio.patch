@@ -1,0 +1,485 @@
+From 552ad63bdf852a2019bd5a30da7b5bd54038f100 Mon Sep 17 00:00:00 2001
+From: Alex <05jeelo30@gmail.com>
+Date: Thu, 22 Oct 2026 11:57:52 +0000
+Subject: [PATCH] SystemUI: Shift the system bars for burn-in protection
+
+The framework burn-in protection only moves the display while it dozes,
+so the status bar and navigation bar contents sit on the same pixels
+the whole time the screen is on. Bring back the system bar shift from
+Paranoid Android (kept alive by FlamingoOS and crDroid): every minute
+while awake, move the status bar's start and end content and the
+navigation bar contents (or the gesture handle) a few pixels.
+
+It follows config_enableBurnInProtection, so it only runs on devices
+that opt into burn-in protection. The controller watches wakefulness
+itself, and the status bar and navigation bar view controllers hand it
+their views on the default display.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QY97AsgNLyAwQpzrsxC9zt
+---
+ packages/SystemUI/res/values/aospa_config.xml |   7 +
+ packages/SystemUI/res/values/aospa_dimens.xml |   4 +
+ .../systemui/doze/util/BurnInHelper.kt        |   2 +-
+ .../navigationbar/views/NavigationBar.java    |  12 +-
+ .../views/NavigationBarView.java              |  18 ++
+ .../phone/PhoneStatusBarViewController.kt     |  15 +
+ .../policy/BurnInProtectionController.kt      | 262 ++++++++++++++++++
+ 7 files changed, 318 insertions(+), 2 deletions(-)
+ create mode 100644 packages/SystemUI/src/com/android/systemui/statusbar/policy/BurnInProtectionController.kt
+
+diff --git a/packages/SystemUI/res/values/aospa_config.xml b/packages/SystemUI/res/values/aospa_config.xml
+index e0bb9959..f8f30d13 100644
+--- a/packages/SystemUI/res/values/aospa_config.xml
++++ b/packages/SystemUI/res/values/aospa_config.xml
+@@ -62,4 +62,11 @@
+     <!-- Doze: does the pickup sensor need a proximity check? -->
+     <bool name="doze_pickup_event_proximity_check">false</bool>
+ 
++
++    <!-- Shift the status bar and navigation bar contents a few pixels while the screen is on,
++         to protect OLED panels from burn-in. Follows the framework burn-in protection. -->
++    <bool name="config_systemBarBurnInProtection">@*android:bool/config_enableBurnInProtection</bool>
++
++    <!-- How often to shift the system bars, in seconds. -->
++    <integer name="config_systemBarBurnInProtectionShiftInterval">60</integer>
+ </resources>
+diff --git a/packages/SystemUI/res/values/aospa_dimens.xml b/packages/SystemUI/res/values/aospa_dimens.xml
+index 69242d9d..9963ecc1 100644
+--- a/packages/SystemUI/res/values/aospa_dimens.xml
++++ b/packages/SystemUI/res/values/aospa_dimens.xml
+@@ -4,4 +4,8 @@
+    SPDX-License-Identifier: Apache-2.0
+ -->
+ <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
++
++    <!-- Maximum system bar burn-in protection shifts. -->
++    <dimen name="horizontal_max_shift">4dp</dimen>
++    <dimen name="vertical_max_shift">4dp</dimen>
+ </resources>
+diff --git a/packages/SystemUI/src/com/android/systemui/doze/util/BurnInHelper.kt b/packages/SystemUI/src/com/android/systemui/doze/util/BurnInHelper.kt
+index b1564179..7a8c69ec 100644
+--- a/packages/SystemUI/src/com/android/systemui/doze/util/BurnInHelper.kt
++++ b/packages/SystemUI/src/com/android/systemui/doze/util/BurnInHelper.kt
+@@ -72,7 +72,7 @@ fun getBurnInScale(): Float {
+  * @param amplitude maximum value of the function
+  * @return a value between 0 and amplitude
+  */
+-private fun zigzag(x: Float, amplitude: Float, period: Float): Float {
++fun zigzag(x: Float, amplitude: Float, period: Float): Float {
+     val xprime = x % period / (period / 2)
+     val interpolationAmount = if (xprime <= 1) xprime else 2 - xprime
+     return MathUtils.lerp(0f, amplitude, interpolationAmount)
+diff --git a/packages/SystemUI/src/com/android/systemui/navigationbar/views/NavigationBar.java b/packages/SystemUI/src/com/android/systemui/navigationbar/views/NavigationBar.java
+index a2ea35d3..64313675 100644
+--- a/packages/SystemUI/src/com/android/systemui/navigationbar/views/NavigationBar.java
++++ b/packages/SystemUI/src/com/android/systemui/navigationbar/views/NavigationBar.java
+@@ -162,6 +162,7 @@ import com.android.systemui.statusbar.phone.AutoHideControllerStore;
+ import com.android.systemui.statusbar.phone.CentralSurfaces;
+ import com.android.systemui.statusbar.phone.LightBarController;
+ import com.android.systemui.statusbar.phone.StatusBarKeyguardViewManager;
++import com.android.systemui.statusbar.policy.BurnInProtectionController;
+ import com.android.systemui.statusbar.policy.DeviceProvisionedController;
+ import com.android.systemui.statusbar.policy.KeyguardStateController;
+ import com.android.systemui.util.DeviceConfigProxy;
+@@ -279,6 +280,7 @@ public class NavigationBar extends ViewController<NavigationBarView> implements
+ 
+     @VisibleForTesting
+     public int mDisplayId;
++    private final BurnInProtectionController mBurnInProtectionController;
+     private boolean mIsOnDefaultDisplay;
+     private boolean mHomeBlockedThisTouch;
+ 
+@@ -598,8 +600,10 @@ public class NavigationBar extends ViewController<NavigationBarView> implements
+             TaskStackChangeListeners taskStackChangeListeners,
+             DisplayTracker displayTracker,
+             NavBarButtonClickLogger navBarButtonClickLogger,
+-            NavbarOrientationTrackingLogger navbarOrientationTrackingLogger) {
++            NavbarOrientationTrackingLogger navbarOrientationTrackingLogger,
++            BurnInProtectionController burnInProtectionController) {
+         super(navigationBarView);
++        mBurnInProtectionController = burnInProtectionController;
+         mFrame = navigationBarFrame;
+         mContext = context;
+         mSavedState = savedState;
+@@ -810,6 +814,9 @@ public class NavigationBar extends ViewController<NavigationBarView> implements
+     @Override
+     public void onViewAttached() {
+         final Display display = mView.getDisplay();
++        if (mIsOnDefaultDisplay) {
++            mBurnInProtectionController.setNavigationBarView(mView);
++        }
+         mView.setComponents(mRecentsOptional);
+         if (mCentralSurfacesOptionalLazy.get().isPresent()) {
+             mView.setComponents(mShadeViewController, mPanelExpansionInteractor);
+@@ -876,6 +883,9 @@ public class NavigationBar extends ViewController<NavigationBarView> implements
+ 
+     @Override
+     public void onViewDetached() {
++        if (mIsOnDefaultDisplay) {
++            mBurnInProtectionController.setNavigationBarView(null);
++        }
+         mView.setUpdateActiveTouchRegionsCallback(null);
+         getBarTransitions().destroy();
+         mLauncherProxyService.removeCallback(mLauncherProxyListener);
+diff --git a/packages/SystemUI/src/com/android/systemui/navigationbar/views/NavigationBarView.java b/packages/SystemUI/src/com/android/systemui/navigationbar/views/NavigationBarView.java
+index 30927c3a..93baab97 100644
+--- a/packages/SystemUI/src/com/android/systemui/navigationbar/views/NavigationBarView.java
++++ b/packages/SystemUI/src/com/android/systemui/navigationbar/views/NavigationBarView.java
+@@ -843,6 +843,24 @@ public class NavigationBarView extends FrameLayout {
+         updateRotationButton();
+     }
+ 
++    /** Shifts the navigation bar contents for burn-in protection. */
++    public void offsetNavBar(int x, int y) {
++        if (isGesturalMode(mNavBarMode)) {
++            final View handle = getHomeHandle().getCurrentView();
++            if (handle != null) {
++                handle.setTranslationY(y);
++                handle.invalidate();
++            }
++            return;
++        }
++        if (mNavigationInflaterView == null) {
++            return;
++        }
++        mNavigationInflaterView.setTranslationX(x);
++        mNavigationInflaterView.setTranslationY(y);
++        mNavigationInflaterView.invalidate();
++    }
++
+     public void setAccessibilityButtonState(final boolean visible, final boolean longClickable) {
+         mLongClickableAccessibilityButton = longClickable;
+         getAccessibilityButton().setLongClickable(longClickable);
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBarViewController.kt b/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBarViewController.kt
+index 8e907fb3..ad8e2759 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBarViewController.kt
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/PhoneStatusBarViewController.kt
+@@ -43,6 +43,7 @@ import com.android.systemui.statusbar.core.StatusBarEventForwardingModernization
+ import com.android.systemui.statusbar.data.repository.StatusBarConfigurationController
+ import com.android.systemui.statusbar.gesture.StatusBarLongPressGestureDetector
+ import com.android.systemui.statusbar.layout.StatusBarContentInsetsProvider
++import com.android.systemui.statusbar.policy.BurnInProtectionController
+ import com.android.systemui.statusbar.policy.Clock
+ import com.android.systemui.statusbar.policy.ConfigurationController
+ import com.android.systemui.statusbar.window.StatusBarWindowControllerStore
+@@ -86,6 +87,7 @@ private constructor(
+     private val shadeExpansionTargetDisplayInteractor: ShadeExpansionTargetDisplayInteractor,
+     private val lazyShadeDisplaysRepository: Lazy<ShadeDisplaysRepository>,
+     private val statusBarWindowControllerStore: StatusBarWindowControllerStore,
++    private val burnInProtectionController: BurnInProtectionController,
+ ) : ViewController<PhoneStatusBarView>(view) {
+ 
+     private lateinit var clock: Clock
+@@ -217,6 +219,14 @@ private constructor(
+ 
+         startSideContainer = mView.requireViewById(R.id.status_bar_start_side_content)
+         updateStartSideContainerHoverListener()
++        if (mView.context.getDisplayId() == DEFAULT_DISPLAY) {
++            burnInProtectionController.setStatusBarShifter(
++                BurnInProtectionController.StatusBarViews(
++                    startSideContainer,
++                    mView.findViewById(R.id.status_bar_end_side_content),
++                )
++            )
++        }
+         if (statusBarTapToExpandShadeEnabled()) {
+             startSideContainer.setOnTouchListener(
+                 createClickListener(startSideContainer) { shadeController.animateExpandShade() }
+@@ -253,6 +263,9 @@ private constructor(
+ 
+     @VisibleForTesting
+     public override fun onViewDetached() {
++        if (mView.context.getDisplayId() == DEFAULT_DISPLAY) {
++            burnInProtectionController.setStatusBarShifter(null)
++        }
+         removeDarkReceivers()
+         startSideContainer.setOnHoverListener(null)
+         endSideContainer.setOnHoverListener(null)
+@@ -463,6 +476,7 @@ private constructor(
+         private val shadeExpansionTargetDisplayInteractor: ShadeExpansionTargetDisplayInteractor,
+         private val lazyShadeDisplaysRepository: Lazy<ShadeDisplaysRepository>,
+         private val statusBarWindowControllerStore: StatusBarWindowControllerStore,
++        private val burnInProtectionController: BurnInProtectionController,
+     ) {
+         fun create(view: PhoneStatusBarView): PhoneStatusBarViewController {
+             return PhoneStatusBarViewController(
+@@ -488,6 +502,7 @@ private constructor(
+                 shadeExpansionTargetDisplayInteractor,
+                 lazyShadeDisplaysRepository,
+                 statusBarWindowControllerStore,
++                burnInProtectionController,
+             )
+         }
+     }
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/policy/BurnInProtectionController.kt b/packages/SystemUI/src/com/android/systemui/statusbar/policy/BurnInProtectionController.kt
+new file mode 100644
+index 00000000..755721ed
+--- /dev/null
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/policy/BurnInProtectionController.kt
+@@ -0,0 +1,262 @@
++/*
++ * Copyright (C) 2017-2018 Paranoid Android
++ * Copyright (C) 2022 FlamingoOS Project
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *     http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++
++package com.android.systemui.statusbar.policy
++
++import android.content.Context
++import android.util.Log
++import android.view.View
++import com.android.internal.policy.SystemBarUtils
++import com.android.systemui.dagger.SysUISingleton
++import com.android.systemui.doze.util.zigzag
++import com.android.systemui.keyguard.WakefulnessLifecycle
++import com.android.systemui.navigationbar.NavigationModeController
++import com.android.systemui.navigationbar.views.NavigationBarView
++import com.android.systemui.res.R
++import com.android.systemui.shared.system.QuickStepContract.isGesturalMode
++import javax.inject.Inject
++import kotlinx.coroutines.CoroutineScope
++import kotlinx.coroutines.Dispatchers
++import kotlinx.coroutines.Job
++import kotlinx.coroutines.cancelAndJoin
++import kotlinx.coroutines.delay
++import kotlinx.coroutines.isActive
++import kotlinx.coroutines.launch
++
++private const val TAG = "BurnInProtectionController"
++
++/**
++ * Shifts the status bar and navigation bar contents a few pixels every
++ * [R.integer.config_systemBarBurnInProtectionShiftInterval] seconds while the screen is on, so
++ * the static system bar elements don't burn into OLED panels.
++ */
++@SysUISingleton
++class BurnInProtectionController
++@Inject
++constructor(
++    private val context: Context,
++    configurationController: ConfigurationController,
++    navigationModeController: NavigationModeController,
++    wakefulnessLifecycle: WakefulnessLifecycle,
++) : ConfigurationController.ConfigurationListener, NavigationModeController.ModeChangedListener {
++
++    /** Moves the status bar contents; provided by the status bar view controller. */
++    fun interface StatusBarShifter {
++        fun offsetStatusBar(start: Offset, end: Offset)
++    }
++
++    private val coroutineScope = CoroutineScope(Dispatchers.Main)
++
++    private val shiftEnabled =
++        context.resources.getBoolean(R.bool.config_systemBarBurnInProtection)
++
++    private val shiftInterval =
++        context.resources.getInteger(R.integer.config_systemBarBurnInProtectionShiftInterval) *
++            1000L
++
++    private var navigationMode: Int = navigationModeController.addListener(this)
++
++    private var navigationBarView: NavigationBarView? = null
++    private var statusBarShifter: StatusBarShifter? = null
++
++    private var shiftJob: Job? = null
++    private var shiftCounter = 0
++
++    private var statusBarStartOffsetsX = Pair(0, 0)
++    private var statusBarEndOffsetsX = Pair(0, 0)
++    private var maxStatusBarOffsetY = 0
++    private var maxNavBarOffsetX = 0
++    private var maxNavBarOffsetY = 0
++
++    private var statusBarOffsets = Pair(Offset.Zero, Offset.Zero)
++    private var navBarOffset = Offset.Zero
++
++    private val wakefulnessObserver =
++        object : WakefulnessLifecycle.Observer {
++            override fun onFinishedWakingUp() = startShiftTimer()
++
++            override fun onFinishedGoingToSleep() = stopShiftTimer()
++        }
++
++    init {
++        logD { "shiftEnabled = $shiftEnabled, isGesturalMode = ${isGesturalMode()}" }
++        if (shiftEnabled) {
++            configurationController.addCallback(this)
++            wakefulnessLifecycle.addObserver(wakefulnessObserver)
++            loadResources()
++            if (wakefulnessLifecycle.wakefulness == WakefulnessLifecycle.WAKEFULNESS_AWAKE) {
++                startShiftTimer()
++            }
++        }
++    }
++
++    private fun loadResources() {
++        with(context.resources) {
++            val maxShiftX = getDimensionPixelSize(R.dimen.horizontal_max_shift)
++            statusBarStartOffsetsX =
++                Pair(-minOf(getDimensionPixelSize(R.dimen.status_bar_padding_start), maxShiftX),
++                    maxShiftX)
++            statusBarEndOffsetsX =
++                Pair(-maxShiftX,
++                    minOf(getDimensionPixelSize(R.dimen.status_bar_padding_end), maxShiftX))
++            maxStatusBarOffsetY =
++                minOf(
++                    SystemBarUtils.getStatusBarHeight(context) -
++                        getDimensionPixelSize(
++                            com.android.internal.R.dimen.status_bar_height_default),
++                    getDimensionPixelSize(R.dimen.vertical_max_shift)
++                ) / 2
++        }
++        calculateNavBarMaxOffset()
++        logD {
++            "statusBarStartOffsetsX = $statusBarStartOffsetsX, " +
++                "statusBarEndOffsetsX = $statusBarEndOffsetsX, " +
++                "maxStatusBarOffsetY = $maxStatusBarOffsetY"
++        }
++    }
++
++    private fun calculateNavBarMaxOffset() {
++        with(context.resources) {
++            maxNavBarOffsetX =
++                if (isGesturalMode()) {
++                    0
++                } else {
++                    getDimensionPixelSize(R.dimen.floating_rotation_button_min_margin) / 4
++                }
++            maxNavBarOffsetY =
++                if (isGesturalMode()) {
++                    getDimensionPixelSize(R.dimen.navigation_handle_bottom) / 3
++                } else {
++                    val frameHeight = getDimensionPixelSize(R.dimen.navigation_bar_height)
++                    val buttonHeight = getDimensionPixelSize(R.dimen.navigation_icon_size)
++                    (frameHeight - buttonHeight) / 3
++                }
++        }
++        logD { "maxNavBarOffsetX = $maxNavBarOffsetX, maxNavBarOffsetY = $maxNavBarOffsetY" }
++    }
++
++    fun setNavigationBarView(navigationBarView: NavigationBarView?) {
++        this.navigationBarView = navigationBarView
++        navBarOffset = Offset.Zero
++    }
++
++    fun setStatusBarShifter(shifter: StatusBarShifter?) {
++        statusBarShifter = shifter
++        statusBarOffsets = Pair(Offset.Zero, Offset.Zero)
++    }
++
++    private fun startShiftTimer() {
++        if (!shiftEnabled || (shiftJob?.isActive == true)) return
++        shiftJob =
++            coroutineScope.launch {
++                while (isActive) {
++                    val sbOffset =
++                        Pair(
++                            Offset(
++                                getBurnInOffset(statusBarStartOffsetsX),
++                                getBurnInOffset(maxStatusBarOffsetY)
++                            ),
++                            Offset(
++                                getBurnInOffset(statusBarEndOffsetsX),
++                                getBurnInOffset(maxStatusBarOffsetY)
++                            )
++                        )
++                    val nbOffset =
++                        Offset(getBurnInOffset(maxNavBarOffsetX), getBurnInOffset(maxNavBarOffsetY))
++                    logD { "new offsets: sbOffset = $sbOffset, nbOffset = $nbOffset" }
++                    updateViews(sbOffset, nbOffset)
++                    delay(shiftInterval)
++                    shiftCounter++
++                }
++            }
++        logD { "Started shift job" }
++    }
++
++    private fun getBurnInOffset(maxOffset: Int): Int {
++        if (maxOffset <= 0) return 0
++        val amplitude = maxOffset.toFloat()
++        val period = amplitude * 2
++        val mult = if ((shiftCounter / period).toInt() % 2 == 0) 1 else -1
++        return mult * Math.round(zigzag(shiftCounter.toFloat(), amplitude, period))
++    }
++
++    private fun getBurnInOffset(offsetLimits: Pair<Int, Int>): Int {
++        val amplitude = (offsetLimits.second - offsetLimits.first).toFloat()
++        if (amplitude <= 0f) return offsetLimits.first
++        val period = amplitude * 2
++        return Math.round(zigzag(shiftCounter.toFloat(), amplitude, period) + offsetLimits.first)
++    }
++
++    private fun updateViews(sbOffset: Pair<Offset, Offset>, nbOffset: Offset) {
++        if (sbOffset != statusBarOffsets) {
++            statusBarShifter?.offsetStatusBar(sbOffset.first, sbOffset.second)
++            statusBarOffsets = sbOffset
++        }
++        if (nbOffset != navBarOffset) {
++            navigationBarView?.offsetNavBar(nbOffset.x, nbOffset.y)
++            navBarOffset = nbOffset
++        }
++    }
++
++    private fun stopShiftTimer() {
++        if (!shiftEnabled || (shiftJob?.isActive != true)) return
++        logD { "Cancelling shift job" }
++        coroutineScope.launch {
++            shiftJob?.cancelAndJoin()
++            updateViews(Pair(Offset.Zero, Offset.Zero), Offset.Zero)
++            logD { "Cancelled shift job" }
++        }
++    }
++
++    override fun onNavigationModeChanged(mode: Int) {
++        if (navigationMode == mode) return
++        navigationMode = mode
++        logD { "onNavigationModeChanged: isGesturalMode = ${isGesturalMode()}" }
++        calculateNavBarMaxOffset()
++    }
++
++    override fun onDensityOrFontScaleChanged() {
++        logD { "onDensityOrFontScaleChanged" }
++        loadResources()
++    }
++
++    private fun isGesturalMode() = isGesturalMode(navigationMode)
++
++    /** A translation in pixels. */
++    data class Offset(val x: Int, val y: Int) {
++        companion object {
++            val Zero = Offset(0, 0)
++        }
++    }
++
++    /** Applies [start] and [end] as translations of the two status bar content groups. */
++    class StatusBarViews(private val startSide: View?, private val endSide: View?) :
++        StatusBarShifter {
++        override fun offsetStatusBar(start: Offset, end: Offset) {
++            startSide?.translationX = start.x.toFloat()
++            startSide?.translationY = start.y.toFloat()
++            endSide?.translationX = end.x.toFloat()
++            endSide?.translationY = end.y.toFloat()
++        }
++    }
++}
++
++private inline fun logD(crossinline msg: () -> String) {
++    if (Log.isLoggable(TAG, Log.DEBUG)) {
++        Log.d(TAG, msg())
++    }
++}
+-- 
+2.43.0
+
