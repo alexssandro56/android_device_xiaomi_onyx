@@ -35,6 +35,7 @@ object DoubleTapController {
 
     private const val TOUCH_ID_PRIMARY = 0
     private const val TOUCH_DOUBLETAP_MODE = 14
+    private const val RETRY_DELAY_MS = 1000L
 
     @Volatile private var touchFeature: ITouchFeature? = null
     private lateinit var appContext: Context
@@ -73,7 +74,7 @@ object DoubleTapController {
         handler.post { update(context) }
     }
 
-    private fun update(context: Context) {
+    private fun update(context: Context, retry: Boolean = true) {
         // Unset means on (config_dozeDoubleTapGestureEnabled), so match it here or the
         // toggle shows as enabled while the gesture stays disarmed.
         val enabled =
@@ -85,9 +86,19 @@ object DoubleTapController {
             ) != 0
         if (DEBUG) Log.d(TAG, "double tap enabled=$enabled")
         val touchFeature = getTouchFeature() ?: return
+        val value = if (enabled) 1 else 0
         runCatching {
-            touchFeature.setModeValue(TOUCH_ID_PRIMARY, TOUCH_DOUBLETAP_MODE, if (enabled) 1 else 0)
+            touchFeature.setModeValue(TOUCH_ID_PRIMARY, TOUCH_DOUBLETAP_MODE, value)
+            touchFeature.getModeCurValue(TOUCH_ID_PRIMARY, TOUCH_DOUBLETAP_MODE)
         }
+            .onSuccess { current ->
+                Log.i(TAG, "Double tap mode set to $value, driver reports $current")
+                // A HAL that just came up can drop the first write, so check it took and
+                // try once more.
+                if (current != value && retry) {
+                    handler.postDelayed({ update(context, retry = false) }, RETRY_DELAY_MS)
+                }
+            }
             .onFailure { e -> Log.e(TAG, "setModeValue failed!", e) }
     }
 
