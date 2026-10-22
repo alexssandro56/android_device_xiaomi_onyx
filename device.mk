@@ -422,6 +422,10 @@ PRODUCT_PACKAGES += \
     firmware_wlan_mac.bin_symlink-qca6750 \
     firmware_wlanmdsp.otaupdate_symlink
 
+# Comes before device/qcom/wlan's copy in PRODUCT_COPY_FILES, so it takes precedence
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/wifi/WCNSS_qcom_cfg.ini:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wcn7750/WCNSS_qcom_cfg.ini
+
 # Game Turbo
 $(call inherit-product-if-exists, packages/apps/NotGameTurbo/notgameturbo.mk)
 
