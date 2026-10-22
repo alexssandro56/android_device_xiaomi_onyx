@@ -12,7 +12,6 @@ import android.os.UserHandle
 import android.provider.Settings
 import android.util.Log
 import com.xiaomi.settings.display.ColorService
-import com.xiaomi.settings.thermal.ChargingThermalController
 import com.xiaomi.settings.touch.DoubleTapController
 
 class BootCompletedReceiver : BroadcastReceiver() {
@@ -32,9 +31,6 @@ class BootCompletedReceiver : BroadcastReceiver() {
         // Display
         ColorService.startService(context)
         enforceMinRefreshRate(context)
-
-        // Thermal
-        ChargingThermalController.init(context.applicationContext)
 
         // Touch
         DoubleTapController.init(context.applicationContext)
