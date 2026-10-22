@@ -1,0 +1,41 @@
+From 27b14f2943ecb22b05d9441b0aeb825e3e89bad0 Mon Sep 17 00:00:00 2001
+From: alexssandro56 <05jeelo30@gmail.com>
+Date: Thu, 22 Oct 2026 21:21:09 +0000
+Subject: [PATCH] snxxx: Stop the client thread when its message queue is gone
+
+phDal4Nfc_msgrcv() only fails when the queue id is 0, which means
+nxpncihal_ctrl was cleared by phNxpNciHal_close() or by the memset in
+phNxpNciHal_open(). A client thread that was never joined, for example
+one left behind by a phNxpNciHal_MinOpen() that failed after creating
+it, then retries right away and spins forever, logging "NFC client
+received bad message" thousands of times per second and burning CPU
+and battery.
+
+There is nothing left to receive from, so stop the thread instead.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QY97AsgNLyAwQpzrsxC9zt
+---
+ snxxx/halimpl/hal/phNxpNciHal.cc | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/snxxx/halimpl/hal/phNxpNciHal.cc b/snxxx/halimpl/hal/phNxpNciHal.cc
+index 2e0edd8..aff7583 100644
+--- a/snxxx/halimpl/hal/phNxpNciHal.cc
++++ b/snxxx/halimpl/hal/phNxpNciHal.cc
+@@ -273,8 +273,10 @@ void* phNxpNciHal_client_thread(void* arg) {
+     /* Fetch next message from the NFC stack message queue */
+     if (phDal4Nfc_msgrcv(p_nxpncihal_ctrl->gDrvCfg.nClientId, &msg, 0, 0) ==
+         -1) {
+-      NXPLOG_NCIHAL_E("NFC client received bad message");
+-      continue;
++      /* The queue is gone, so the HAL was reset under a thread that was never
++       * joined. Retrying would spin forever, so stop it here. */
++      NXPLOG_NCIHAL_E("NFC client received bad message, stopping thread");
++      break;
+     }
+ 
+     if (p_nxpncihal_ctrl->thread_running == 0) {
+-- 
+2.43.0
+
