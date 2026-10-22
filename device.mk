@@ -245,10 +245,6 @@ $(call soong_config_set_bool,lineage_health,charging_control_supports_bypass,$(T
 # prebuilt kernel platform.
 TARGET_USES_KERNEL_PLATFORM := false
 
-PRODUCT_SOONG_NAMESPACES += \
-    kernel/xiaomi/onyx \
-    kernel/xiaomi/onyx-modules
-
 PRODUCT_ENABLE_UFFD_GC := true
 
 # Media

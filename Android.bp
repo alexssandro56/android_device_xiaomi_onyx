@@ -1,7 +1,6 @@
 soong_namespace {
     imports: [
-        "hardware/xiaomi",
-        "kernel/xiaomi/onyx-modules",
+        "hardware/xiaomi"
     ],
 }
 
