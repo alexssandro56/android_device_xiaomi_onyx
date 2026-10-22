@@ -1,3 +1,4 @@
 # Module signature keyring and the priority bump modprobe does when loading
 allow vendor_modprobe self:capability sys_nice;
 allow vendor_modprobe self:key write;
+dontaudit vendor_modprobe kernel:process setsched;

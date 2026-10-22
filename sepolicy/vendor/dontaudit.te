@@ -37,3 +37,6 @@ dontaudit gpuservice fs_bpf:file getattr;
 dontaudit untrusted_app_all { mnt_vendor_file mnt_product_file }:dir { getattr search };
 dontaudit untrusted_app_all vendor_sysfs_kgsl:file r_file_perms;
 dontaudit vendor_qrtr vendor_data_file:dir write;
+
+# getsockopt() on the USAP pool socket from app processes
+dontaudit appdomain zygote:unix_stream_socket getopt;
