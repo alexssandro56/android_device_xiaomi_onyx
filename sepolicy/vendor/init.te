@@ -25,3 +25,6 @@ dontaudit vendor_init sysfs:lnk_file setattr;
 allow vendor_init proc_walt:dir search;
 allow vendor_init proc_walt:file w_file_perms;
 allow vendor_init vendor_miev_device:chr_file { getattr setattr };
+
+# init.qcom.rc turns UFS clock scaling off during boot and back on after
+allow vendor_init vendor_sysfs_ufs:file w_file_perms;

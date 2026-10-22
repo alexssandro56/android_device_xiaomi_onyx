@@ -14,6 +14,9 @@ genfscon sysfs /csiphy_umd_paras/csiphy_umd_paras u:object_r:sysfs_csiphy_umd_pa
 genfscon sysfs /devices/platform/soc/soc:xiaomi_fingerprint/fingerdown u:object_r:vendor_sysfs_displayfeature:s0
 genfscon sysfs /devices/platform/soc/soc:xiaomi_fingerprint/actpower u:object_r:vendor_sysfs_displayfeature:s0
 
+# UFS
+genfscon sysfs /devices/platform/soc/1d84000.ufshc/clkscale_enable u:object_r:vendor_sysfs_ufs:s0
+
 # Extcon
 genfscon sysfs /devices/platform/soc/soc:spf_core_platform/soc:spf_core_platform:lpass-cdc/wcd9378-codec/extcon                 u:object_r:sysfs_extcon:s0
 
