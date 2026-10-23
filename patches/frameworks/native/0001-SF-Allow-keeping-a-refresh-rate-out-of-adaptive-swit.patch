@@ -1,0 +1,66 @@
+From b077dd3d4a0d95cbe0c6c753db2b558ee0ab0b98 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Fri, 23 Oct 2026 12:34:57 -0300
+Subject: [PATCH] SF: Allow keeping a refresh rate out of adaptive switching
+
+Some panels only misbehave when the selector switches into a given
+refresh rate, while running at it as the chosen peak is fine. On the
+POCO F7, switching from 120 to 90Hz while a video plays turns the
+screen green, but a fixed 90Hz setting looks normal.
+
+Add debug.sf.adaptive_excluded_fps: a mode with that refresh rate is
+only considered when it's the top of the allowed range, so it's still
+available as a fixed peak refresh rate, but the selector never moves
+to it by itself under a higher peak. If nothing else fits the range,
+the mode is allowed anyway.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01Kye574qt5dotSwvkUkvhEe
+---
+ .../Scheduler/RefreshRateSelector.cpp            | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/services/surfaceflinger/Scheduler/RefreshRateSelector.cpp b/services/surfaceflinger/Scheduler/RefreshRateSelector.cpp
+index 0b11899..35dd90a 100644
+--- a/services/surfaceflinger/Scheduler/RefreshRateSelector.cpp
++++ b/services/surfaceflinger/Scheduler/RefreshRateSelector.cpp
+@@ -1621,8 +1621,17 @@ void RefreshRateSelector::constructAvailableRefreshRates() {
+                                                 return it->second->getGroup() == group;
+                                             });
+ 
++    // A refresh rate listed in debug.sf.adaptive_excluded_fps is only used when it is the top
++    // of the allowed range, i.e. when it was picked as the peak refresh rate. With a higher peak,
++    // the selector never switches to it on its own. Some panels only misbehave when switching
++    // into such a rate.
++    static const Fps adaptiveExcludedFps =
++            Fps::fromValue(base::GetIntProperty("debug.sf.adaptive_excluded_fps", 0));
++
+     const auto filterRefreshRates = [&](const FpsRanges& ranges, const char* rangeName,
+                                         bool allowAllGroups = false) REQUIRES(mLock) {
++        bool excludeAdaptive = adaptiveExcludedFps.isValid() &&
++                !isApproxEqual(ranges.physical.max, adaptiveExcludedFps);
+         const auto filterModes = [&](const DisplayMode& mode) {
+             bool hdrOutputTypeMatches = FlagManager::getInstance().enable_user_preferred_hdr_mode()
+                     ? mode.getHdrOutputType() == defaultMode->getHdrOutputType()
+@@ -1633,11 +1642,18 @@ void RefreshRateSelector::constructAvailableRefreshRates() {
+                      mode.getGroup() == defaultMode->getGroup()) &&
+                     ranges.physical.includes(mode.getPeakFps()) &&
+                     (supportsFrameRateOverride() || ranges.render.includes(mode.getPeakFps())) &&
++                    !(excludeAdaptive && isApproxEqual(mode.getPeakFps(), adaptiveExcludedFps)) &&
+                     hdrOutputTypeMatches;
+         };
+ 
+         auto frameRateModes = createFrameRateModes(*policy, filterModes, ranges.render,
+                                                    allowAllGroups && !mIsVrrDisplay);
++        if (frameRateModes.empty() && excludeAdaptive) {
++            // Nothing else fits the range, so allow the excluded rate after all.
++            excludeAdaptive = false;
++            frameRateModes = createFrameRateModes(*policy, filterModes, ranges.render,
++                                                  allowAllGroups && !mIsVrrDisplay);
++        }
+         if (frameRateModes.empty()) {
+             ALOGW("No matching frame rate modes for %s range. policy: %s", rangeName,
+                   policy->toString().c_str());
+-- 
+2.43.0
+
