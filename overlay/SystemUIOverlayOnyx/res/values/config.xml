@@ -14,4 +14,7 @@
 
     <!-- Preferred max refresh rate at keyguard, if supported by the display. -->
     <integer name="config_keyguardMaxRefreshRate">60</integer>
+
+    <!-- The double tap sensor reports a point to start the wake-up reveal from -->
+    <bool name="doze_double_tap_reports_touch_coordinates">true</bool>
 </resources>

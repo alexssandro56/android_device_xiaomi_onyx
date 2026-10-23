@@ -362,6 +362,10 @@ PRODUCT_PACKAGES += \
 # sensor, so XiaomiParts keeps the gesture armed instead of the sensor.
 $(call soong_config_set_bool,SENSORS_XIAOMI,USES_DOUBLE_TAP_SENSOR,true)
 $(call soong_config_set_bool,SENSORS_XIAOMI,DOUBLE_TAP_SENSOR_SKIP_ENABLE,true)
+# The driver does not report where the tap landed, so the sensor reports the
+# center of the panel (1280x2772) for SystemUI to start the wake-up reveal from.
+$(call soong_config_set,SENSORS_XIAOMI,DOUBLE_TAP_SENSOR_X,640)
+$(call soong_config_set,SENSORS_XIAOMI,DOUBLE_TAP_SENSOR_Y,1386)
 $(call soong_config_set_bool,SENSORS_XIAOMI,USES_UDFPS_SENSOR,true)
 
 PRODUCT_COPY_FILES += \
