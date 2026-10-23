@@ -1,8 +1,11 @@
-# Bring-up only: save the kernel log and logcat of every boot to /metadata,
-# which is mounted in first stage and survives a reboot, so a boot that
-# hangs or reboots can be read back from recovery.
+# Debugging only: save the kernel log and logcat of every boot to /metadata,
+# which survives a reboot, so a boot that hangs or reboots can be read back
+# from recovery. The logcat keeps running for as long as the phone is on,
+# which costs battery, so it only starts after
+#   setprop persist.sys.onyx.bootlog 1
+# and a reboot.
 
-on post-fs
+on property:persist.sys.onyx.bootlog=1
     mkdir /metadata/bootlog 0777 root root
     start onyx_bootlog_dmesg
     start onyx_bootlog_logcat
