@@ -74,6 +74,9 @@ on boot
 # cpu7 still enters deep idle.
 on property:vendor.post_boot.parsed=1
     write /sys/devices/system/cpu/cpu7/core_ctl/min_cpus 1
+    # post_boot also caps cpu7 at 2956800 through smart_freq whenever no boost
+    # or sustained-load reason is active. Let it reach its top frequency.
+    write /proc/sys/walt/cluster3/smart_freq/legacy_freq_levels "0 3206400 6 3206400 7 3206400 8 3206400"
 
 #for online boot cpu
 on property:sys.boot_completed=1
