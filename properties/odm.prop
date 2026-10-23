@@ -86,6 +86,9 @@ ro.vendor.sre.enable=true
 
 # Graphics
 debug.sf.set_idle_timer_ms=1100
+# Switching from 120 into 90Hz turns the panel green, so only use 90Hz when
+# it is the selected peak refresh rate (patches/frameworks/native).
+debug.sf.adaptive_excluded_fps=90
 vendor.display.boost_cpu_layer_number_threshold=12
 vendor.display.disable_cwb_idle_fallback=1
 vendor.display.disable_idle_scaling_layers=1
