@@ -73,11 +73,12 @@ on property:sys.boot_completed=1
     wait /sys/class/thermal/thermal_message/boot_complete
     write /sys/class/thermal/thermal_message/boot_complete 2
 
-    # Run mi_thermald in mgame mode. Out of all the modes that run the CPU at
-    # advertised speeds without underclocking, it has the most conservative
-    # thermal limits. The default mode caps the big cores below their maximum
-    # from 25°C. Keep in sync with ChargingThermalController.
-    write /sys/devices/virtual/thermal/thermal_message/sconfig 19
+    # Run mi_thermald in tgame mode. The default mode caps the big cores
+    # below their maximum from 25°C on its virtual skin sensor, and mgame
+    # from 36°C. tgame leaves the CPU alone up to 43.5°C, steps down more
+    # gradually after that, and keeps the same GPU, battery and low-charge
+    # limits as mgame. Keep in sync with ChargingThermalController.
+    write /sys/devices/virtual/thermal/thermal_message/sconfig 18
     write /dev/kmsg "start qrtr-lookup after Boot completed "
     start qrtr-lookup
 
