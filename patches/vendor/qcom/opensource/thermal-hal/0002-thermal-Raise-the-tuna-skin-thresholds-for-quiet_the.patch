@@ -1,0 +1,42 @@
+From cde9c98fbb1ef98d2672eb8ebfe722e0660bcfc4 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Fri, 23 Oct 2026 07:25:45 -0300
+Subject: [PATCH] thermal: Raise the tuna skin thresholds for quiet_therm
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The sys-therm-3 thresholds (48/49/50°C) assume a sensor that tracks the
+skin. quiet_therm is a board thermistor that runs hotter: on onyx it
+crosses 49°C a few minutes into a game with the battery at 35-38°C, so the
+framework reports MODERATE and games cut their frame rate and quality
+while the device is only warm. Raise LIGHT/MODERATE/SEVERE to
+52/54/56°C. CRITICAL and above are unchanged, and mi_thermald and
+thermal-engine still do the actual throttling.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01Kye574qt5dotSwvkUkvhEe
+---
+ thermalConfig.cpp | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/thermalConfig.cpp b/thermalConfig.cpp
+index 63abbff..4fb7f35 100644
+--- a/thermalConfig.cpp
++++ b/thermalConfig.cpp
+@@ -2490,9 +2490,9 @@ namespace thermal {
+ 			{ "quiet_therm" },
+ 			"skin",
+ 			{
+-			[LIGHT] = 48000,
+-			[MODERATE] = 49000,
+-			[SEVERE] = 50000,
++			[LIGHT] = 52000,
++			[MODERATE] = 54000,
++			[SEVERE] = 56000,
+ 			[CRITICAL] = 60000,
+ 			[EMERGENCY] = 61000,
+ 			[SHUTDOWN] = 90000,
+-- 
+2.43.0
+
