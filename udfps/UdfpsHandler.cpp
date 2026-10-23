@@ -11,6 +11,8 @@
 #include <android-base/unique_fd.h>
 
 #include <poll.h>
+#include <atomic>
+#include <mutex>
 #include <sys/ioctl.h>
 #include <fstream>
 #include <thread>
@@ -144,16 +146,21 @@ class XiaomiOnyxUdfpsHandler : public UdfpsHandler {
                 }
 
                 bool pressed = readBool(fd);
+                // FOD stays enabled on the touch panel after an authentication, so a touch
+                // on the sensor area while the phone is in use still reports here. Only
+                // light the sensor while the HAL is waiting for a finger.
+                if (pressed && !mFodArmed) {
+                    continue;
+                }
+
                 mDevice->extCmd(mDevice, COMMAND_FOD_PRESS_STATUS,
                                 pressed ? PARAM_FOD_PRESSED : PARAM_FOD_RELEASED);
 
-                // Request HBM
-                struct disp_local_hbm_req displayLhbmRequest = {
-                        .base = displayBasePrimary,
-                        .local_hbm_value = pressed ? LHBM_TARGET_BRIGHTNESS_WHITE_1000NIT
-                                              : LHBM_TARGET_BRIGHTNESS_OFF_FINGER_UP,
-                };
-                ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &displayLhbmRequest);
+                if (pressed) {
+                    setLocalHbm(LHBM_TARGET_BRIGHTNESS_WHITE_1000NIT);
+                } else {
+                    setLocalHbm(LHBM_TARGET_BRIGHTNESS_OFF_FINGER_UP);
+                }
             }
         }).detach();
 
@@ -223,28 +230,10 @@ class XiaomiOnyxUdfpsHandler : public UdfpsHandler {
 
     void onAcquired(int32_t result, int32_t vendorCode) {
         LOG(INFO) << __func__ << " result: " << result << " vendorCode: " << vendorCode;
-        switch (static_cast<AcquiredInfo>(result)) {
-            case AcquiredInfo::GOOD:
-            case AcquiredInfo::PARTIAL:
-            case AcquiredInfo::INSUFFICIENT:
-            case AcquiredInfo::SENSOR_DIRTY:
-            case AcquiredInfo::TOO_SLOW:
-            case AcquiredInfo::TOO_FAST:
-            case AcquiredInfo::TOO_DARK:
-            case AcquiredInfo::TOO_BRIGHT:
-            case AcquiredInfo::IMMOBILE:
-            case AcquiredInfo::LIFT_TOO_SOON:
-                {
-                    struct disp_local_hbm_req displayLhbmRequest = {
-                        .base = displayBasePrimary,
-                        .local_hbm_value = LHBM_TARGET_BRIGHTNESS_OFF_FINGER_UP,
-                    };
-                    ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &displayLhbmRequest);
-                    break;
-                }
-            default:
-                break;
-        }
+        // Local HBM stays on while the finger is down, even after a capture. Turning it off
+        // here dropped it about 200ms into the press, with the finger still on the sensor,
+        // and every LHBM off-to-normal transition flashes the panel green. It goes off when
+        // the finger lifts or the authentication succeeds.
 
         /* vendorCode
          * 21: waiting for finger
@@ -252,18 +241,49 @@ class XiaomiOnyxUdfpsHandler : public UdfpsHandler {
          * 23: finger up
          */
         if (vendorCode == 21) {
+            mFodArmed = true;
             setFodStatus(FOD_STATUS_ON);
         }
     }
 
+    void onAuthenticationSucceeded() {
+        LOG(INFO) << __func__;
+        mFodArmed = false;
+        // The unlock animation covers this transition, unlike a finger up on the lockscreen.
+        setLocalHbm(LHBM_TARGET_BRIGHTNESS_OFF_AUTH_STOP);
+    }
+
     void cancel() {
         LOG(INFO) << __func__;
+        mFodArmed = false;
+        setLocalHbm(LHBM_TARGET_BRIGHTNESS_OFF_FINGER_UP);
     }
 
   private:
     fingerprint_device_t* mDevice;
     android::base::unique_fd touch_fd_;
     android::base::unique_fd disp_fd_;
+    std::atomic<bool> mFodArmed = false;
+    std::mutex mLhbmLock;
+    bool mLhbmOn = false;
+
+    // The display driver runs a full LHBM off-to-normal transition, which flashes the panel
+    // green, for every off request whose value differs from the last one, including
+    // AUTH_STOP followed by FINGER_UP. Only send the transitions that change the state.
+    void setLocalHbm(int value) {
+        std::lock_guard<std::mutex> lock(mLhbmLock);
+        bool on = value != LHBM_TARGET_BRIGHTNESS_OFF_FINGER_UP &&
+                  value != LHBM_TARGET_BRIGHTNESS_OFF_AUTH_STOP;
+        if (on == mLhbmOn) {
+            return;
+        }
+        struct disp_local_hbm_req displayLhbmRequest = {
+                .base = displayBasePrimary,
+                .local_hbm_value = static_cast<__u32>(value),
+        };
+        ioctl(disp_fd_.get(), MI_DISP_IOCTL_SET_LOCAL_HBM, &displayLhbmRequest);
+        mLhbmOn = on;
+    }
 
     void setFodStatus(int value) {
         ioctl(touch_fd_.get(), TOUCH_IOC_SELECT_TOUCH_ID, MI_DISP_PRIMARY);
