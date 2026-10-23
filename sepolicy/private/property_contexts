@@ -1,0 +1,2 @@
+# Activity trigger
+ro.activity_trigger.enable    u:object_r:system_prop:s0 exact bool
