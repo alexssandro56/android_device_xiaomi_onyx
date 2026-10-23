@@ -17,6 +17,6 @@ allow parts_app system_app_data_file:dir create_dir_perms;
 allow parts_app system_app_data_file:file create_file_perms;
 allow parts_app system_app_data_file:lnk_file create_file_perms;
 
-# ChargingThermalController switches mi_thermald's scene (thermal_message/sconfig)
+# ThermalSceneController switches mi_thermald's scene (thermal_message/sconfig)
 r_dir_file(parts_app, sysfs_thermal)
 allow parts_app sysfs_thermal:file w_file_perms;
