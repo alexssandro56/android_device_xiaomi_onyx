@@ -1,0 +1,38 @@
+From 703f709a641162100557ac48a407d12c62634188 Mon Sep 17 00:00:00 2001
+From: alexssandro56 <05jeelo30@gmail.com>
+Date: Fri, 23 Oct 2026 13:56:33 +0000
+Subject: [PATCH] SystemServer: Skip ActivityTriggerService when
+ ro.activity_trigger.enable is false
+
+libtrigger-handler reaches the vendor qspmhal only through
+SnapdragonServices, and devices whose policy keeps system_server away
+from it log "cannot access SnapdragonServices!" and "qspmhal
+unavailable" on every process start without doing anything. Let them
+turn the service off with ro.activity_trigger.enable.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QY97AsgNLyAwQpzrsxC9zt
+---
+ services/java/com/android/server/SystemServer.java | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/services/java/com/android/server/SystemServer.java b/services/java/com/android/server/SystemServer.java
+index 307af5d2..1105bcdf 100644
+--- a/services/java/com/android/server/SystemServer.java
++++ b/services/java/com/android/server/SystemServer.java
+@@ -1859,7 +1859,11 @@ public final class SystemServer implements Dumpable {
+             }
+ 
+ // QTI_BEGIN: 2019-11-13: Core: Add mechanism to improve consistancy of notification
+-            mSystemServiceManager.startService(ActivityTriggerService.class);
++            // libtrigger-handler only reaches qspmhal through SnapdragonServices, which
++            // system_server may not use on every device. Let them turn it off.
++            if (SystemProperties.getBoolean("ro.activity_trigger.enable", true)) {
++                mSystemServiceManager.startService(ActivityTriggerService.class);
++            }
+ 
+ // QTI_END: 2019-11-13: Core: Add mechanism to improve consistancy of notification
+             if (Build.IS_DEBUGGABLE && ProfcollectForwardingService.enabled()) {
+-- 
+2.43.0
+
