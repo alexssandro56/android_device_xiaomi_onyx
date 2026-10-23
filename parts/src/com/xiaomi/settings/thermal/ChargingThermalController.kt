@@ -26,7 +26,7 @@ import java.io.File
  * 35°C and 5-8A up to ~41°C, where the default scene already drops to 2.5-5A at 39°C. The scene
  * is read from Settings.Global [KEY_CHARGING_SCENE]; a negative value disables it.
  *
- * Unplugging goes back to [BASE_SCENE], the mgame scene init sets at boot, instead of the value
+ * Unplugging goes back to [BASE_SCENE], the tgame scene init sets at boot, instead of the value
  * read when Parts starts, which can still be the kernel's 0 if init hasn't written it yet.
  */
 object ChargingThermalController {
@@ -39,7 +39,7 @@ object ChargingThermalController {
     const val KEY_CHARGING_SCENE = "onyx_charging_thermal_scene"
     private const val DEFAULT_CHARGING_SCENE = 9
     // Keep in sync with init.xiaomi.rc.
-    private const val BASE_SCENE = "19"
+    private const val BASE_SCENE = "18"
 
     private var charging = false
 
