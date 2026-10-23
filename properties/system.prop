@@ -3,3 +3,7 @@ media.stagefright.thumbnail.prefer_hw_codecs=true
 ro.media.recorder-max-base-layer-fps=60
 # NFC
 ro.nfc.port=I2C
+# Activity trigger: libtrigger-handler reaches qspmhal only through
+# SnapdragonServices, which system_server may not use, so it fails on
+# every activity start.
+ro.activity_trigger.enable=false
