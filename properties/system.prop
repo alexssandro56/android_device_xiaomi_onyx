@@ -1,6 +1,9 @@
 # Media
 media.stagefright.thumbnail.prefer_hw_codecs=true
 ro.media.recorder-max-base-layer-fps=60
+# VoNR (5G SA voice), used when the carrier supports it
+persist.radio.is_vonr_enabled_0=true
+persist.radio.is_vonr_enabled_1=true
 # NFC
 ro.nfc.port=I2C
 # Activity trigger: libtrigger-handler reaches qspmhal only through
