@@ -5,8 +5,6 @@ ro.vendor.audio.btsamplerate.adaptive=true
 ro.vendor.audio.dualadc.support=true
 ro.vendor.audio.gain.support=true
 ro.vendor.audio.support.sound.id=true
-# A bigger offload buffer lets the DSP play longer before waking the CPU
-vendor.audio.offload.buffer.size.kb=64
 
 # Bluetooth
 persist.bluetooth.a2dp_offload.disabled=false
