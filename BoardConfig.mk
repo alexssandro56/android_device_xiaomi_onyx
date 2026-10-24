@@ -49,6 +49,13 @@ BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := $(DEVICE_PATH)/configs/bluetooth/
 # Display
 TARGET_SCREEN_DENSITY := 504
 
+# The stock composer only speaks vendor.qti.hardware.display.composer3-V1,
+# while SurfaceFlinger's QtiComposer3Client path sends V5 commands and
+# crashes it in executeCommands. Use the plain composer3 path, as Lineage
+# does. display-commonsys turns this on for every QCOM board, and this file
+# is read after it.
+SOONG_CONFIG_qtidisplaycommonsys_composer3ext := false
+
 # Filesystem
 TARGET_FS_CONFIG_GEN += $(DEVICE_PATH)/configs/config.fs
 
