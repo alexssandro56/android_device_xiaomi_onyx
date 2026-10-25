@@ -124,6 +124,9 @@ SYSTEMUI_OPTIMIZE_JAVA := true
 PRODUCT_PACKAGES += \
     LunarisDolby
 
+# Extra: build property spoofing (Spoofify), see vendor/extra
+$(call inherit-product-if-exists, vendor/extra/product.mk)
+
 # Fastbootd
 PRODUCT_PACKAGES += \
     android.hardware.fastboot-service.example_recovery \
