@@ -64,6 +64,7 @@ debug.sf.earlyGl.sf.duration=8569853
 debug.sf.late.app.duration=11666666
 debug.sf.late.sf.duration=12786764
 debug.hwui.use_hint_manager=true
+debug.renderengine.backend=skiavkthreaded
 graphics.gpu.profiler.support=true
 ro.gfx.driver.1=com.qualcomm.qti.gpudrivers.sun.api35
 ro.hardware.egl=adreno
