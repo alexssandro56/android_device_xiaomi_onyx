@@ -82,6 +82,17 @@ on property:sys.boot_completed=1
     write /dev/kmsg "start qrtr-lookup after Boot completed "
     start qrtr-lookup
 
+    # MiSyS writes the watermark templates 0600/2700 (init umask 077, uid
+    # camera), which cameraserver cannot read, so the watermark is dropped.
+    start vendor.camera-wmfix
+
+service vendor.camera-wmfix /vendor/bin/sh /vendor/bin/init.camera.wmfix.sh
+    class late_start
+    user camera
+    group camera
+    disabled
+    oneshot
+
 service vendor.sensors-hal-multihal /vendor/bin/hw/android.hardware.sensors-service.xiaomi-multihal
     override
     class hal

@@ -441,5 +441,7 @@ PRODUCT_COPY_FILES += \
 # Game Turbo
 $(call inherit-product-if-exists, packages/apps/NotGameTurbo/notgameturbo.mk)
 
-# Vendor MiuiCamera
-$(call inherit-product-if-exists, device/xiaomi/onyx-miuicamera/device.mk)
+# LeicaCamera (xiaomi-onyx-playground)
+$(call inherit-product-if-exists, vendor/xiaomi/onyx-leicacamera/onyx-leicacamera-vendor.mk)
+PRODUCT_PACKAGES += \
+    init.camera.wmfix.sh

@@ -1,0 +1,5 @@
+# init.camera.wmfix.sh runs as uid camera in vendor_shell and makes the
+# MiSyS-written watermark templates readable by the camera provider again.
+allow vendor_shell vendor_data_file:dir search;
+allow vendor_shell vendor_camera_data_file:dir create_dir_perms;
+allow vendor_shell vendor_camera_data_file:file create_file_perms;
