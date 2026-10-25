@@ -39,3 +39,9 @@ prebuilt_etc {
     sub_dir: "init",
     product_specific: true,
 }
+
+sh_binary {
+    name: "init.camera.wmfix.sh",
+    src: "bin/init.camera.wmfix.sh",
+    vendor: true,
+}

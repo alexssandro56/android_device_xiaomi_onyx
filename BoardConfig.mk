@@ -217,5 +217,5 @@ BOARD_AVB_ODM_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha256
 # Vendor
 include vendor/xiaomi/onyx/BoardConfigVendor.mk
 
-# Vendor MiuiCamera
--include device/xiaomi/onyx-miuicamera/BoardConfig.mk
+# LeicaCamera (xiaomi-onyx-playground)
+-include vendor/xiaomi/onyx-leicacamera/BoardConfigVendor.mk

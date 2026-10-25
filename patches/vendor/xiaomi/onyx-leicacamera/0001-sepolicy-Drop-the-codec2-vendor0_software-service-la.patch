@@ -1,0 +1,28 @@
+From 97327c74db30dc85c40e404ec68b4322e0fd43fb Mon Sep 17 00:00:00 2001
+From: Alex <05jeelo30@gmail.com>
+Date: Sun, 25 Oct 2026 13:24:54 +0000
+Subject: [PATCH] sepolicy: Drop the codec2 vendor0_software service label
+
+The onyx device tree already labels
+android.hardware.media.c2.IComponentStore/vendor0_software, and a second
+identical entry in service_contexts breaks the sepolicy build.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QY97AsgNLyAwQpzrsxC9zt
+---
+ sepolicy/vendor/service_contexts | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/sepolicy/vendor/service_contexts b/sepolicy/vendor/service_contexts
+index 223d413..7788809 100644
+--- a/sepolicy/vendor/service_contexts
++++ b/sepolicy/vendor/service_contexts
+@@ -2,5 +2,3 @@
+ vendor.xiaomi.hardware.misys    u:object_r:misys_service:s0
+ vendor.xiaomi.hardware.misys.common.IMiSysImpl/default    u:object_r:hal_misys_vendor_service:s0
+ vendor.xiaomi.hardware.misys.common.IHypSysIntl/default   u:object_r:hal_misys_vendor_service:s0
+-# Without this the store falls through to the neverallowed default_android_service catch-all
+-android.hardware.media.c2.IComponentStore/vendor0_software    u:object_r:hal_codec2_service:s0
+-- 
+2.43.0
+
