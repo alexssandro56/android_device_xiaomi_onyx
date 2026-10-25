@@ -7,7 +7,13 @@ onyx_apply_patches() {
     for dir in $(find "$top/device/xiaomi/onyx/patches" -name '*.patch' -exec dirname {} \; | sort -u); do
         project=${dir#$top/device/xiaomi/onyx/patches/}
         for patch in "$dir"/*.patch; do
-            if git -C "$top/$project" apply --reverse --check "$patch" >/dev/null 2>&1; then
+            # A later patch can touch the lines right next to an earlier one, so
+            # the reverse check alone misses applied patches: also look for the
+            # commit subject in the recent history.
+            subject=$(awk '/^Subject: /{s=$0; sub(/^Subject: (\[PATCH[^]]*\] )?/, "", s);
+                while ((getline l) > 0 && l ~ /^ /) s = s l; print s; exit}' "$patch")
+            if git -C "$top/$project" log -n 300 --format=%s 2>/dev/null | grep -qxF -- "$subject" ||
+                    git -C "$top/$project" apply --reverse --check "$patch" >/dev/null 2>&1; then
                 continue
             fi
             if git -C "$top/$project" -c user.name=onyx -c user.email=onyx@localhost \
