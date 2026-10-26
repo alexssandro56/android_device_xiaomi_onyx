@@ -1,0 +1,47 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: onyx <onyx@localhost>
+Date: Mon, 26 Oct 2026 10:10:45 +0000
+Subject: [PATCH] NotGameTurbo: Build against AOSPA
+
+org.lineageos.settings.resources (the Expressive theme resources) is a
+LineageOS lib AOSPA does not have; the SettingsLib widgets the app uses come
+from SettingsLibDefaults instead. Drop it and use the base Theme.SubSettingsBase.
+
+The vendor.xiaomi.hw.touchfeature AIDL lives in the global namespace here (as
+XiaomiParts references it unqualified), not under //device/xiaomi/onyx, so drop
+the path qualifier.
+---
+ Android.bp          | 3 +--
+ AndroidManifest.xml | 2 +-
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/Android.bp b/Android.bp
+index b789860..c24e151 100644
+--- a/Android.bp
++++ b/Android.bp
+@@ -20,8 +20,7 @@ android_app {
+         "androidx.appcompat_appcompat",
+         "androidx.core_core",
+         "androidx.preference_preference",
+-        "org.lineageos.settings.resources",
+-        "//device/xiaomi/onyx:vendor.xiaomi.hw.touchfeature-V1-java",
++        "vendor.xiaomi.hw.touchfeature-V1-java",
+     ],
+ }
+ 
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index d8278c9..fe88fda 100644
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -21,7 +21,7 @@
+         android:persistent="true"
+         android:defaultToDeviceProtectedStorage="true"
+         android:directBootAware="true"
+-        android:theme="@style/Theme.SubSettingsBase.Expressive">
++        android:theme="@style/Theme.SubSettingsBase">
+ 
+         <activity
+             android:name=".GameModeActivity"
+-- 
+2.43.0
+
