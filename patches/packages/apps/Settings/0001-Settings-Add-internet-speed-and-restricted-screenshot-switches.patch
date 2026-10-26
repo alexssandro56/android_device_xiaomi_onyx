@@ -1,0 +1,216 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: onyx <onyx@localhost>
+Date: Mon, 26 Oct 2026 11:30:00 +0000
+Subject: [PATCH] Settings: Add internet speed and restricted screenshot
+ switches to Display
+
+Standalone onyx Display switches (no pure black): the network traffic
+indicator switches, the allow-restricted-screenshots switch, their
+controllers and onyx_strings.
+---
+ res/values-pt-rBR/onyx_strings.xml            | 17 +++++++
+ res/values/onyx_strings.xml                   | 18 ++++++++
+ res/xml/display_settings.xml                  | 33 ++++++++++++++
+ ...ableSecureWindowsPreferenceController.java | 45 +++++++++++++++++++
+ .../NetworkTrafficSettingController.java      | 44 ++++++++++++++++++
+ 5 files changed, 157 insertions(+)
+ create mode 100644 res/values-pt-rBR/onyx_strings.xml
+ create mode 100644 res/values/onyx_strings.xml
+ create mode 100644 src/com/android/settings/display/DisableSecureWindowsPreferenceController.java
+ create mode 100644 src/com/android/settings/display/NetworkTrafficSettingController.java
+
+diff --git a/res/values-pt-rBR/onyx_strings.xml b/res/values-pt-rBR/onyx_strings.xml
+new file mode 100644
+index 0000000..5f21f37
+--- /dev/null
++++ b/res/values-pt-rBR/onyx_strings.xml
+@@ -0,0 +1,17 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!--
++     SPDX-FileCopyrightText: 2026 alexssandro56
++     SPDX-License-Identifier: Apache-2.0
++-->
++<resources>
++    <string name="network_traffic_title">Velocidade da Internet</string>
++    <string name="network_traffic_summary">Mostrar a velocidade de subida/descida na barra de status</string>
++    <string name="network_traffic_units_title">Mostrar em bytes</string>
++    <string name="network_traffic_units_summary">Usar B/s em vez de bit/s</string>
++    <string name="network_traffic_autohide_title">Ocultar quando parado</string>
++    <string name="network_traffic_autohide_summary">Ocultar o medidor quando houver pouco tráfego</string>
++    <string name="network_traffic_hidearrow_title">Ocultar setas</string>
++    <string name="network_traffic_hidearrow_summary">Ocultar as setas de subida/descida</string>
++    <string name="disable_secure_windows_title">Permitir captura de conteúdo restrito</string>
++    <string name="disable_secure_windows_summary">Capturar apps que bloqueiam screenshots. Só em builds de debug</string>
++</resources>
+diff --git a/res/values/onyx_strings.xml b/res/values/onyx_strings.xml
+new file mode 100644
+index 0000000..86cca48
+--- /dev/null
++++ b/res/values/onyx_strings.xml
+@@ -0,0 +1,18 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!--
++     SPDX-FileCopyrightText: 2026 alexssandro56
++     SPDX-License-Identifier: Apache-2.0
++-->
++<resources>
++    <!-- Display settings: pure black dark theme -->
++    <string name="network_traffic_title">Internet speed</string>
++    <string name="network_traffic_summary">Show the current up/download speed in the status bar</string>
++    <string name="network_traffic_units_title">Show in bytes</string>
++    <string name="network_traffic_units_summary">Use B/s instead of bit/s</string>
++    <string name="network_traffic_autohide_title">Hide when idle</string>
++    <string name="network_traffic_autohide_summary">Hide the indicator when there is little traffic</string>
++    <string name="network_traffic_hidearrow_title">Hide arrows</string>
++    <string name="network_traffic_hidearrow_summary">Hide the up/download direction arrows</string>
++    <string name="disable_secure_windows_title">Allow screenshots of restricted content</string>
++    <string name="disable_secure_windows_summary">Capture apps that block screenshots. Only works on debug builds</string>
++</resources>
+diff --git a/res/xml/display_settings.xml b/res/xml/display_settings.xml
+index 29a49be..577ad3b 100644
+--- a/res/xml/display_settings.xml
++++ b/res/xml/display_settings.xml
+@@ -107,6 +107,39 @@
+             settings:controller="com.android.settings.display.DarkUIPreferenceController"
+             settings:keywords="@string/keywords_dark_ui_mode"/>
+ 
++        <SwitchPreferenceCompat
++            android:key="network_traffic_state"
++            android:title="@string/network_traffic_title"
++            android:summary="@string/network_traffic_summary"
++            settings:controller="com.android.settings.display.NetworkTrafficSettingController"/>
++
++        <SwitchPreferenceCompat
++            android:key="network_traffic_units"
++            android:title="@string/network_traffic_units_title"
++            android:summary="@string/network_traffic_units_summary"
++            android:dependency="network_traffic_state"
++            settings:controller="com.android.settings.display.NetworkTrafficSettingController"/>
++
++        <SwitchPreferenceCompat
++            android:key="network_traffic_autohide"
++            android:title="@string/network_traffic_autohide_title"
++            android:summary="@string/network_traffic_autohide_summary"
++            android:dependency="network_traffic_state"
++            settings:controller="com.android.settings.display.NetworkTrafficSettingController"/>
++
++        <SwitchPreferenceCompat
++            android:key="network_traffic_hidearrow"
++            android:title="@string/network_traffic_hidearrow_title"
++            android:summary="@string/network_traffic_hidearrow_summary"
++            android:dependency="network_traffic_state"
++            settings:controller="com.android.settings.display.NetworkTrafficSettingController"/>
++
++        <SwitchPreferenceCompat
++            android:key="disable_secure_windows"
++            android:title="@string/disable_secure_windows_title"
++            android:summary="@string/disable_secure_windows_summary"
++            settings:controller="com.android.settings.display.DisableSecureWindowsPreferenceController"/>
++
+         <Preference
+             android:fragment="com.android.settings.accessibility.TextReadingPreferenceFragment"
+             android:key="text_reading_options"
+diff --git a/src/com/android/settings/display/DisableSecureWindowsPreferenceController.java b/src/com/android/settings/display/DisableSecureWindowsPreferenceController.java
+new file mode 100644
+index 0000000..6bc02c8
+--- /dev/null
++++ b/src/com/android/settings/display/DisableSecureWindowsPreferenceController.java
+@@ -0,0 +1,45 @@
++/*
++ * SPDX-FileCopyrightText: 2026 alexssandro56
++ * SPDX-License-Identifier: Apache-2.0
++ */
++
++package com.android.settings.display;
++
++import android.content.Context;
++import android.provider.Settings;
++
++import com.android.settings.R;
++import com.android.settings.core.TogglePreferenceController;
++
++/**
++ * Switch for Settings.Secure.disable_secure_windows, which WindowManager reads to drop
++ * FLAG_SECURE from windows so restricted content can be captured. WindowManager only
++ * honours it on debuggable builds, but the switch is harmless either way.
++ */
++public class DisableSecureWindowsPreferenceController extends TogglePreferenceController {
++
++    public DisableSecureWindowsPreferenceController(Context context, String key) {
++        super(context, key);
++    }
++
++    @Override
++    public int getAvailabilityStatus() {
++        return AVAILABLE;
++    }
++
++    @Override
++    public boolean isChecked() {
++        return Settings.Secure.getInt(mContext.getContentResolver(), getPreferenceKey(), 0) != 0;
++    }
++
++    @Override
++    public boolean setChecked(boolean isChecked) {
++        return Settings.Secure.putInt(mContext.getContentResolver(), getPreferenceKey(),
++                isChecked ? 1 : 0);
++    }
++
++    @Override
++    public int getSliceHighlightMenuRes() {
++        return R.string.menu_key_display;
++    }
++}
+diff --git a/src/com/android/settings/display/NetworkTrafficSettingController.java b/src/com/android/settings/display/NetworkTrafficSettingController.java
+new file mode 100644
+index 0000000..528ecb7
+--- /dev/null
++++ b/src/com/android/settings/display/NetworkTrafficSettingController.java
+@@ -0,0 +1,44 @@
++/*
++ * SPDX-FileCopyrightText: 2026 alexssandro56
++ * SPDX-License-Identifier: Apache-2.0
++ */
++
++package com.android.settings.display;
++
++import android.content.Context;
++import android.provider.Settings;
++
++import com.android.settings.R;
++import com.android.settings.core.TogglePreferenceController;
++
++/**
++ * Generic switch controller for the network traffic indicator. The preference key is used
++ * verbatim as the Settings.System key, so one controller drives every switch.
++ */
++public class NetworkTrafficSettingController extends TogglePreferenceController {
++
++    public NetworkTrafficSettingController(Context context, String key) {
++        super(context, key);
++    }
++
++    @Override
++    public int getAvailabilityStatus() {
++        return AVAILABLE;
++    }
++
++    @Override
++    public boolean isChecked() {
++        return Settings.System.getInt(mContext.getContentResolver(), getPreferenceKey(), 0) != 0;
++    }
++
++    @Override
++    public boolean setChecked(boolean isChecked) {
++        return Settings.System.putInt(mContext.getContentResolver(), getPreferenceKey(),
++                isChecked ? 1 : 0);
++    }
++
++    @Override
++    public int getSliceHighlightMenuRes() {
++        return R.string.menu_key_display;
++    }
++}
+-- 
+2.43.0
+
