@@ -1,0 +1,41 @@
+From a0de74213fb1a303200fd1040233cf2d06b6cf23 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Thu, 22 Oct 2026 21:04:49 -0300
+Subject: [PATCH] snxxx: Stop the client thread when a forced FW download
+ aborts
+
+When the FW integrity or FW/MW version check fails after a forced FW
+download, phNxpNciHal_force_fw_download() releases the client message
+queue and returns NFCSTATUS_CMD_ABORTED, and phNxpNciHal_MinOpen() gives
+up through phNxpNciHal_MinOpen_Clean(), which never stops the client
+thread. phDal4Nfc_msgrelease() then wakes the thread with an empty
+message while thread_running is still 1, and from there on it keeps
+calling phDal4Nfc_msgrcv() on a queue id of 0.
+
+Mark the thread stopped before releasing the queue, so the wakeup makes
+it exit instead.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01Kye574qt5dotSwvkUkvhEe
+---
+ snxxx/halimpl/hal/phNxpNciHal.cc | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/snxxx/halimpl/hal/phNxpNciHal.cc b/snxxx/halimpl/hal/phNxpNciHal.cc
+index 75c505b..bdf8d6e 100644
+--- a/snxxx/halimpl/hal/phNxpNciHal.cc
++++ b/snxxx/halimpl/hal/phNxpNciHal.cc
+@@ -493,6 +493,10 @@ static NFCSTATUS phNxpNciHal_force_fw_download(uint8_t seq_handler_offset,
+     } else if (status == NFCSTATUS_FW_CHECK_INTEGRITY_FAILED ||
+                (phNxpNciHal_fw_mw_ver_check() != NFCSTATUS_SUCCESS)) {
+       intptr_t client_id = nxpncihal_ctrl.gDrvCfg.nClientId;
++      /* The caller gives up on this open without closing it, so stop the client
++       * thread here. phDal4Nfc_msgrelease() wakes it up, and it exits on
++       * thread_running instead of handling an empty message. */
++      phNxpNciHal_kill_client_thread(&nxpncihal_ctrl);
+       nxpncihal_ctrl.gDrvCfg.nClientId = 0;
+       phOsalNfc_Timer_Cleanup();
+       phNxpTempMgr::GetInstance().Reset();
+-- 
+2.43.0
+
