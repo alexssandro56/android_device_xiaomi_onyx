@@ -1,19 +1,21 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: onyx <onyx@localhost>
-Date: Mon, 26 Oct 2026 10:10:45 +0000
+Date: Mon, 26 Oct 2026 10:25:07 +0000
 Subject: [PATCH] NotGameTurbo: Build against AOSPA
 
-org.lineageos.settings.resources (the Expressive theme resources) is a
-LineageOS lib AOSPA does not have; the SettingsLib widgets the app uses come
-from SettingsLibDefaults instead. Drop it and use the base Theme.SubSettingsBase.
-
-The vendor.xiaomi.hw.touchfeature AIDL lives in the global namespace here (as
-XiaomiParts references it unqualified), not under //device/xiaomi/onyx, so drop
-the path qualifier.
+- Drop org.lineageos.settings.resources (a LineageOS lib AOSPA lacks); the
+  SettingsLib widgets come from SettingsLibDefaults, and use the base
+  Theme.SubSettingsBase.
+- Reference the vendor.xiaomi.hw.touchfeature AIDL unqualified: it is in the
+  global namespace here (XiaomiParts uses it that way), not //device/xiaomi/onyx.
+- Drop the vendor_sysfs_touch sepolicy rules: that type does not exist on this
+  tree, and the app drives touch through the touchfeature HAL, not the sysfs
+  fallback.
 ---
- Android.bp          | 3 +--
- AndroidManifest.xml | 2 +-
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ Android.bp               | 3 +--
+ AndroidManifest.xml      | 2 +-
+ sepolicy/notgameturbo.te | 4 ----
+ 3 files changed, 2 insertions(+), 7 deletions(-)
 
 diff --git a/Android.bp b/Android.bp
 index b789860..c24e151 100644
@@ -42,6 +44,18 @@ index d8278c9..fe88fda 100644
  
          <activity
              android:name=".GameModeActivity"
+diff --git a/sepolicy/notgameturbo.te b/sepolicy/notgameturbo.te
+index 533bc51..c2edcf9 100644
+--- a/sepolicy/notgameturbo.te
++++ b/sepolicy/notgameturbo.te
+@@ -3,7 +3,3 @@ binder_call(platform_app, hal_touchfeature_xiaomi_default)
+ allow priv_app hal_touchfeature_xiaomi_service:service_manager find;
+ binder_call(priv_app, hal_touchfeature_xiaomi_default)
+ 
+-allow platform_app vendor_sysfs_touch:file rw_file_perms;
+-allow priv_app vendor_sysfs_touch:file rw_file_perms;
+-
+-typeattribute vendor_sysfs_touch mlstrustedobject;
 -- 
 2.43.0
 
