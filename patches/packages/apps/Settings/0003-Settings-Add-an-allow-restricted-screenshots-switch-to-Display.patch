@@ -1,0 +1,108 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: onyx <onyx@localhost>
+Date: Mon, 26 Oct 2026 09:30:43 +0000
+Subject: [PATCH] Settings: Add an allow restricted screenshots switch to
+ Display
+
+Settings.Secure.disable_secure_windows is read by WindowManager
+(getDisableSecureWindows) to drop FLAG_SECURE so content that blocks
+screenshots can be captured. Expose a Display switch for it, next to the
+pure black and internet speed switches.
+---
+ res/values-pt-rBR/onyx_strings.xml            |  2 +
+ res/values/onyx_strings.xml                   |  2 +
+ res/xml/display_settings.xml                  |  6 +++
+ ...ableSecureWindowsPreferenceController.java | 45 +++++++++++++++++++
+ 4 files changed, 55 insertions(+)
+ create mode 100644 src/com/android/settings/display/DisableSecureWindowsPreferenceController.java
+
+diff --git a/res/values-pt-rBR/onyx_strings.xml b/res/values-pt-rBR/onyx_strings.xml
+index 70ae0c3..2440e25 100644
+--- a/res/values-pt-rBR/onyx_strings.xml
++++ b/res/values-pt-rBR/onyx_strings.xml
+@@ -14,4 +14,6 @@
+     <string name="network_traffic_autohide_summary">Ocultar o medidor quando houver pouco tráfego</string>
+     <string name="network_traffic_hidearrow_title">Ocultar setas</string>
+     <string name="network_traffic_hidearrow_summary">Ocultar as setas de subida/descida</string>
++    <string name="disable_secure_windows_title">Permitir captura de conteúdo restrito</string>
++    <string name="disable_secure_windows_summary">Capturar apps que bloqueiam screenshots. Só em builds de debug</string>
+ </resources>
+diff --git a/res/values/onyx_strings.xml b/res/values/onyx_strings.xml
+index c402b77..f396951 100644
+--- a/res/values/onyx_strings.xml
++++ b/res/values/onyx_strings.xml
+@@ -15,4 +15,6 @@
+     <string name="network_traffic_autohide_summary">Hide the indicator when there is little traffic</string>
+     <string name="network_traffic_hidearrow_title">Hide arrows</string>
+     <string name="network_traffic_hidearrow_summary">Hide the up/download direction arrows</string>
++    <string name="disable_secure_windows_title">Allow screenshots of restricted content</string>
++    <string name="disable_secure_windows_summary">Capture apps that block screenshots. Only works on debug builds</string>
+ </resources>
+diff --git a/res/xml/display_settings.xml b/res/xml/display_settings.xml
+index dba8191..9292f23 100644
+--- a/res/xml/display_settings.xml
++++ b/res/xml/display_settings.xml
+@@ -140,6 +140,12 @@
+             android:dependency="network_traffic_state"
+             settings:controller="com.android.settings.display.NetworkTrafficSettingController"/>
+ 
++        <SwitchPreferenceCompat
++            android:key="disable_secure_windows"
++            android:title="@string/disable_secure_windows_title"
++            android:summary="@string/disable_secure_windows_summary"
++            settings:controller="com.android.settings.display.DisableSecureWindowsPreferenceController"/>
++
+         <Preference
+             android:fragment="com.android.settings.accessibility.TextReadingPreferenceFragment"
+             android:key="text_reading_options"
+diff --git a/src/com/android/settings/display/DisableSecureWindowsPreferenceController.java b/src/com/android/settings/display/DisableSecureWindowsPreferenceController.java
+new file mode 100644
+index 0000000..6bc02c8
+--- /dev/null
++++ b/src/com/android/settings/display/DisableSecureWindowsPreferenceController.java
+@@ -0,0 +1,45 @@
++/*
++ * SPDX-FileCopyrightText: 2026 alexssandro56
++ * SPDX-License-Identifier: Apache-2.0
++ */
++
++package com.android.settings.display;
++
++import android.content.Context;
++import android.provider.Settings;
++
++import com.android.settings.R;
++import com.android.settings.core.TogglePreferenceController;
++
++/**
++ * Switch for Settings.Secure.disable_secure_windows, which WindowManager reads to drop
++ * FLAG_SECURE from windows so restricted content can be captured. WindowManager only
++ * honours it on debuggable builds, but the switch is harmless either way.
++ */
++public class DisableSecureWindowsPreferenceController extends TogglePreferenceController {
++
++    public DisableSecureWindowsPreferenceController(Context context, String key) {
++        super(context, key);
++    }
++
++    @Override
++    public int getAvailabilityStatus() {
++        return AVAILABLE;
++    }
++
++    @Override
++    public boolean isChecked() {
++        return Settings.Secure.getInt(mContext.getContentResolver(), getPreferenceKey(), 0) != 0;
++    }
++
++    @Override
++    public boolean setChecked(boolean isChecked) {
++        return Settings.Secure.putInt(mContext.getContentResolver(), getPreferenceKey(),
++                isChecked ? 1 : 0);
++    }
++
++    @Override
++    public int getSliceHighlightMenuRes() {
++        return R.string.menu_key_display;
++    }
++}
