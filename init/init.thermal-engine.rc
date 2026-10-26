@@ -1,0 +1,15 @@
+# thermal-engine-v2 with the onyx configuration.
+service vendor.thermal-engine /vendor/bin/thermal-engine-v2 -c /vendor/etc/thermal-engine-onyx.conf
+    class main
+    user root
+    group root
+    socket thermal-send-client stream 0660 system oem_2907
+    socket thermal-recv-client stream 0660 system oem_2907
+    socket thermal-recv-passive-client stream 0660 system oem_2907
+    socket thermal-send-rule stream 0660 system oem_2907
+
+# thermal-engine only looks for sensors and cooling devices when it starts.
+# Restart it once boot completes, as Qualcomm's own rc does, so it also
+# picks up the ones that register late.
+on property:sys.boot_completed=1
+    restart vendor.thermal-engine

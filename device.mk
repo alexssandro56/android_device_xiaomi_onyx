@@ -395,7 +395,11 @@ PRODUCT_PACKAGES += \
 
 # Thermal
 PRODUCT_PACKAGES += \
-    android.hardware.thermal-service.qti
+    android.hardware.thermal-service.qti \
+    init.thermal-engine.rc
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/thermal/thermal-engine-onyx.conf:$(TARGET_COPY_OUT_VENDOR)/etc/thermal-engine-onyx.conf
 
 # Task Profiles
 PRODUCT_COPY_FILES += \
