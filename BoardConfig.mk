@@ -265,6 +265,3 @@ include vendor/xiaomi/onyx/BoardConfigVendor.mk
 
 # LeicaCamera (xiaomi-onyx-playground)
 -include vendor/xiaomi/onyx-leicacamera/BoardConfigVendor.mk
-
-# Pixel Launcher
--include vendor/pixel/launcher/products/board.mk

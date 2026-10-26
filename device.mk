@@ -441,10 +441,6 @@ PRODUCT_COPY_FILES += \
 # Game Turbo
 $(call inherit-product-if-exists, packages/apps/NotGameTurbo/notgameturbo.mk)
 
-# Pixel Launcher (NexusLauncher), kept alongside Launcher3 so either can be
-# picked in Settings > Home. Gated on WITH_GMS inside launcher.mk.
-$(call inherit-product-if-exists, vendor/pixel/launcher/products/launcher.mk)
-
 # LeicaCamera (xiaomi-onyx-playground)
 $(call inherit-product-if-exists, vendor/xiaomi/onyx-leicacamera/onyx-leicacamera-vendor.mk)
 PRODUCT_PACKAGES += \
