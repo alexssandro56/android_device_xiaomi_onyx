@@ -61,40 +61,6 @@ PRODUCT_SHIPPING_API_LEVEL := 35
 # Audio
 TARGET_USE_AIDL_QTI_BT_AUDIO := true
 
-AUDIO_HAL_DIR := hardware/qcom-caf/sm8750/audio/primary-hal
-
-# AGM, PAL, graphservices and the core/effect HALs, built from source
-PRODUCT_PACKAGES += \
-    audio.bluetooth.default \
-    audio.r_submix.default \
-    audio.usb.default \
-    audioadsprpcd \
-    audiohalservice.qti \
-    libagm_compress_plugin \
-    libagm_mixer_plugin \
-    libagm_pcm_plugin \
-    libagmipcservice \
-    libaudiochargerlistener \
-    libaudiocorehal.default \
-    libaudiocorehal.qti \
-    libaudioeffecthal.qti \
-    libaudioplatformconverter.qti \
-    libbatterylistener \
-    libcustomva_intf \
-    libfmpal \
-    libhfp_pal \
-    libhotword_intf \
-    libpaleventnotifier \
-    libpalipcservice \
-    libqcompostprocbundle \
-    libqcomvisualizer \
-    libqcomvoiceprocessing \
-    libsndcardparser \
-    libsoundtriggerhal.qti \
-    libvolumelistener \
-    libvui_intf \
-    qtiaudiohalvendorextn
-
 PRODUCT_PACKAGES += \
     android.hardware.audio.common-V1-ndk.vendor \
     android.hardware.audio.core-V2-ndk.vendor \
@@ -102,7 +68,6 @@ PRODUCT_PACKAGES += \
     libalsautilsv2.vendor \
     libaudioaidlcommon.vendor \
     libaudioutils_shim \
-    libmediautils_vendor.vendor \
     libmemunreachable.vendor \
     qti-audio-types-aidl-V1-ndk.vendor
 
@@ -112,13 +77,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_tuna/audio_policy_configuration.xml \
     $(LOCAL_PATH)/configs/audio/audio_policy_volumes.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_volumes.xml \
     $(LOCAL_PATH)/configs/audio/default_volume_tables.xml:$(TARGET_COPY_OUT_VENDOR)/etc/default_volume_tables.xml
-
-# Audio configs from the source primary-hal
-PRODUCT_COPY_FILES += \
-    $(AUDIO_HAL_DIR)/../pal/configs/sun/Hapticsconfig.xml:$(TARGET_COPY_OUT_VENDOR)/etc/Hapticsconfig.xml \
-    $(AUDIO_HAL_DIR)/configs/sun/quasar_config.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio/sku_tuna/quasar_config.xml \
-    $(AUDIO_HAL_DIR)/configs/sun/vendor_audio_interfaces.xml:$(TARGET_COPY_OUT_VENDOR)/etc/vendor_audio_interfaces.xml \
-    $(AUDIO_HAL_DIR)/configs/sun/microphone_characteristics.xml:$(TARGET_COPY_OUT_VENDOR)/etc/microphone_characteristics.xml
 
 # Boot control
 PRODUCT_PACKAGES += \
