@@ -86,6 +86,13 @@ on property:vendor.post_boot.parsed=1
     # from boot on
     write /proc/sys/walt/sched_ravg_window_nr_ticks 2
 
+    # Let the big, titanium and prime cores use their top frequencies as
+    # soon as the load asks for them, instead of after 300ms of sustained
+    # load. The little cluster keeps post_boot's 1804800 cap.
+    write /proc/sys/walt/cluster1/smart_freq/legacy_freq_levels "0 3014400 6 3014400 7 3014400 8 3014400"
+    write /proc/sys/walt/cluster2/smart_freq/legacy_freq_levels "0 2803200 6 2803200 7 2803200 8 2803200"
+    write /proc/sys/walt/cluster3/smart_freq/legacy_freq_levels "0 3206400 6 3206400 7 3206400 8 3206400"
+
 service vendor.camera-wmfix /vendor/bin/sh /vendor/bin/init.camera.wmfix.sh
     class late_start
     user camera
