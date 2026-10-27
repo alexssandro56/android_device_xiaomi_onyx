@@ -5,8 +5,10 @@ ro.vendor.audio.btsamplerate.adaptive=true
 ro.vendor.audio.dualadc.support=true
 ro.vendor.audio.gain.support=true
 ro.vendor.audio.support.sound.id=true
+vendor.audio.offload.buffer.size.kb=64
 
 # Bluetooth
+persist.bluetooth.a2dp_aac_abr.enable=true
 persist.bluetooth.a2dp_offload.disabled=false
 ro.bluetooth.a2dp_offload.supported=true
 # aptX Adaptive R2.1 (96 kHz) and R2.2 (Lossless), encoded by the QTI offload provider
@@ -16,6 +18,9 @@ persist.vendor.qcom.bluetooth.aptxadaptiver2_2_support=true
 # Camera
 ro.camera.enableCamera1MaxZsl=1
 ro.camerax.extensions.enabled=true
+
+# Media
+ro.config.media_vol_steps=25
 
 # Crypto
 ro.crypto.metadata_init_delete_all_keys.enabled=true
