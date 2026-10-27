@@ -82,6 +82,9 @@ TARGET_KERNEL_CONFIG := \
     vendor/sun_perf.config \
     vendor/onyx_perf.config
 
+# Link the kernel and its modules with Clang full LTO
+KERNEL_LTO := full
+
 BOARD_BOOT_HEADER_VERSION := 4
 BOARD_MKBOOTIMG_ARGS += --header_version $(BOARD_BOOT_HEADER_VERSION)
 
