@@ -753,6 +753,8 @@
     <!--FPS Update from Framework-->
         <!-- SCHED_WINDOW_TICKS_UPDATE resource opcode, value -->
         <!-- BUS_DCVS_MEMLAT_SAMPLE_MS resource opcode, value -->
+        <!-- onyx: every refresh rate uses the 120fps window, 2 ticks (8ms),
+             and the 8ms memlat sampling period -->
         <!-- Below additional resources for 120+ FPS -->
         <!-- SCHED_BUSY_HYSTERSIS_CPU_MASK resource opcode, value-->
         <!-- LPM Bias resource opcode, value-->
@@ -762,19 +764,19 @@
         <!-- 30fps -->
         <Config
             Id="0x00001094" Type="30" Enable="true" Target="sun" Timeout="0"
-            Resources="0x40CA4000, 8, 0x43468000, 32" />
+            Resources="0x40CA4000, 2, 0x43468000, 8" />
         <!-- 45fps -->
         <Config
             Id="0x00001094" Type="45" Enable="true" Target="sun" Timeout="0"
-            Resources="0x40CA4000, 5, 0x43468000, 20" />
+            Resources="0x40CA4000, 2, 0x43468000, 8" />
         <!-- 60fps -->
         <Config
             Id="0x00001094" Type="60" Enable="true" Target="sun" Timeout="0"
-            Resources="0x40CA4000, 4, 0x43468000, 16" />
+            Resources="0x40CA4000, 2, 0x43468000, 8" />
         <!-- 90fps -->
         <Config
             Id="0x00001094" Type="90" Enable="true" Target="sun" Timeout="0"
-            Resources="0x40CA4000, 3, 0x43468000, 12" />
+            Resources="0x40CA4000, 2, 0x43468000, 8" />
         <!-- 120fps -->
         <Config
             Id="0x00001094" Type="120" Enable="true" Target="sun" Timeout="0"
@@ -829,6 +831,8 @@
         <!--FPS Immediate Update from within Perfd-->
         <!-- SCHED_WINDOW_TICKS_UPDATE resource opcode, value -->
         <!-- BUS_DCVS_MEMLAT_SAMPLE_MS resource opcode, value -->
+        <!-- onyx: every refresh rate uses the 120fps window, 2 ticks (8ms),
+             and the 8ms memlat sampling period -->
         <!-- Below additional resources for 120+ FPS -->
         <!-- SCHED_BUSY_HYSTERSIS_CPU_MASK resource opcode, value-->
         <!-- LPM Bias resource opcode, value-->
@@ -838,19 +842,19 @@
         <!-- 30fps -->
         <Config
             Id="0x0000109B" Type="30" Enable="true" Target="sun" Timeout="0"
-            Resources="0x40CA4000, 8, 0x43468000, 32" />
+            Resources="0x40CA4000, 2, 0x43468000, 8" />
         <!-- 45fps -->
         <Config
             Id="0x0000109B" Type="45" Enable="true" Target="sun" Timeout="0"
-            Resources="0x40CA4000, 5, 0x43468000, 20" />
+            Resources="0x40CA4000, 2, 0x43468000, 8" />
         <!-- 60fps -->
         <Config
             Id="0x0000109B" Type="60" Enable="true" Target="sun" Timeout="0"
-            Resources="0x40CA4000, 4, 0x43468000, 16" />
+            Resources="0x40CA4000, 2, 0x43468000, 8" />
         <!-- 90fps -->
         <Config
             Id="0x0000109B" Type="90" Enable="true" Target="sun" Timeout="0"
-            Resources="0x40CA4000, 3, 0x43468000, 12" />
+            Resources="0x40CA4000, 2, 0x43468000, 8" />
         <!-- 120fps -->
         <Config
             Id="0x0000109B" Type="120" Enable="true" Target="sun" Timeout="0"

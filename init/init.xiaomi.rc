@@ -80,6 +80,12 @@ on property:sys.boot_completed=1
     # camera), which cameraserver cannot read, so the watermark is dropped.
     start vendor.camera-wmfix
 
+# Scheduler settings on top of the tuna post_boot script
+on property:vendor.post_boot.parsed=1
+    # 8ms WALT windows, which the perf HAL's refresh rate hints also set,
+    # from boot on
+    write /proc/sys/walt/sched_ravg_window_nr_ticks 2
+
 service vendor.camera-wmfix /vendor/bin/sh /vendor/bin/init.camera.wmfix.sh
     class late_start
     user camera
