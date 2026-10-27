@@ -257,6 +257,9 @@ BOARD_AVB_VENDOR_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha256
 BOARD_AVB_SYSTEM_DLKM_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha256
 BOARD_AVB_ODM_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha256
 
+# Game Turbo
+-include packages/apps/NotGameTurbo/BoardConfig.mk
+
 # Vendor
 include vendor/xiaomi/onyx/BoardConfigVendor.mk
 

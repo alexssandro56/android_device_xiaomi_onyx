@@ -1,0 +1,60 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: onyx <onyx@localhost>
+Date: Mon, 27 Oct 2026 14:30:00 +0000
+Subject: [PATCH] NotGameTurbo: Build against AOSPA
+
+- Drop org.lineageos.settings.resources (a LineageOS lib AOSPA lacks); the
+  SettingsLib widgets come from SettingsLibDefaults, and use the base
+  Theme.SubSettingsBase.
+- Reference the vendor.xiaomi.hw.touchfeature AIDL unqualified: it is in the
+  global namespace here (XiaomiParts uses it that way), not //device/xiaomi/onyx.
+- Drop the vendor_sysfs_touch sepolicy rules: that type does not exist on this
+  tree, and the app drives touch through the touchfeature HAL, not the sysfs
+  fallback.
+---
+ Android.bp               | 3 +--
+ AndroidManifest.xml      | 2 +-
+ sepolicy/notgameturbo.te | 4 ----
+ 3 files changed, 2 insertions(+), 7 deletions(-)
+
+diff --git a/Android.bp b/Android.bp
+index b789860..c24e151 100644
+--- a/Android.bp
++++ b/Android.bp
+@@ -20,7 +20,6 @@ android_app {
+         "androidx.appcompat_appcompat",
+         "androidx.core_core",
+         "androidx.preference_preference",
+-        "org.lineageos.settings.resources",
+-        "//device/xiaomi/onyx:vendor.xiaomi.hw.touchfeature-V1-java",
++        "vendor.xiaomi.hw.touchfeature-V1-java",
+     ],
+ }
+diff --git a/AndroidManifest.xml b/AndroidManifest.xml
+index d8278c9..fe88fda 100644
+--- a/AndroidManifest.xml
++++ b/AndroidManifest.xml
+@@ -21,7 +21,7 @@
+         android:persistent="true"
+         android:defaultToDeviceProtectedStorage="true"
+         android:directBootAware="true"
+-        android:theme="@style/Theme.SubSettingsBase.Expressive">
++        android:theme="@style/Theme.SubSettingsBase">
+
+         <activity
+             android:name=".GameModeActivity"
+diff --git a/sepolicy/notgameturbo.te b/sepolicy/notgameturbo.te
+index 533bc51..c2edcf9 100644
+--- a/sepolicy/notgameturbo.te
++++ b/sepolicy/notgameturbo.te
+@@ -3,7 +3,3 @@ binder_call(platform_app, hal_touchfeature_xiaomi_default)
+ allow priv_app hal_touchfeature_xiaomi_service:service_manager find;
+ binder_call(priv_app, hal_touchfeature_xiaomi_default)
+
+-allow platform_app vendor_sysfs_touch:file rw_file_perms;
+-allow priv_app vendor_sysfs_touch:file rw_file_perms;
+-
+-typeattribute vendor_sysfs_touch mlstrustedobject;
+--
+2.43.0
+

@@ -442,6 +442,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/wifi/WCNSS_qcom_cfg.ini:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wcn7750/WCNSS_qcom_cfg.ini
 
+# Game Turbo
+$(call inherit-product-if-exists, packages/apps/NotGameTurbo/notgameturbo.mk)
+
 # LeicaCamera (xiaomi-onyx-playground)
 $(call inherit-product-if-exists, vendor/xiaomi/onyx-leicacamera/onyx-leicacamera-vendor.mk)
 PRODUCT_PACKAGES += \
