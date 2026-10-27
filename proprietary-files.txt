@@ -93,11 +93,7 @@ vendor/etc/vintf/manifest/manifest_audiocorehal_default.xml
 vendor/etc/vintf/manifest/qasr_vintf.xml
 vendor/etc/vintf/manifest/soundtrigger.qti.xml
 vendor/lib64/hw/audio.primary.default.so
-vendor/lib64/hw/libaudiocorehal.default.so
-vendor/lib64/hw/libaudiocorehal.qti.so;DISABLE_DEPS
-vendor/lib64/hw/libaudioeffecthal.qti.so
 vendor/lib64/hw/libsoundtriggerhal.qti.so
-vendor/lib64/libPeripheralStateUtils.so
 vendor/lib64/libVoiceSdk.so
 vendor/lib64/lib_bt_aptx.so
 vendor/lib64/lib_bt_ble.so
@@ -105,16 +101,10 @@ vendor/lib64/lib_bt_bundle.so
 vendor/lib64/lib_bt_lhdc.so
 vendor/lib64/lib_bt_mihc.so
 vendor/lib64/libadm.so
-vendor/lib64/libar-acdb.so
-vendor/lib64/libar-gpr.so
-vendor/lib64/libar-gsl.so
-vendor/lib64/libar-pal.so
 vendor/lib64/libarmemlog.so
-vendor/lib64/libats.so
 vendor/lib64/libaudio_log_utils.so
 vendor/lib64/libaudiochargerlistener.so
 vendor/lib64/libaudiocloudctrl.so
-vendor/lib64/libaudioplatformconverter.qti.so
 vendor/lib64/libav_miwnsencoder.so
 vendor/lib64/libbatterylistener.so
 vendor/lib64/libcapiv2svacnnvendor.so
@@ -129,8 +119,6 @@ vendor/lib64/libhfp_pal.so
 vendor/lib64/libhotword_intf.so
 vendor/lib64/liblistensoundmodel2vendor.so
 vendor/lib64/liblistensoundmodelaidl.so
-vendor/lib64/liblx-ar_util.so
-vendor/lib64/liblx-osal.so
 vendor/lib64/libmcs.so
 vendor/lib64/libmediautils_vendor.so;MODULE_SUFFIX=_onyx
 vendor/lib64/libmidatabase.so
@@ -140,7 +128,6 @@ vendor/lib64/libmisfpsop.so
 vendor/lib64/libmisops.so
 vendor/lib64/libmisoundsa.so
 vendor/lib64/libpal_net_if.so
-vendor/lib64/libpalclient.so
 vendor/lib64/libpaleventnotifier.so
 vendor/lib64/libpalipcservice.so
 vendor/lib64/libqasr.so
@@ -188,11 +175,8 @@ vendor/bin/agmhostless
 vendor/bin/agmplay
 vendor/bin/agmvoiceui
 vendor/bin/cplay
-vendor/lib64/libagm.so
 vendor/lib64/libagm_mixer_plugin.so
 vendor/lib64/libagm_pcm_plugin.so
-vendor/lib64/libagmclient.so
-vendor/lib64/libagmipcservice.so
 vendor/lib64/libagmmixer.so
 vendor/lib64/libmisight.so
 
@@ -210,16 +194,12 @@ vendor/lib64/soundfx/libhwdapaidl.so;DISABLE_DEPS
 vendor/lib64/soundfx/libldnhncr.so
 vendor/lib64/soundfx/libloudnessenhanceraidl.so;DISABLE_DEPS
 vendor/lib64/soundfx/libmiwndnsprocessingaidl.so
-vendor/lib64/soundfx/libqcompostprocbundle.so
-vendor/lib64/soundfx/libqcomvisualizer.so
-vendor/lib64/soundfx/libqcomvoiceprocessing.so
 vendor/lib64/soundfx/libquasar.so
 vendor/lib64/soundfx/libreverbaidl.so;DISABLE_DEPS
 vendor/lib64/soundfx/libswgamedapaidl.so;DISABLE_DEPS
 vendor/lib64/soundfx/libswspatializeraidl.so;DISABLE_DEPS
 vendor/lib64/soundfx/libvisualizer.so
 vendor/lib64/soundfx/libvisualizeraidl.so;DISABLE_DEPS
-vendor/lib64/soundfx/libvolumelistener.so
 
 # Dolby
 odm/etc/dolby/dax-default-spatializer.xml

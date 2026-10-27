@@ -347,8 +347,6 @@ blob_fixups: blob_fixups_user_type = {
 
     (
         'odm/lib64/libaudioroute_ext.so',
-        'vendor/lib64/libagm.so',
-        'vendor/lib64/libar-pal.so',
         'vendor/lib64/libmcs.so',
         'vendor/lib64/libmikaraoke.so',
         'vendor/lib64/libtiantongpal.so'
@@ -412,12 +410,8 @@ blob_fixups: blob_fixups_user_type = {
         'vendor/lib64/soundfx/libdownmixaidl.so',
         'vendor/lib64/soundfx/libdynamicsprocessingaidl.so',
         'vendor/lib64/soundfx/libloudnessenhanceraidl.so',
-        'vendor/lib64/soundfx/libqcompostprocbundle.so',
-        'vendor/lib64/soundfx/libqcomvisualizer.so',
-        'vendor/lib64/soundfx/libqcomvoiceprocessing.so',
         'vendor/lib64/soundfx/libreverbaidl.so',
-        'vendor/lib64/soundfx/libvisualizeraidl.so',
-        'vendor/lib64/soundfx/libvolumelistener.so'
+        'vendor/lib64/soundfx/libvisualizeraidl.so'
     ): blob_fixup()
         .replace_needed(
             'android.media.audio.common.types-V6-ndk.so',
@@ -440,16 +434,6 @@ blob_fixups: blob_fixups_user_type = {
         .replace_needed('android.media.audio.common.types-V6-ndk.so', 'android.media.audio.common.types-V3-ndk.so')
         .replace_needed('libaudio_aidl_conversion_common_ndk.so', 'libaudio_aidl_conversion_common_ndk_onyx.so')
         .replace_needed('libbluetooth_audio_session_aidl.so', 'libbluetooth_audio_session_aidl_onyx.so'),
-
-    'vendor/lib64/hw/libaudioeffecthal.qti.so': blob_fixup()
-        .replace_needed(
-            'android.media.audio.common.types-V6-ndk.so',
-            'android.media.audio.common.types-V3-ndk.so'
-        )
-        .replace_needed(
-            'libtinyxml2.so',
-            'libtinyxml2-v34.so'
-    ),
 
     (
         'vendor/lib64/libVoiceSdk.so',

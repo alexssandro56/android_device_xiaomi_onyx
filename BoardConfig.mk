@@ -35,9 +35,7 @@ TARGET_CPU_VARIANT := generic
 TARGET_CPU_VARIANT_RUNTIME := oryon
 
 # Audio
-TARGET_PROVIDES_AUDIO_HAL := true
-TARGET_PROVIDES_LIBAGM := true
-TARGET_PROVIDES_LIBAR_PAL := true
+# The AGM, PAL and audio HALs are built from hardware/qcom-caf/sm8750/audio.
 
 # Board Info
 TARGET_BOARD_INFO_FILE := $(DEVICE_PATH)/board-info.txt
