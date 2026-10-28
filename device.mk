@@ -346,13 +346,11 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     workloadclassifier-power-allowlist.xml
 
-# device/qcom/common's sun perf config only lists SM8750 (618). Add SM8735
-# (tuna: 655, 681, 694) with its own 2+3+2+1 cluster layout. device.mk is
-# inherited before aospa-target.mk, so this copy wins.
+# device/qcom/common's tuna boosts, with the 8ms scheduler window at every
+# refresh rate. device.mk is inherited before aospa-target.mk, so this copy
+# wins.
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/perf/perfboostsconfig.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/perfboostsconfig.xml \
-    $(LOCAL_PATH)/configs/perf/targetconfig.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/targetconfig.xml \
-    $(LOCAL_PATH)/configs/perf/targetresourceconfigs.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/targetresourceconfigs.xml
+    $(LOCAL_PATH)/configs/perf/perfboostsconfig.xml:$(TARGET_COPY_OUT_VENDOR)/etc/perf/perfboostsconfig.xml
 
 # Sensors
 PRODUCT_PACKAGES += \

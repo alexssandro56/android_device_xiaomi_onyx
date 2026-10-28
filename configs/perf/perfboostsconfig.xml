@@ -35,7 +35,7 @@
 
         <!-- Type="1", main launch boost of 2sec -->
         <Config
-            Id="0x00001081" Type="1" Enable="true" Timeout="2000" Target="sun"
+            Id="0x00001081" Type="1" Enable="true" Timeout="2000" Target="tuna"
             Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40804200, 0xFFF, 0x4080C300, 2803200,
                        0x40800000, 0xFFF, 0x40800100, 0xFFF, 0x40800200, 0xFFF, 0x40808300, 2803200, 0x41848000, 0x104410,
                        0x41844000, 0x104410, 0x42C10000, 0x1, 0x43488000, 0x401640,
@@ -54,7 +54,7 @@
 
         <!-- Type="2", launch boost for disable packing 1.5sec -->
         <Config
-            Id="0x00001081" Type="2" Enable="false" Timeout="1500" Target="sun"
+            Id="0x00001081" Type="2" Enable="false" Timeout="1500" Target="tuna"
             Resources="" />
 
     <!-- config_enableLaunchBoostv3-->
@@ -68,7 +68,7 @@
 
         <!-- Type="3", FA launch boost of 15sec -->
         <Config
-            Id="0x00001081" Type="3" Enable="true" Timeout="15000" Target="sun"
+            Id="0x00001081" Type="3" Enable="true" Timeout="15000" Target="tuna"
             Resources="0x40C00000, 0x3, 0x40CF4000, 0x0041002D,
                       0x40C74000, 0xFC, 0x40408000, 0x63, 0x40CE0000, 0x003C0028,
                       0x40CE0200, 0x003C0028, 0x40CE0300, 0x003C0028" />
@@ -98,7 +98,7 @@
 
         <!-- Type="6", FA launch boost of 2sec -->
         <Config
-            Id="0x00001081" Type="6" Enable="true" Timeout="2000" Target="sun"
+            Id="0x00001081" Type="6" Enable="true" Timeout="2000" Target="tuna"
             Resources="0x40C00000, 0x1, 0x40CF4000, 0x0041002D,
                        0x40C74000, 0xFC, 0x40408000, 0x63, 0x40CE0000, 0x003C0028,
                        0x40CE0200, 0x003C0028, 0x40CE0300, 0x003C0028, 0x42C10000, 0x1, 0x40800200, 0x76C,
@@ -136,7 +136,7 @@
 
         <!-- Type="7", main launch boost of 2sec -->
         <Config
-            Id="0x00001081" Type="7" Enable="true" Timeout="2000" Target="sun"
+            Id="0x00001081" Type="7" Enable="true" Timeout="2000" Target="tuna"
             Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40804200, 0xFFF,
                        0x4080C300, 2803200, 0x40800000, 0xFFF, 0x40800100, 0xFFF, 0x40800200, 0xFFF,
                        0x40808300, 2803200, 0x41848000, 0x104410, 0x41844000, 0x104410, 0x42C10000, 0x1,
@@ -171,7 +171,7 @@
 
         <!-- Type="8", Main App Launch Boost : Duration governed by LAL -->
         <Config
-            Id="0x00001081" Type="8" Enable="true" Timeout="2000" Target="sun"
+            Id="0x00001081" Type="8" Enable="true" Timeout="2000" Target="tuna"
             Resources="0x40C00000, 0x3, 0x40CF4000, 0x0041002D,
                       0x40C74000, 0xFC, 0x40408000, 0x63, 0x40CE0000, 0x003C0028,
                       0x40CE0200, 0x003C0028, 0x40CE0300, 0x003C0028" />
@@ -200,7 +200,7 @@
 
         <!-- Type="9", Main App Launch Boost : Duration governed by LGL -->
         <Config
-            Id="0x00001081" Type="9" Enable="true" Timeout="2000" Target="sun"
+            Id="0x00001081" Type="9" Enable="true" Timeout="2000" Target="tuna"
             Resources="0x40C00000, 0x1, 0x40CF4000, 0x0041002D,
                        0x40C74000, 0xFC, 0x40408000, 0x63, 0x40CE0000, 0x003C0028,
                        0x40CE0200, 0x003C0028, 0x40CE0300, 0x003C0028, 0x42C10000, 0x1,
@@ -241,7 +241,7 @@
 
         <!-- Type="10", main launch boost of 2sec -->
         <Config
-            Id="0x00001081" Type="10" Enable="true" Timeout="2000" Target="sun"
+            Id="0x00001081" Type="10" Enable="true" Timeout="2000" Target="tuna"
             Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40804200, 0xFFF,
                        0x4080C300, 2803200, 0x40800000, 0xFFF, 0x40800100, 0xFFF, 0x40800200, 0xFFF,
                        0x40808300, 2803200, 0x41848000, 0x104410, 0x41844000, 0x104410,
@@ -263,13 +263,13 @@
     <!--app launch boost (attach application) -->
         <!-- SCHED_TASK_BOOST resource opcode, value-->
         <Config
-            Id="0x00001081" Type="103" Enable="true" Timeout="2000" Target="sun"
+            Id="0x00001081" Type="103" Enable="true" Timeout="2000" Target="tuna"
             Resources="0x40C80000, 0x0" />
 
     <!--app attach launch base boost (LL app attach) -->
         <!-- SCHED_TASK_BOOST resource opcode, value-->
         <Config
-            Id="0x00001081" Type="104" Enable="true" Timeout="2000" Target="sun"
+            Id="0x00001081" Type="104" Enable="true" Timeout="2000" Target="tuna"
             Resources="0x40C80000, 0x0" />
 
     <!--Animation boost -->
@@ -282,7 +282,7 @@
         <!-- CPUBOOST_MIN_FREQ PRIME Core resource opcode, value-->
         <!-- CPUBOOST_MIN_FREQ TITANIUM Core resource opcode, value-->
         <Config
-            Id="0x00001083" Enable="true" Timeout="400" Target="sun"
+            Id="0x00001083" Enable="true" Timeout="400" Target="tuna"
             Resources="0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40804200, 0xFFF, 0x40804300, 0xFFF,
                        0x40800000, 0xFFF, 0x40800100, 0xFFF, 0x40800200, 0xFFF, 0x40800300, 0xFFF" />
         <!-- CPUBOOST_MAX_FREQ BIG Core resource opcode, value-->
@@ -319,40 +319,40 @@
 
         <!-- Type="1", Vertical Scroll boost -->
         <Config
-            Id="0x00001080" Type="1" Enable="true" Target="sun" Fps="60"
+            Id="0x00001080" Type="1" Enable="true" Target="tuna" Fps="60"
             Resources="0x4303C000, 0xA6428, 0x4080C000, 1000000, 0x4080C100, 1100000, 0x4080C200, 1000000,
                        0x4080C300, 1000000, 0x40C00000, 0x2, 0x43458000, 0xD2F00, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3, 0x40808000, 600000, 0x40808100, 1000000, 0x40808200, 800000,
                        0x40808300, 600000" />
         <Config
-            Id="0x00001080" Type="1" Enable="true" Target="sun" Fps="90"
+            Id="0x00001080" Type="1" Enable="true" Target="tuna" Fps="90"
             Resources="0x4303C000, 0xA6428, 0x4080C000, 1000000, 0x4080C100, 1100000, 0x4080C200, 1000000,
                        0x4080C300, 1000000, 0x40C00000, 0x2, 0x43458000, 0xD2F00, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3, 0x40808000, 600000, 0x40808100, 1000000, 0x40808200, 800000,
                        0x40808300, 600000" />
         <Config
-            Id="0x00001080" Type="1" Enable="true" Target="sun" Fps="120"
+            Id="0x00001080" Type="1" Enable="true" Target="tuna" Fps="120"
             Resources="0x4303C000, 0xA6428, 0x4080C000, 1000000, 0x4080C100, 1100000, 0x4080C200, 1000000,
                        0x4080C300, 1000000, 0x40C00000, 0x2, 0x43458000, 0xD2F00, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0, 0x41000200, 1,
                        0x40CE0200, 0x0023000A, 0x40808000, 600000, 0x40808100, 1000000, 0x40808200, 800000,
                        0x40808300, 600000" />
         <Config
-            Id="0x00001080" Type="1" Enable="true" Target="sun" Fps="144"
+            Id="0x00001080" Type="1" Enable="true" Target="tuna" Fps="144"
             Resources="0x4303C000, 0xA6428, 0x4080C000, 1300000, 0x4080C100, 1200000, 0x4080C200, 1300000,
                        0x4080C300, 1300000, 0x40C00000, 0x2, 0x43458000, 0x114900, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0, 0x41000200, 1,
                        0x40CE0200, 0x0023000A, 0x40808000, 600000, 0x40808100, 1100000, 0x40808200, 800000,
                        0x40808300, 600000" />
         <Config
-            Id="0x00001080" Type="1" Enable="true" Target="sun" Fps="180"
+            Id="0x00001080" Type="1" Enable="true" Target="tuna" Fps="180"
             Resources="0x4303C000, 0xA6428, 0x4080C000, 1300000, 0x4080C100, 1200000, 0x4080C200, 1300000,
                        0x4080C300, 1300000, 0x40C00000, 0x2, 0x43458000, 0x114900, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0, 0x41000200, 1,
                        0x40CE0200, 0x0023000A, 0x40808000, 600000, 0x40808100, 1100000, 0x40808200, 800000,
                        0x40808300, 600000" />
         <Config
-            Id="0x00001080" Type="1" Enable="true" Target="sun" Fps="240"
+            Id="0x00001080" Type="1" Enable="true" Target="tuna" Fps="240"
             Resources="0x4303C000, 0xA6428, 0x4080C000, 1300000, 0x4080C100, 1200000, 0x4080C200, 1300000,
                        0x4080C300, 1300000, 0x40C00000, 0x2, 0x43458000, 0x114900, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0, 0x41000200, 1,
@@ -428,40 +428,40 @@
         <!-- TIMEOUT 80ms -->
         <!-- Type="4", Prefling boost -->
         <Config
-            Id="0x00001080" Type="4" Enable="true" Timeout="80" Target="sun" Fps="60"
+            Id="0x00001080" Type="4" Enable="true" Timeout="80" Target="tuna" Fps="60"
             Resources="0x4303C000, 0xA6428, 0x4080C000, 1000000, 0x4080C100, 1100000, 0x4080C200, 1000000,
                        0x4080C300, 1000000, 0x40C00000, 0x2, 0x43458000, 0xD2F00, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3, 0x40808000, 600000, 0x40808100, 1000000, 0x40808200, 800000,
                        0x40808300, 600000" />
         <Config
-            Id="0x00001080" Type="4" Enable="true" Timeout="80" Target="sun" Fps="90"
+            Id="0x00001080" Type="4" Enable="true" Timeout="80" Target="tuna" Fps="90"
             Resources="0x4303C000, 0xA6428, 0x4080C000, 1000000, 0x4080C100, 1100000, 0x4080C200, 1000000,
                        0x4080C300, 1000000, 0x40C00000, 0x2, 0x43458000, 0xD2F00, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3, 0x40808000, 600000, 0x40808100, 1000000, 0x40808200, 800000,
                        0x40808300, 600000" />
         <Config
-            Id="0x00001080" Type="4" Enable="true" Timeout="80" Target="sun" Fps="120"
+            Id="0x00001080" Type="4" Enable="true" Timeout="80" Target="tuna" Fps="120"
             Resources="0x4303C000, 0xA6428, 0x4080C000, 1000000, 0x4080C100, 1100000, 0x4080C200, 1000000,
                        0x4080C300, 1000000, 0x40C00000, 0x2, 0x43458000, 0xD2F00, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0, 0x41000200, 1,
                        0x40CE0200, 0x0023000A, 0x40808000, 600000, 0x40808100, 1000000, 0x40808200, 800000,
                        0x40808300, 600000" />
         <Config
-            Id="0x00001080" Type="4" Enable="true" Timeout="80" Target="sun" Fps="144"
+            Id="0x00001080" Type="4" Enable="true" Timeout="80" Target="tuna" Fps="144"
             Resources="0x4303C000, 0xA6428, 0x4080C000, 1300000, 0x4080C100, 1200000, 0x4080C200, 1300000,
                        0x4080C300, 1300000, 0x40C00000, 0x2, 0x43458000, 0x114900, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0, 0x41000200, 1,
                        0x40CE0200, 0x0023000A, 0x40808000, 600000, 0x40808100, 1100000, 0x40808200, 800000,
                        0x40808300, 600000" />
         <Config
-            Id="0x00001080" Type="4" Enable="true" Timeout="80" Target="sun" Fps="180"
+            Id="0x00001080" Type="4" Enable="true" Timeout="80" Target="tuna" Fps="180"
             Resources="0x4303C000, 0xA6428, 0x4080C000, 1300000, 0x4080C100, 1200000, 0x4080C200, 1300000,
                        0x4080C300, 1300000, 0x40C00000, 0x2, 0x43458000, 0x114900, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0, 0x41000200, 1,
                        0x40CE0200, 0x0023000A, 0x40808000, 600000, 0x40808100, 1100000, 0x40808200, 800000,
                        0x40808300, 600000" />
         <Config
-            Id="0x00001080" Type="4" Enable="true" Timeout="80" Target="sun" Fps="240"
+            Id="0x00001080" Type="4" Enable="true" Timeout="80" Target="tuna" Fps="240"
             Resources="0x4303C000, 0xA6428, 0x4080C000, 1300000, 0x4080C100, 1200000, 0x4080C200, 1300000,
                        0x4080C300, 1300000, 0x40C00000, 0x2, 0x43458000, 0x114900, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0, 0x41000200, 1,
@@ -538,7 +538,7 @@
 
         <!-- Type="", MTP boost -->
         <Config
-            Id="0x00001086" Enable="true" Target="sun"
+            Id="0x00001086" Enable="true" Target="tuna"
             Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40804300, 0xFFF,
                        0x40800000, 1800, 0x40800100, 1400, 0x40800300, 1800, 0x40C48000,0x3F" />
         <!-- SCHEDBOOST resource opcode, value-->
@@ -573,40 +573,40 @@
         <!-- MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_TITANIUM resource opcode, value -->
         <!-- Type="1", Drag boost -->
         <Config
-            Id="0x00001087" Type="1" Enable="true" Timeout="0" Target="sun" Fps="60"
+            Id="0x00001087" Type="1" Enable="true" Timeout="0" Target="tuna" Fps="60"
             Resources="0x4080C000, 1000000, 0x4080C100, 1100000, 0x4080C200, 1000000,
                        0x4080C300, 1000000, 0x40C00000, 0x2, 0x43458000, 0xD2F00, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3, 0x40808000, 600000, 0x40808100, 1000000, 0x40808200, 800000,
                        0x40808300, 600000" />
         <Config
-            Id="0x00001087" Type="1" Enable="true" Timeout="0" Target="sun" Fps="90"
+            Id="0x00001087" Type="1" Enable="true" Timeout="0" Target="tuna" Fps="90"
             Resources="0x4080C000, 1000000, 0x4080C100, 1100000, 0x4080C200, 1000000,
                        0x4080C300, 1000000, 0x40C00000, 0x2, 0x43458000, 0xD2F00, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3, 0x40808000, 600000, 0x40808100, 1000000, 0x40808200, 800000,
                        0x40808300, 600000" />
         <Config
-            Id="0x00001087" Type="1" Enable="true" Timeout="0" Target="sun" Fps="120"
+            Id="0x00001087" Type="1" Enable="true" Timeout="0" Target="tuna" Fps="120"
             Resources="0x4080C000, 1000000, 0x4080C100, 1100000, 0x4080C200, 1000000,
                        0x4080C300, 1000000, 0x40C00000, 0x2, 0x43458000, 0xD2F00, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0, 0x41000200, 1,
                        0x40CE0200, 0x0023000A, 0x40808000, 600000, 0x40808100, 1000000, 0x40808200, 800000,
                        0x40808300, 600000" />
         <Config
-            Id="0x00001087" Type="1" Enable="true" Timeout="0" Target="sun" Fps="144"
+            Id="0x00001087" Type="1" Enable="true" Timeout="0" Target="tuna" Fps="144"
             Resources="0x4080C000, 1300000, 0x4080C100, 1200000, 0x4080C200, 1300000,
                        0x4080C300, 1300000, 0x40C00000, 0x2, 0x43458000, 0x114900, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0, 0x41000200, 1,
                        0x40CE0200, 0x0023000A, 0x40808000, 600000, 0x40808100, 1100000, 0x40808200, 800000,
                        0x40808300, 600000" />
         <Config
-            Id="0x00001087" Type="1" Enable="true" Timeout="0" Target="sun" Fps="180"
+            Id="0x00001087" Type="1" Enable="true" Timeout="0" Target="tuna" Fps="180"
             Resources="0x4080C000, 1300000, 0x4080C100, 1200000, 0x4080C200, 1300000,
                        0x4080C300, 1300000, 0x40C00000, 0x2, 0x43458000, 0x114900, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0, 0x41000200, 1,
                        0x40CE0200, 0x0023000A, 0x40808000, 600000, 0x40808100, 1100000, 0x40808200, 800000,
                        0x40808300, 600000" />
         <Config
-            Id="0x00001087" Type="1" Enable="true" Timeout="0" Target="sun" Fps="240"
+            Id="0x00001087" Type="1" Enable="true" Timeout="0" Target="tuna" Fps="240"
             Resources="0x4080C000, 1300000, 0x4080C100, 1200000, 0x4080C200, 1300000,
                        0x4080C300, 1300000, 0x40C00000, 0x2, 0x43458000, 0x114900, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0, 0x41000200, 1,
@@ -650,7 +650,7 @@
         <!-- Type="", Package Install boost -->
 
         <Config
-            Id="0x00001088" Enable="true" Target="sun"
+            Id="0x00001088" Enable="true" Target="tuna"
             Resources="0x40C00000, 0x2, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40804200, 0xFFF,
                        0x40804300, 0xFFF, 0x40800000,0xFFF, 0x40800100,0xFFF, 0x40800200, 0xFFF,
                        0x40800300, 0xFFF, 0x40CA0000, 0, 0x40CCC000, 0" />
@@ -679,7 +679,7 @@
         <!-- Type="", Rotation latency boost -->
 
         <Config
-            Id="0x00001089" Enable="true" Timeout="1500" Target="sun"
+            Id="0x00001089" Enable="true" Timeout="1500" Target="tuna"
             Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40804200, 0xFFF,
                        0x40804300, 0xFFF, 0x40800000,0xFFF, 0x40800100,0xFFF, 0x40800200,0xFFF,
                        0x40800300,0xFFF" />
@@ -699,7 +699,7 @@
         <!-- Type="", Rotation animation boost -->
 
         <Config
-            Id="0x00001090" Enable="true" Timeout="1000" Target="sun"
+            Id="0x00001090" Enable="true" Timeout="1000" Target="tuna"
             Resources="0x40800100, 1000, 0x4280C000, 680" />
 
         <!-- CPUBOOST_MIN_FREQ LITTLE Core resource opcode, value-->
@@ -726,7 +726,7 @@
         <!-- MPCTLV3_SCHED_MAX_FREQ_PARTIAL_HALT resource opcode, value-->
         <!-- Type="", Performance mode -->
         <Config
-            Id="0x00001091" Enable="true" Target="sun"
+            Id="0x00001091" Enable="true" Target="tuna"
             Resources="0x40CAC000, 20, 0x40CA4000, 2, 0x40800000, 1785, 0x40800100, 800, 0x40800200, 1670,
                        0x40800300, 1785, 0x40C74000, 0xFF, 0x40408000, 0x63, 0x42C1C000, 1, 0x40CFC000, 0, 0x4348C000,0x71C50,
                        0X43C1C000, 0x7FFFFFFF, 0X43C1C100, 0x7FFFFFFF, 0X43C1C200, 0x7FFFFFFF, 0X43C1C300, 0x7FFFFFFF,
@@ -736,18 +736,18 @@
     <!--Display on Resource -->
         <!-- Display on resource opcode, value -->
         <Config
-                Id="0x00001041" Enable="true" Timeout="0" Target="sun"
+                Id="0x00001041" Enable="true" Timeout="0" Target="tuna"
                 Resources="0x40000000, 1" />
 
     <!--Display off Resource -->
         <!-- Display on resource opcode, value -->
         <Config
-                Id="0x00001040" Enable="true" Timeout="0" Target="sun"
+                Id="0x00001040" Enable="true" Timeout="0" Target="tuna"
                 Resources="0x40000000, 0x0" />
 
     <!-- Doze hint -->
     <Config
-            Id="0x00001053" Enable="true" Timeout="0" Target="sun"
+            Id="0x00001053" Enable="true" Timeout="0" Target="tuna"
             Resources="0x42C34000, 1" />
 
     <!--FPS Update from Framework-->
@@ -763,38 +763,38 @@
         <!-- Type indicates FPS -->
         <!-- 30fps -->
         <Config
-            Id="0x00001094" Type="30" Enable="true" Target="sun" Timeout="0"
+            Id="0x00001094" Type="30" Enable="true" Target="tuna" Timeout="0"
             Resources="0x40CA4000, 2, 0x43468000, 8" />
         <!-- 45fps -->
         <Config
-            Id="0x00001094" Type="45" Enable="true" Target="sun" Timeout="0"
+            Id="0x00001094" Type="45" Enable="true" Target="tuna" Timeout="0"
             Resources="0x40CA4000, 2, 0x43468000, 8" />
         <!-- 60fps -->
         <Config
-            Id="0x00001094" Type="60" Enable="true" Target="sun" Timeout="0"
+            Id="0x00001094" Type="60" Enable="true" Target="tuna" Timeout="0"
             Resources="0x40CA4000, 2, 0x43468000, 8" />
         <!-- 90fps -->
         <Config
-            Id="0x00001094" Type="90" Enable="true" Target="sun" Timeout="0"
+            Id="0x00001094" Type="90" Enable="true" Target="tuna" Timeout="0"
             Resources="0x40CA4000, 2, 0x43468000, 8" />
         <!-- 120fps -->
         <Config
-            Id="0x00001094" Type="120" Enable="true" Target="sun" Timeout="0"
+            Id="0x00001094" Type="120" Enable="true" Target="tuna" Timeout="0"
             Resources="0x40CA4000, 2, 0x43468000, 8, 0x40C74000, 3, 0x40408000, 3,
                        0x40800100, 600, 0x40CC8000, 119" />
         <!-- 144fps -->
         <Config
-            Id="0x00001094" Type="144" Enable="true" Target="sun" Timeout="0"
+            Id="0x00001094" Type="144" Enable="true" Target="tuna" Timeout="0"
             Resources="0x40CA4000, 2, 0x43468000, 8, 0x40C74000, 3, 0x40408000, 3,
                        0x40800100, 800, 0x40CC8000, 119" />
         <!-- 180fps -->
         <Config
-            Id="0x00001094" Type="180" Enable="true" Target="sun" Timeout="0"
+            Id="0x00001094" Type="180" Enable="true" Target="tuna" Timeout="0"
             Resources="0x40CA4000, 2, 0x43468000, 8, 0x40C74000, 3, 0x40408000, 3,
                        0x40800100, 800, 0x40CC8000, 119" />
         <!-- 240fps -->
         <Config
-            Id="0x00001094" Type="240" Enable="true" Target="sun" Timeout="0"
+            Id="0x00001094" Type="240" Enable="true" Target="tuna" Timeout="0"
             Resources="0x40CA4000, 2, 0x43468000, 8, 0x40C74000, 3, 0x40408000, 3,
                        0x40800100, 800, 0x40CC8000, 119" />
 
@@ -841,38 +841,38 @@
         <!-- Type indicates FPS -->
         <!-- 30fps -->
         <Config
-            Id="0x0000109B" Type="30" Enable="true" Target="sun" Timeout="0"
+            Id="0x0000109B" Type="30" Enable="true" Target="tuna" Timeout="0"
             Resources="0x40CA4000, 2, 0x43468000, 8" />
         <!-- 45fps -->
         <Config
-            Id="0x0000109B" Type="45" Enable="true" Target="sun" Timeout="0"
+            Id="0x0000109B" Type="45" Enable="true" Target="tuna" Timeout="0"
             Resources="0x40CA4000, 2, 0x43468000, 8" />
         <!-- 60fps -->
         <Config
-            Id="0x0000109B" Type="60" Enable="true" Target="sun" Timeout="0"
+            Id="0x0000109B" Type="60" Enable="true" Target="tuna" Timeout="0"
             Resources="0x40CA4000, 2, 0x43468000, 8" />
         <!-- 90fps -->
         <Config
-            Id="0x0000109B" Type="90" Enable="true" Target="sun" Timeout="0"
+            Id="0x0000109B" Type="90" Enable="true" Target="tuna" Timeout="0"
             Resources="0x40CA4000, 2, 0x43468000, 8" />
         <!-- 120fps -->
         <Config
-            Id="0x0000109B" Type="120" Enable="true" Target="sun" Timeout="0"
+            Id="0x0000109B" Type="120" Enable="true" Target="tuna" Timeout="0"
             Resources="0x40CA4000, 2, 0x43468000, 8, 0x40C74000, 3, 0x40408000, 3,
                        0x40800100, 600, 0x40CC8000, 119" />
         <!-- 144fps -->
         <Config
-            Id="0x0000109B" Type="144" Enable="true" Target="sun" Timeout="0"
+            Id="0x0000109B" Type="144" Enable="true" Target="tuna" Timeout="0"
             Resources="0x40CA4000, 2, 0x43468000, 8, 0x40C74000, 3, 0x40408000, 3,
                        0x40800100, 800, 0x40CC8000, 119" />
         <!-- 180fps -->
         <Config
-            Id="0x0000109B" Type="180" Enable="true" Target="sun" Timeout="0"
+            Id="0x0000109B" Type="180" Enable="true" Target="tuna" Timeout="0"
             Resources="0x40CA4000, 2, 0x43468000, 8, 0x40C74000, 3, 0x40408000, 3,
                        0x40800100, 800, 0x40CC8000, 119" />
         <!-- 240fps -->
         <Config
-            Id="0x0000109B" Type="240" Enable="true" Target="sun" Timeout="0"
+            Id="0x0000109B" Type="240" Enable="true" Target="tuna" Timeout="0"
             Resources="0x40CA4000, 2, 0x43468000, 8, 0x40C74000, 3, 0x40408000, 3,
                        0x40800100, 800, 0x40CC8000, 119" />
 
@@ -913,22 +913,22 @@
         <!-- GPU_TOUCH_WAKEUP resource opcode, value-->
         <!-- DISPLAY EARLY WAKEUP opcode, value-->
         <Config
-                Id="0x00001098" Type="0" Enable="true" Target="sun" Timeout="2000" Fps="60"
+                Id="0x00001098" Type="0" Enable="true" Target="tuna" Timeout="2000" Fps="60"
                 Resources="0x40800100, 700, 0x42834000, 1, 0x41C0C000, 0" />
         <Config
-                Id="0x00001098" Type="0" Enable="true" Target="sun" Timeout="2000" Fps="90"
+                Id="0x00001098" Type="0" Enable="true" Target="tuna" Timeout="2000" Fps="90"
                 Resources="0x40800100, 700, 0x42834000, 1, 0x41C0C000, 0" />
         <Config
-                Id="0x00001098" Type="0" Enable="true" Target="sun" Timeout="2000" Fps="120"
+                Id="0x00001098" Type="0" Enable="true" Target="tuna" Timeout="2000" Fps="120"
                 Resources="0x42834000, 1, 0x41C0C000, 0" />
         <Config
-                Id="0x00001098" Type="0" Enable="true" Target="sun" Timeout="2000" Fps="144"
+                Id="0x00001098" Type="0" Enable="true" Target="tuna" Timeout="2000" Fps="144"
                 Resources="0x42834000, 1, 0x41C0C000, 0" />
         <Config
-                Id="0x00001098" Type="0" Enable="true" Target="sun" Timeout="2000" Fps="180"
+                Id="0x00001098" Type="0" Enable="true" Target="tuna" Timeout="2000" Fps="180"
                 Resources="0x42834000, 1, 0x41C0C000, 0" />
         <Config
-                Id="0x00001098" Type="0" Enable="true" Target="sun" Timeout="2000" Fps="240"
+                Id="0x00001098" Type="0" Enable="true" Target="tuna" Timeout="2000" Fps="240"
                 Resources="0x42834000, 1, 0x41C0C000, 0" />
 
         <!-- 60, 90fps: CPUBOOST_MIN_FREQ LITTLE Core resource opcode, value-->
@@ -939,22 +939,22 @@
         <!-- 60, 90fps: CPUBOOST_MIN_FREQ LITTLE Core resource opcode, value-->
         <!-- GPU_TOUCH_WAKEUP resource opcode, value-->
         <Config
-                Id="0x00001099" Type="0" Enable="true" Target="sun" Timeout="2000" Fps="60"
+                Id="0x00001099" Type="0" Enable="true" Target="tuna" Timeout="2000" Fps="60"
                 Resources="0x40800100, 700, 0x42834000, 1" />
         <Config
-                Id="0x00001099" Type="0" Enable="true" Target="sun" Timeout="2000" Fps="90"
+                Id="0x00001099" Type="0" Enable="true" Target="tuna" Timeout="2000" Fps="90"
                 Resources="0x40800100, 700, 0x42834000, 1" />
         <Config
-                Id="0x00001099" Type="0" Enable="true" Target="sun" Timeout="2000" Fps="120"
+                Id="0x00001099" Type="0" Enable="true" Target="tuna" Timeout="2000" Fps="120"
                 Resources="0x42834000, 1" />
         <Config
-                Id="0x00001099" Type="0" Enable="true" Target="sun" Timeout="2000" Fps="144"
+                Id="0x00001099" Type="0" Enable="true" Target="tuna" Timeout="2000" Fps="144"
                 Resources="0x42834000, 1" />
         <Config
-                Id="0x00001099" Type="0" Enable="true" Target="sun" Timeout="2000" Fps="180"
+                Id="0x00001099" Type="0" Enable="true" Target="tuna" Timeout="2000" Fps="180"
                 Resources="0x42834000, 1" />
         <Config
-                Id="0x00001099" Type="0" Enable="true" Target="sun" Timeout="2000" Fps="240"
+                Id="0x00001099" Type="0" Enable="true" Target="tuna" Timeout="2000" Fps="240"
                 Resources="0x42834000, 1" />
 
         <!-- 60, 90fps: CPUBOOST_MIN_FREQ LITTLE Core resource opcode, value-->
@@ -964,22 +964,22 @@
         <!-- 60, 90fps: CPUBOOST_MIN_FREQ LITTLE Core resource opcode, value-->
         <!-- DISPLAY EARLY WAKEUP opcode, value-->
         <Config
-                Id="0x0000109A" Type="0" Enable="true" Target="sun" Timeout="2000" Fps="60"
+                Id="0x0000109A" Type="0" Enable="true" Target="tuna" Timeout="2000" Fps="60"
                 Resources="0x40800100, 700, 0x41C0C000, 0" />
         <Config
-                Id="0x0000109A" Type="0" Enable="true" Target="sun" Timeout="2000" Fps="90"
+                Id="0x0000109A" Type="0" Enable="true" Target="tuna" Timeout="2000" Fps="90"
                 Resources="0x40800100, 700, 0x41C0C000, 0" />
         <Config
-                Id="0x0000109A" Type="0" Enable="true" Target="sun" Timeout="2000" Fps="120"
+                Id="0x0000109A" Type="0" Enable="true" Target="tuna" Timeout="2000" Fps="120"
                 Resources="0x41C0C000, 0" />
         <Config
-                Id="0x0000109A" Type="0" Enable="true" Target="sun" Timeout="2000" Fps="144"
+                Id="0x0000109A" Type="0" Enable="true" Target="tuna" Timeout="2000" Fps="144"
                 Resources="0x41C0C000, 0" />
         <Config
-                Id="0x0000109A" Type="0" Enable="true" Target="sun" Timeout="2000" Fps="180"
+                Id="0x0000109A" Type="0" Enable="true" Target="tuna" Timeout="2000" Fps="180"
                 Resources="0x41C0C000, 0" />
         <Config
-                Id="0x0000109A" Type="0" Enable="true" Target="sun" Timeout="2000" Fps="240"
+                Id="0x0000109A" Type="0" Enable="true" Target="tuna" Timeout="2000" Fps="240"
                 Resources="0x41C0C000, 0" />
 
 
@@ -988,31 +988,31 @@
         <!-- GPU MIN_FREQUENCY resource opcode,value (not present for 30 - 90)-->
         <!-- PID Affine opcode,value -->
         <Config
-                Id="0x00001097" Type="0" Enable="true" Timeout="5000" Target="sun" Fps="30"
+                Id="0x00001097" Type="0" Enable="true" Timeout="5000" Target="tuna" Fps="30"
                 Resources="0x40800000, 500" />
 
         <Config
-                Id="0x00001097" Type="0" Enable="true" Timeout="5000" Target="sun" Fps="60"
+                Id="0x00001097" Type="0" Enable="true" Timeout="5000" Target="tuna" Fps="60"
                 Resources="0x40800000, 500" />
 
         <Config
-                Id="0x00001097" Type="0" Enable="true" Timeout="5000" Target="sun" Fps="90"
+                Id="0x00001097" Type="0" Enable="true" Timeout="5000" Target="tuna" Fps="90"
                 Resources="0x40800000, 500" />
 
         <Config
-                Id="0x00001097" Type="0" Enable="true" Timeout="5000" Target="sun" Fps="120"
+                Id="0x00001097" Type="0" Enable="true" Timeout="5000" Target="tuna" Fps="120"
                 Resources="0x40800000, 1500, 0x4280C000, 680" />
 
         <Config
-                Id="0x00001097" Type="0" Enable="true" Timeout="5000" Target="sun" Fps="144"
+                Id="0x00001097" Type="0" Enable="true" Timeout="5000" Target="tuna" Fps="144"
                 Resources="0x40800000, 1500, 0x4280C000, 680" />
 
         <Config
-                Id="0x00001097" Type="0" Enable="true" Timeout="5000" Target="sun" Fps="180"
+                Id="0x00001097" Type="0" Enable="true" Timeout="5000" Target="tuna" Fps="180"
                 Resources="0x40800000, 1500, 0x4280C000, 680" />
 
         <Config
-                Id="0x00001097" Type="0" Enable="true" Timeout="5000" Target="sun" Fps="240"
+                Id="0x00001097" Type="0" Enable="true" Timeout="5000" Target="tuna" Fps="240"
                 Resources="0x40800000, 1500, 0x4280C000, 680" />
 
         <!-- MIN_FREQ_CLUSTER_BIG resource opcode, value -->
@@ -1022,11 +1022,11 @@
     <!--HDR Content Hint -->
         <!-- CPU min freq resource opcode, value -->
         <Config
-                Id="0x000010A8" Type="0" Enable="true" Timeout="5000" Target="sun" Fps="30, 60, 90"
+                Id="0x000010A8" Type="0" Enable="true" Timeout="5000" Target="tuna" Fps="30, 60, 90"
                 Resources="0x40800000, 500" />
 
         <Config
-                Id="0x000010A8" Type="0" Enable="true" Timeout="5000" Target="sun" Fps="120, 144, 180, 240"
+                Id="0x000010A8" Type="0" Enable="true" Timeout="5000" Target="tuna" Fps="120, 144, 180, 240"
                 Resources="0x40800000, 1500" />
 
         <!-- MIN_FREQ_CLUSTER_BIG resource opcode, value -->
@@ -1039,7 +1039,7 @@
         <!-- SCHED_MIN_TASK_UTIL_FOR_BOOST, value-->
         <!-- Type 5 Light Scrolls : Horizontal and Vertical 60 FPS -->
         <Config
-            Id="0x00001080" Type="5" Enable="true" Target="sun"
+            Id="0x00001080" Type="5" Enable="true" Target="tuna"
             Resources="0x40C00000, 0x2, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0" />
 
         <!-- SCHEDBOOST resource opcode, value-->
@@ -1056,13 +1056,13 @@
         <!-- SCHED_UP_DOWN_MIGRATE PRIME resource opcode, value -->
         <!-- Type 5 Light Scrolls : Horizontal and Vertical 90+ FPS -->
         <Config
-            Id="0x00001080" Type="5" Enable="true" Target="sun" Fps="90"
+            Id="0x00001080" Type="5" Enable="true" Target="tuna" Fps="90"
             Resources="0x40C00000, 0x2, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0,
                        0x4080C000, 998000, 0x4080C200, 998000, 0x4080C300, 998000,
                        0x40808000, 600000, 0x40808200, 800000, 0x40808300, 600000,
                        0x41000200, 1"/>
         <Config
-            Id="0x00001080" Type="5" Enable="true" Target="sun" Fps="120, 144, 180, 240"
+            Id="0x00001080" Type="5" Enable="true" Target="tuna" Fps="120, 144, 180, 240"
             Resources="0x40C00000, 0x2, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0,
                        0x4080C000, 1000000, 0x4080C200, 1000000, 0x4080C300, 1000000,
                        0x40808000, 600000, 0x40808200, 800000, 0x40808300, 600000,
@@ -1080,7 +1080,7 @@
         <!-- MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_TITANIUM resource opcode, value -->
         <!-- Type 6 Medium Scrolls : Horizontal and Vertical 60 FPS -->
         <Config
-            Id="0x00001080" Type="6" Enable="true" Target="sun"
+            Id="0x00001080" Type="6" Enable="true" Target="tuna"
             Resources="0x40C00000, 0x2, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0,
                        0x4080C000, 998000, 0x4080C200, 998000, 0x4080C300, 998000,
                        0x40808000, 600000, 0x40808200, 800000, 0x40808300, 600000" />
@@ -1099,14 +1099,14 @@
         <!-- SCHED_UP_DOWN_MIGRATE PRIME resource opcode, value -->
         <!-- Type 6 Medium Scrolls : Horizontal and Vertical 90+ FPS -->
         <Config
-            Id="0x00001080" Type="6" Enable="true" Target="sun" Fps="90"
+            Id="0x00001080" Type="6" Enable="true" Target="tuna" Fps="90"
             Resources="
                        0x40C00000, 0x2, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0,
                        0x4080C000, 998000, 0x4080C200, 998000, 0x4080C300, 998000,
                        0x40808000, 600000, 0x40808200, 800000, 0x40808300, 600000,
                        0x41000200, 1" />
         <Config
-            Id="0x00001080" Type="6" Enable="true" Target="sun" Fps="120, 144, 180, 240"
+            Id="0x00001080" Type="6" Enable="true" Target="tuna" Fps="120, 144, 180, 240"
             Resources="0x40C00000, 0x2, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0,
                        0x4080C000, 1000000, 0x4080C200, 1000000, 0x4080C300, 1000000,
                        0x40808000, 600000, 0x40808200, 800000, 0x40808300, 600000,
@@ -1130,7 +1130,7 @@
 
         <!-- Type 7 Heavy Scrolls : Horizontal and Vertical 60 FPS -->
         <Config
-            Id="0x00001080" Type="7" Enable="true" Target="sun"
+            Id="0x00001080" Type="7" Enable="true" Target="tuna"
             Resources="0x40C00000, 0x2, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0,
                        0x4080C000, 1000000, 0x4080C200, 1000000, 0x4080C300, 1000000,
                        0x40808000, 600000, 0x40808200, 800000, 0x40808300, 600000,
@@ -1155,14 +1155,14 @@
         <!-- SCHED_UP_DOWN_MIGRATE PRIME resource opcode, value -->
         <!-- Type 7 Heavy Scrolls : Horizontal and Vertical 90+ FPS -->
         <Config
-            Id="0x00001080" Type="7" Enable="true" Target="sun" Fps="90"
+            Id="0x00001080" Type="7" Enable="true" Target="tuna" Fps="90"
             Resources="0x40C00000, 0x2, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0,
                        0x4080C000, 1000000, 0x4080C200, 1000000, 0x4080C300, 1000000,
                        0x40808000, 600000, 0x40808200, 800000, 0x40808300, 600000,
                        0x41000200, 1, 0x4303C000, 0xA6428, 0x43458000, 0xD2F00, 0x40C74000,
                        0xFF, 0x40408000, 0x63, 0x40CE0200, 0x0023000A" />
         <Config
-            Id="0x00001080" Type="7" Enable="true" Target="sun" Fps="120, 144, 180, 240"
+            Id="0x00001080" Type="7" Enable="true" Target="tuna" Fps="120, 144, 180, 240"
             Resources="0x40C00000, 0x2, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0,
                        0x4080C000, 1300000, 0x4080C200, 1300000, 0x4080C300, 1300000,
                        0x40808000, 600000, 0x40808200, 800000, 0x40808300, 600000,
@@ -1218,7 +1218,7 @@
 
         <!-- Type 5 Light pre-fling : Horizontal and Vertical 60 FPS -->
         <Config
-            Id="0x000010A6" Type="5" Enable="true" Timeout="100" Target="sun" Fps="60"
+            Id="0x000010A6" Type="5" Enable="true" Timeout="100" Target="tuna" Fps="60"
             Resources="0x40C00000, 0x2, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0" />
 
         <!-- SCHEDBOOST resource opcode, value-->
@@ -1236,7 +1236,7 @@
 
         <!-- Type 5 Light pre-fling : Horizontal and Vertical 90+ FPS -->
         <Config
-            Id="0x000010A6" Type="5" Enable="true" Timeout="100" Target="sun" Fps="90, 120, 144, 180, 240"
+            Id="0x000010A6" Type="5" Enable="true" Timeout="100" Target="tuna" Fps="90, 120, 144, 180, 240"
             Resources="0x40C00000, 0x2, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0,
                        0x4080C000, 1000000, 0x4080C200, 1000000, 0x4080C300, 1000000,
                        0x40808000, 600000, 0x40808200, 800000, 0x40808300, 600000,
@@ -1255,7 +1255,7 @@
 
         <!-- Type 6 Medium pre-fling : Horizontal and Vertical 60 FPS -->
         <Config
-            Id="0x000010A6" Type="6" Enable="true" Timeout="100" Target="sun" Fps="60"
+            Id="0x000010A6" Type="6" Enable="true" Timeout="100" Target="tuna" Fps="60"
             Resources="0x40C00000, 0x2, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0,
                        0x4080C000, 998000, 0x4080C200, 998000, 0x4080C300, 998000,
                        0x40808000, 600000, 0x40808200, 800000, 0x40808300, 600000" />
@@ -1275,7 +1275,7 @@
 
         <!-- Type 6 Medium pre-fling : Horizontal and Vertical 90+ FPS -->
         <Config
-            Id="0x000010A6" Type="6" Enable="true" Timeout="100" Target="sun" Fps="90, 120, 144, 180, 240"
+            Id="0x000010A6" Type="6" Enable="true" Timeout="100" Target="tuna" Fps="90, 120, 144, 180, 240"
             Resources="0x40C00000, 0x2, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0,
                        0x4080C000, 1000000, 0x4080C200, 1000000, 0x4080C300, 1000000,
                        0x40808000, 600000, 0x40808200, 800000, 0x40808300, 600000,
@@ -1298,7 +1298,7 @@
 
         <!-- Type 7 Heavy pre-fling : Horizontal and Vertical 60 FPS -->
         <Config
-            Id="0x000010A6" Type="7" Enable="true" Timeout="100" Target="sun" Fps="60"
+            Id="0x000010A6" Type="7" Enable="true" Timeout="100" Target="tuna" Fps="60"
             Resources="0x40C00000, 0x2, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0,
                        0x4080C000, 1000000, 0x4080C200, 1000000, 0x4080C300, 1000000,
                        0x40808000, 600000, 0x40808200, 800000, 0x40808300, 600000,
@@ -1324,7 +1324,7 @@
 
         <!-- Type 7 Heavy pre-fling : Horizontal and Vertical 90+ FPS -->
         <Config
-            Id="0x000010A6" Type="7" Enable="true" Timeout="100" Target="sun" Fps="90, 120, 144, 180, 240"
+            Id="0x000010A6" Type="7" Enable="true" Timeout="100" Target="tuna" Fps="90, 120, 144, 180, 240"
             Resources="0x40C00000, 0x2, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0,
                        0x4080C000, 1300000, 0x4080C200, 1300000, 0x4080C300, 1300000,
                        0x40808000, 600000, 0x40808200, 800000, 0x40808300, 600000,
@@ -1381,7 +1381,7 @@
         <!-- MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_PRIME resource opcode, value -->
         <!-- MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_TITANIUM resource opcode, value -->
         <Config
-            Id="0x000010A7" Type="1" Enable="true" Timeout="2000" Target="sun"
+            Id="0x000010A7" Type="1" Enable="true" Timeout="2000" Target="tuna"
             Resources="0x40C00000, 0x1, 0x4080C000, 3014400, 0x4080C100, 2016000,
                         0x4080C200, 3206400, 0x4080C300, 2803200, 0x40808000, 1070000,
                         0x40808100, 1010000, 0x40808200, 1010000, 0x40808300, 1070000" />
@@ -1398,7 +1398,7 @@
         <!-- MPCTLV3_MIN_ONLINE_CPU_CLUSTER_BIG, value -->
         <!-- Type 5 Light Drags: 90 and lower FPS -->
         <Config
-            Id="0x00001087" Type="5" Enable="true" Timeout="0" Target="sun" Fps="60,90"
+            Id="0x00001087" Type="5" Enable="true" Timeout="0" Target="tuna" Fps="60,90"
             Resources="0x40C78000, 0, 0x40C7C000, 0, 0x40C00000, 2, 0x41000000, 3" />
 
         <!-- MPCTLV3_SCHED_MIN_TASK_UTIL_FOR_COLOCATION, value -->
@@ -1407,7 +1407,7 @@
         <!-- MPCTLV3_MIN_ONLINE_CPU_CLUSTER_BIG, value -->
         <!-- Type 5 Light Drags: 120 and higher FPS -->
         <Config
-            Id="0x00001087" Type="5" Enable="true" Timeout="0" Target="sun" Fps="120,144,180,240"
+            Id="0x00001087" Type="5" Enable="true" Timeout="0" Target="tuna" Fps="120,144,180,240"
             Resources="0x40C78000, 0, 0x40C7C000, 0, 0x40C00000, 2, 0x41000000, 3" />
 
         <!-- MPCTLV3_WALT_ADAPTIVE_HIGH_FREQ_BIG, value -->
@@ -1423,7 +1423,7 @@
         <!-- MPCTLV3_MIN_ONLINE_CPU_CLUSTER_PRIME, value -->
         <!-- Type 6 Medium Drags, 90 and lower FPS -->
         <Config
-            Id="0x00001087" Type="6" Enable="true" Timeout="0" Target="sun" Fps="60,90"
+            Id="0x00001087" Type="6" Enable="true" Timeout="0" Target="tuna" Fps="60,90"
             Resources="0x4080C000, 998000, 0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0,
                        0x40C00000, 2, 0x4080C200, 998000, 0x4080C300, 998000,
                        0x40808000, 600000, 0x40808200, 800000, 0x40808300, 600000,
@@ -1445,7 +1445,7 @@
         <!-- MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_TITANIUM, value -->
         <!-- Type 6 Medium Drags, 120 FPS -->
         <Config
-            Id="0x00001087" Type="6" Enable="true" Timeout="0" Target="sun" Fps="120"
+            Id="0x00001087" Type="6" Enable="true" Timeout="0" Target="tuna" Fps="120"
             Resources="0x4080C000, 902400, 0x4080C100, 1000000,
                        0x4080C200, 902400, 0x4080C300, 902400, 0x40C00000, 2, 0x41000000, 3,
                        0x40C78000, 0, 0x40C7C000, 0, 0x41000200, 1, 0x40CE0200, 0x0023000A,
@@ -1470,7 +1470,7 @@
         <!-- MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_TITANIUM, value -->
         <!-- Type 6 Medium Drags, 144 and higher FPS -->
         <Config
-            Id="0x00001087" Type="6" Enable="true" Timeout="0" Target="sun" Fps="144,180,240"
+            Id="0x00001087" Type="6" Enable="true" Timeout="0" Target="tuna" Fps="144,180,240"
             Resources="0x4080C000, 1000000, 0x4080C100, 1100000, 0x4080C200, 1000000,
                        0x4080C300, 1000000, 0x40C00000, 2, 0x43458000, 864000, 0x40C74000, 0xFF, 0x40408000, 0x63,
                        0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0, 0x41000200, 1, 0x40CE0200, 0x0023000A,
@@ -1491,7 +1491,7 @@
         <!-- MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_TITANIUM, value -->
         <!-- Type 7 Heavy Drags, 90 and lower FPS -->
         <Config
-            Id="0x00001087" Type="7" Enable="true" Timeout="0" Target="sun" Fps="60,90"
+            Id="0x00001087" Type="7" Enable="true" Timeout="0" Target="tuna" Fps="60,90"
             Resources="0x4080C000, 1000000, 0x4080C100, 1100000, 0x4080C200, 1000000,
                        0x4080C300, 1000000, 0x40C00000, 0x2, 0x43458000, 0xD2F00, 0x40C74000, 0xFF,
                        0x40408000, 0x63, 0x41000000, 3,
@@ -1517,7 +1517,7 @@
         <!-- MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_TITANIUM resource opcode, value -->
         <!-- Type=7 Heavy Drags, 120 FPS -->
         <Config
-            Id="0x00001087" Type="7" Enable="true" Timeout="0" Target="sun" Fps="120"
+            Id="0x00001087" Type="7" Enable="true" Timeout="0" Target="tuna" Fps="120"
             Resources="0x4080C000, 1000000, 0x4080C100, 1100000, 0x4080C200, 1000000,
                        0x4080C300, 1000000, 0x40C00000, 0x2, 0x43458000, 0xD2F00, 0x40C74000, 0xFF, 0x40408000, 0x63,
                        0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0, 0x41000200, 1, 0x40CE0200, 0x0023000A,
@@ -1542,7 +1542,7 @@
         <!-- MPCTLV3_WALT_ADAPTIVE_LOW_FREQ_TITANIUM resource opcode, value -->
         <!-- Type=7 Heavy Drags, 144 and higher FPS -->
         <Config
-            Id="0x00001087" Type="7" Enable="true" Timeout="0" Target="sun" Fps="144,180,240"
+            Id="0x00001087" Type="7" Enable="true" Timeout="0" Target="tuna" Fps="144,180,240"
             Resources="0x4080C000, 1300000, 0x4080C100, 1200000, 0x4080C200, 1300000,
                        0x4080C300, 1300000, 0x40C00000, 0x2, 0x43458000, 0x114900, 0x40C74000, 0xFF, 0x40408000, 0x63,
                        0x41000000, 3, 0x40C78000, 0, 0x40C7C000, 0, 0x41000200, 1, 0x40CE0200, 0x0023000A,
