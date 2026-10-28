@@ -2715,12 +2715,12 @@ vendor/lib64/libhdcpsrm.so
 vendor/lib64/libmm-hdcpmgr.so
 
 # Init
-vendor/bin/init.kernel.post_boot-tuna.sh
-vendor/bin/init.kernel.post_boot-tuna_1_3_2_1.sh
-vendor/bin/init.kernel.post_boot-tuna_2_2_2_1.sh
-vendor/bin/init.kernel.post_boot-tuna_2_3_1_1.sh
-vendor/bin/init.kernel.post_boot-tuna_2_3_2_0.sh
-vendor/bin/init.kernel.post_boot-tuna_default_2_3_2_1.sh
+vendor/bin/init.kernel.post_boot-tuna.sh;MAKE_COPY_RULE_ONLY
+vendor/bin/init.kernel.post_boot-tuna_1_3_2_1.sh;MAKE_COPY_RULE_ONLY
+vendor/bin/init.kernel.post_boot-tuna_2_2_2_1.sh;MAKE_COPY_RULE_ONLY
+vendor/bin/init.kernel.post_boot-tuna_2_3_1_1.sh;MAKE_COPY_RULE_ONLY
+vendor/bin/init.kernel.post_boot-tuna_2_3_2_0.sh;MAKE_COPY_RULE_ONLY
+vendor/bin/init.kernel.post_boot-tuna_default_2_3_2_1.sh;MAKE_COPY_RULE_ONLY
 vendor/bin/init.kernel.post_boot.sh;MAKE_COPY_RULE_ONLY
 vendor/bin/init.qcom.sh;MAKE_COPY_RULE_ONLY
 vendor/bin/system_dlkm_modprobe.sh;MAKE_COPY_RULE_ONLY
