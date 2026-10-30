@@ -189,6 +189,7 @@ vendor/bin/agmplay
 vendor/bin/agmvoiceui
 vendor/bin/cplay
 vendor/lib64/libagm.so
+vendor/lib64/libagm_compress_plugin.so
 vendor/lib64/libagm_mixer_plugin.so
 vendor/lib64/libagm_pcm_plugin.so
 vendor/lib64/libagmclient.so
