@@ -113,7 +113,13 @@ PRODUCT_VENDOR_PROPERTIES += \
     dalvik.vm.madvise.vdexfile.size=209715200 \
     dalvik.vm.madvise.odexfile.size=209715200 \
     dalvik.vm.usap_pool_enabled=true \
-    dalvik.vm.usap_pool_size_max=5
+    dalvik.vm.usap_pool_size_min=1 \
+    dalvik.vm.usap_pool_size_max=5 \
+    dalvik.vm.usap_refill_threshold=1 \
+    dalvik.vm.usap_pool_refill_delay_ms=3000 \
+    dalvik.vm.jitthreshold=5000 \
+    dalvik.vm.jitwarmupthreshold=2500 \
+    dalvik.vm.jitpthreadpriority=8
 
 # Enable whole-program R8 Java optimizations for SystemUI and system_server,
 # but also allow explicit overriding for testing and development.
