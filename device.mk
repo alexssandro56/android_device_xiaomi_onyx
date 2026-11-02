@@ -120,6 +120,12 @@ PRODUCT_VENDOR_PROPERTIES += \
 SYSTEM_OPTIMIZE_JAVA := true
 SYSTEMUI_OPTIMIZE_JAVA := true
 
+# Compile system_server with the speed filter, both at build time and
+# whenever it gets recompiled on the device.
+PRODUCT_SYSTEM_SERVER_COMPILER_FILTER := speed
+PRODUCT_PRODUCT_PROPERTIES += \
+    dalvik.vm.systemservercompilerfilter=speed
+
 # Dolby
 PRODUCT_PACKAGES += \
     LunarisDolby
