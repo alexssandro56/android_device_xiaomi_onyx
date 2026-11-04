@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>POCO F7 Game Tweaks</title>
+<style>
+  :root{
+    --bg:#0b1020; --card:#141b31; --card2:#1b2440; --line:#263258;
+    --txt:#e9eefc; --mut:#93a0c4; --acc:#4f8cff; --acc2:#7c5cff;
+    --ok:#36d399; --warn:#fbbd23; --err:#f87272;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:linear-gradient(160deg,#0b1020,#0d1430 60%,#120f2a);
+    color:var(--txt);font-family:-apple-system,Roboto,"Segoe UI",sans-serif;
+    padding:env(safe-area-inset-top) 14px 40px;line-height:1.45}
+  header{padding:22px 4px 10px}
+  h1{font-size:20px;margin:0 0 2px;font-weight:800;letter-spacing:.2px}
+  .sub{color:var(--mut);font-size:13px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:16px;margin:12px 0;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+  .card h2{font-size:15px;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+  .row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;
+    border-bottom:1px dashed var(--line);font-size:14px}
+  .row:last-child{border-bottom:0}
+  .row .k{color:var(--mut)}
+  .pill{padding:2px 10px;border-radius:999px;font-size:12px;font-weight:700}
+  .pill.ok{background:rgba(54,211,153,.15);color:var(--ok)}
+  .pill.off{background:rgba(147,160,196,.15);color:var(--mut)}
+  .pill.warn{background:rgba(251,189,35,.15);color:var(--warn)}
+  button{width:100%;border:0;border-radius:12px;padding:14px;font-size:15px;
+    font-weight:700;color:#fff;cursor:pointer;margin-top:10px;
+    background:linear-gradient(135deg,var(--acc),var(--acc2));transition:.15s}
+  button:active{transform:scale(.98);filter:brightness(1.1)}
+  button.ghost{background:var(--card2);border:1px solid var(--line)}
+  button.danger{background:linear-gradient(135deg,#b4461f,#8a1f1f)}
+  .hint{font-size:13px;color:var(--mut);margin-top:8px}
+  ol{margin:8px 0 0;padding-left:18px;font-size:14px}
+  ol li{margin:6px 0}
+  .tag{display:inline-block;background:var(--card2);border:1px solid var(--line);
+    border-radius:8px;padding:1px 7px;font-size:12px;color:#cfe0ff}
+  pre{background:#070b16;border:1px solid var(--line);border-radius:10px;
+    padding:10px;font-size:11px;max-height:200px;overflow:auto;white-space:pre-wrap;
+    color:#b9c6ea;margin-top:10px}
+  .warnbox{background:rgba(251,189,35,.08);border:1px solid rgba(251,189,35,.3);
+    border-radius:12px;padding:12px;font-size:13px;color:#ffe6a6;margin-top:10px}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(80px);
+    background:#1b2440;border:1px solid var(--line);
+    color:var(--txt);padding:12px 18px;border-radius:12px;font-size:14px;
+    box-shadow:0 10px 30px rgba(0,0,0,.4);transition:.25s;opacity:0;max-width:90vw}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .muted{color:var(--mut);font-size:12px;margin-top:6px}
+</style>
+</head>
+<body>
+<header>
+  <h1>⚡ POCO F7 — Game Tweaks</h1>
+  <div class="sub">Painel de controle do módulo • onyx</div>
+</header>
+
+<div class="card">
+  <h2>📊 Status</h2>
+  <div class="row"><span class="k">Aparelho</span><span id="st-device">…</span></div>
+  <div class="row"><span class="k">Modelo (atual)</span><span id="st-model">…</span></div>
+  <div class="row"><span class="k">Fortnite</span><span id="st-fn" class="pill off">…</span></div>
+  <div class="row"><span class="k">Jogos na lista</span><span id="st-games">…</span></div>
+  <div class="row"><span class="k">Spoof 120 FPS</span><span id="st-spoof" class="pill off">…</span></div>
+</div>
+
+<div class="card">
+  <h2>🚀 Ações</h2>
+  <button onclick="applyTweaks()">Aplicar tweaks agora</button>
+  <button class="ghost" onclick="fixLang()">Corrigir idioma do Fortnite (pt-BR)</button>
+  <div class="hint">Força modo performance + resolução cheia (sem downscale) nos
+    jogos e tenta definir o idioma do Fortnite.</div>
+</div>
+
+<div class="card">
+  <h2>🎯 Fortnite nítido (ajuste DENTRO do jogo)</h2>
+  <div class="muted">O módulo não muda settings do Fortnite — mas o borrado vem
+    daqui. Faça assim:</div>
+  <ol>
+    <li><b>Anti-Aliasing &amp; Super Resolution</b>: troque de
+      <span class="tag">Qualcomm GSR</span> para <span class="tag">TAA</span>
+      (ou <span class="tag">High</span>). O GSR renderiza menor e amplia → borra.</li>
+    <li><b>3D Resolution</b>: <span class="tag">100%</span> (você já está).</li>
+    <li><b>Rendering Mode</b> (Advanced): prefira o modo nativo, não o de
+      economia.</li>
+    <li><b>View Distance / Textures</b>: Epic.</li>
+    <li>Depois de trocar, <b>reinicie o Fortnite</b>.</li>
+  </ol>
+</div>
+
+<div class="card">
+  <h2>⚠️ 120 FPS no Ultra — experimental</h2>
+  <div class="warnbox">
+    <b>Leia antes:</b> a Epic <b>nunca liberou 120 FPS no Android</b> e bloqueia
+    pelo servidor. Este spoof de modelo <b>quase sempre não funciona</b>, viola os
+    termos da Epic, pode <b>quebrar Play Integrity</b> (apps de banco, Google
+    Wallet) e tem risco pequeno, mas real, de <b>ban</b>. Não recomendo. Requer
+    reiniciar.
+  </div>
+  <button id="spoofBtn" class="danger" onclick="toggleSpoof()">Ativar spoof 120 FPS</button>
+</div>
+
+<div class="card">
+  <h2>📜 Log</h2>
+  <button class="ghost" onclick="showLog()">Ver log</button>
+  <pre id="logbox" style="display:none"></pre>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SB = "/data/adb/modules/onyx_gameperf/scripts";
+let spoofOn = false;
+
+/* KernelSU / APatch / MMRL WebUI exec bridge */
+function exec(cmd){
+  return new Promise((resolve)=>{
+    if(typeof ksu === "undefined" || !ksu.exec){
+      resolve({errno:1, stdout:"", stderr:"WebUI root bridge indisponível. "+
+        "Abra pelo KernelSU/APatch/MMRL."});
+      return;
+    }
+    const cb = "__cb_"+Date.now()+"_"+Math.floor(Math.random()*1e9);
+    window[cb] = (errno, stdout, stderr)=>{ resolve({errno, stdout, stderr}); delete window[cb]; };
+    try{ ksu.exec(cmd, "{}", cb); }
+    catch(e){ resolve({errno:1, stdout:"", stderr:String(e)}); }
+  });
+}
+function toast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg; t.classList.add("show");
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),3200);
+}
+async function refresh(){
+  const r = await exec(`sh ${SB}/status.sh`);
+  let s={};
+  try{ s=JSON.parse(r.stdout.trim()); }catch(e){}
+  document.getElementById("st-device").textContent = s.device||"—";
+  document.getElementById("st-model").textContent  = s.model||"—";
+  document.getElementById("st-games").textContent  = (s.games!=null? s.games : "—");
+  const fn=document.getElementById("st-fn");
+  if(s.fortnite==="installed"){fn.textContent="instalado";fn.className="pill ok";}
+  else{fn.textContent="não encontrado";fn.className="pill off";}
+  const sp=document.getElementById("st-spoof");
+  spoofOn = (s.spoof120==="on");
+  if(spoofOn){sp.textContent="LIGADO";sp.className="pill warn";}
+  else{sp.textContent="desligado";sp.className="pill off";}
+  document.getElementById("spoofBtn").textContent =
+    spoofOn ? "Desativar spoof 120 FPS" : "Ativar spoof 120 FPS";
+}
+async function applyTweaks(){
+  toast("Aplicando…");
+  const r = await exec(`sh ${SB}/apply-tweaks.sh`);
+  toast(r.stdout.trim().split("\n").pop() || r.stderr || "Feito.");
+  refresh();
+}
+async function fixLang(){
+  toast("Definindo idioma…");
+  const r = await exec(`sh ${SB}/set-fortnite-lang.sh pt-BR`);
+  toast(r.stdout.trim().split("\n")[0] || r.stderr || "Feito.");
+}
+async function toggleSpoof(){
+  if(!spoofOn){
+    if(!confirm("Ativar o spoof de 120 FPS?\n\nProvavelmente NÃO vai funcionar "+
+      "(a Epic bloqueia 120 FPS no Android), pode quebrar apps de banco/Play "+
+      "Integrity e tem risco de ban. Continuar?")) return;
+    const r=await exec(`sh ${SB}/toggle-120fps.sh on`);
+    toast("Ativado. Reinicie o aparelho.");
+  }else{
+    const r=await exec(`sh ${SB}/toggle-120fps.sh off`);
+    toast("Desativado. Reinicie o aparelho.");
+  }
+  refresh();
+}
+async function showLog(){
+  const box=document.getElementById("logbox");
+  const r=await exec("tail -n 120 /data/adb/onyx_gameperf/service.log");
+  box.style.display="block";
+  box.textContent = r.stdout.trim() || r.stderr || "(log vazio)";
+}
+refresh();
+</script>
+</body>
+</html>

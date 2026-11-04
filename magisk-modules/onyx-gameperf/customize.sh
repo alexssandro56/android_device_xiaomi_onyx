@@ -1,26 +1,29 @@
 #!/system/bin/sh
 # customize.sh - runs at install time on Magisk / KernelSU / APatch.
 
-ui_print "- POCO F7 (onyx) Game & Performance Tweaks"
+ui_print "- POCO F7 (onyx) Game & Performance Tweaks v2.0.0"
 
-# Warn (do not block) if this is not an onyx device.
 DEV="$(getprop ro.product.device)$(getprop ro.product.vendor.device)"
 case "$DEV" in
-    *onyx*)
-        ui_print "- Device check OK: onyx (POCO F7)"
-        ;;
+    *onyx*) ui_print "- Device OK: onyx (POCO F7)" ;;
     *)
-        ui_print "! Warning: device does not look like 'onyx' (POCO F7)."
-        ui_print "! Detected: ${DEV:-unknown}"
-        ui_print "! Installing anyway - tweaks are generic and safe,"
-        ui_print "! but this module is tuned for the POCO F7."
+        ui_print "! Aviso: aparelho nao parece ser 'onyx' (POCO F7)."
+        ui_print "! Detectado: ${DEV:-desconhecido}. Instalando mesmo assim."
         ;;
 esac
 
-ui_print "- Installing module files"
+ui_print "- Instalando arquivos"
 set_perm_recursive "$MODPATH" 0 0 0755 0644
-set_perm "$MODPATH/service.sh" 0 0 0755
+set_perm_recursive "$MODPATH/scripts" 0 0 0755 0755
+set_perm "$MODPATH/service.sh"      0 0 0755
+set_perm "$MODPATH/post-fs-data.sh" 0 0 0755
+set_perm "$MODPATH/action.sh"       0 0 0755
 
-ui_print "- Done. Reboot to apply."
-ui_print "- Tip: in Fortnite set 3D Resolution to 100% and the"
-ui_print "  quality preset to High/Epic for the sharpest image."
+ui_print "- Pronto. Reinicie para aplicar."
+ui_print " "
+ui_print "  INTERFACE: no KernelSU/APatch/MMRL, abra o modulo e toque"
+ui_print "  em 'Open WebUI' para o painel de controle."
+ui_print "  No Magisk, use o botao 'Action' do modulo."
+ui_print " "
+ui_print "  FORTNITE NITIDO: no jogo troque Anti-Aliasing de 'Qualcomm GSR'"
+ui_print "  para 'TAA' (ou 'High') e deixe 3D Resolution em 100%."

@@ -1,6 +1,7 @@
 id=onyx_gameperf
 name=POCO F7 (onyx) Game & Performance Tweaks
-version=v1.0.0
-versionCode=10000
+version=v2.0.0
+versionCode=20000
 author=alexssandro56
-description=Performance + GPU tweaks for POCO F7 (onyx, SD 8s Gen 4). Forces full-resolution render (disables GameManager downscaling) and performance game mode for Fortnite and other popular games, plus light I/O/VM tuning. For AOSP / LineageOS / AxionAOSP.
+description=Performance + GPU tweaks for POCO F7 (onyx). Forces full-res render (no GameManager downscale) + performance mode for Fortnite and other games, best-effort Fortnite pt-BR language, light I/O/VM tuning. Includes a WebUI control panel (KernelSU/APatch/MMRL) and a Magisk action button. Optional, off-by-default experimental 120fps model spoof.
+updateJson=https://raw.githubusercontent.com/alexssandro56/android_device_xiaomi_onyx/ccr-9e04cb30-ikoark/magisk-modules/onyx-gameperf/update.json
