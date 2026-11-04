@@ -1,4 +1,4 @@
-# POCO F7 (onyx) — Game & Performance Tweaks  ·  v2.0.0
+# POCO F7 (onyx) — Game & Performance Tweaks  ·  v2.1.0
 
 Módulo **Magisk / KernelSU / APatch** para o POCO F7 (codinome `onyx`,
 Snapdragon 8s Gen 4), para ROMs AOSP / LineageOS / **AxionAOSP**.
@@ -6,7 +6,11 @@ Agora com **interface (WebUI)**.
 
 ---
 
-## ✨ Novidades da v2.0.0
+## ✨ Novidades da v2.1.0
+- **Editor de jogos na WebUI** — ligue/desligue, adicione e remova jogos pela
+  tela; salva em `games.list`.
+
+## Novidades da v2.0.0
 - **Interface / painel de controle (WebUI)** no KernelSU / APatch / MMRL.
 - **Botão de ação** no Magisk (`action.sh`) para reaplicar na hora.
 - **Idioma do Fortnite (pt-BR)** — tentativa automática + passo manual.
