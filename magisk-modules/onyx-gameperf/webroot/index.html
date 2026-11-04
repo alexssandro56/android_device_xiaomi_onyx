@@ -105,6 +105,7 @@
   <div class="hint">Força modo performance + resolução cheia nos jogos. O seletor
     define o idioma por app (Android 13+) — alguns jogos seguem o idioma do
     sistema (veja README).</div>
+  <button class="danger" onclick="rebootDevice()">🔄 Reiniciar o aparelho</button>
 </div>
 
 <div class="card">
@@ -249,6 +250,11 @@ async function toggleSpoof(){
     toast("Desativado. Reinicie o aparelho.");
   }
   refresh();
+}
+async function rebootDevice(){
+  if(!confirm("Reiniciar o aparelho agora?")) return;
+  toast("Reiniciando…");
+  await exec("svc power reboot || reboot");
 }
 async function cleanShader(){
   toast("Limpando cache de shader…");
