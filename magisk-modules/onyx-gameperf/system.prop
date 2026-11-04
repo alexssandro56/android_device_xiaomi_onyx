@@ -1,0 +1,19 @@
+# ---------------------------------------------------------------------------
+# system.prop  —  applied systemlessly (resetprop) at boot by Magisk/KernelSU
+# ---------------------------------------------------------------------------
+# NOTE: The onyx ROM already configures SurfaceFlinger (auto_latch, 120 Hz,
+# uclamp, Skia GL, etc.) very well. We intentionally DO NOT override those,
+# because fighting the ROM's display stack usually causes jank, not FPS.
+#
+# We only add a few safe, additive properties that the ROM does not set and
+# that genuinely help frame pacing / avoid wasted GPU work. Keep this short.
+
+# Keep Skia/HWUI tracing fully off (saves a little GPU/CPU per frame).
+debug.hwui.skia_tracing_enabled=false
+debug.hwui.skia_atrace_enabled=false
+
+# Let apps use the ADPF performance-hint manager for better frame pacing.
+debug.hwui.use_hint_manager=true
+
+# Do not force Fortnite/games to a reduced default frame rate.
+debug.graphics.game_default_frame_rate.disabled=1
