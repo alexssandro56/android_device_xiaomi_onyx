@@ -1,8 +1,28 @@
-# POCO F7 (onyx) — Game & Performance Tweaks  ·  v2.2.0
+# POCO F7 (onyx) — Game/Perf + Adreno V842.52 Driver  ·  v3.0.0
 
 Módulo **Magisk / KernelSU / APatch** para o POCO F7 (codinome `onyx`,
-Snapdragon 8s Gen 4), para ROMs AOSP / LineageOS / **AxionAOSP**.
-Agora com **interface (WebUI)**.
+Snapdragon 8s Gen 4 / Adreno 825), para ROMs AOSP / LineageOS / **AxionAOSP**.
+**Agora com o driver de GPU Adreno V842.52 embutido** + interface (WebUI).
+
+## 🧩 v3.0.0 — merge com o driver de GPU
+Este módulo agora **inclui o driver Adreno V842.52** (libs de
+`V842.52-[full].zip`, do Adreno Laboratory), instalado como overlay padrão do
+Magisk em `system/vendor/lib{,64}`.
+
+**Merge transparente (por que foi feito assim):** o pacote original do driver
+usa instaladores **Nim compilados e ofuscados, com anti-debug** — impossível
+auditar o que fazem. Em vez de confiar neles, este módulo:
+- instala **as libs do driver** (o que de fato importa) pelo mecanismo padrão;
+- usa uma **verificação de compatibilidade própria e legível** em `customize.sh`
+  (aborta se a GPU **não** for Adreno → evita tela preta);
+- limpa o **cache de shader** ao instalar e ao remover;
+- **descarta os binários ofuscados** do pacote original.
+
+> ⚠️ **Risco:** troca de driver de GPU pode dar **tela preta/bootloop** se o
+> driver não casar com sua GPU. Tenha o plano B pronto: **Safe Mode** (segure
+> Vol- no boot) desativa os módulos; ou remova pelo recovery a pasta
+> `/data/adb/modules/onyx_gameperf`. O driver **não** conserta o borrado do
+> Fortnite (isso é o GSR nas configs do jogo).
 
 ---
 

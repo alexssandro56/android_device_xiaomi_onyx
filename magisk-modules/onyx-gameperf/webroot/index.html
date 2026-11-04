@@ -138,6 +138,18 @@
 </div>
 
 <div class="card">
+  <h2>🧩 Driver de GPU (Adreno V842.52)</h2>
+  <div class="muted">Este módulo inclui o driver Adreno <b>V842.52</b> (libs em
+    <span class="tag">vendor/lib</span> e <span class="tag">lib64</span>),
+    instalado por overlay com verificação de GPU Adreno. Pode melhorar Vulkan e
+    estabilidade — mas <b>não</b> conserta o borrado do Fortnite (isso é o GSR no
+    jogo).</div>
+  <button class="ghost" onclick="cleanShader()">Limpar cache de shader/GPU</button>
+  <div class="hint">Use depois de instalar/trocar driver, ou quando texturas
+    bugarem. Os apps reconstroem o cache sozinhos.</div>
+</div>
+
+<div class="card">
   <h2>⚠️ 120 FPS no Ultra — experimental</h2>
   <div class="warnbox">
     <b>Leia antes:</b> a Epic <b>nunca liberou 120 FPS no Android</b> e bloqueia
@@ -237,6 +249,11 @@ async function toggleSpoof(){
     toast("Desativado. Reinicie o aparelho.");
   }
   refresh();
+}
+async function cleanShader(){
+  toast("Limpando cache de shader…");
+  const r=await exec(`sh ${SB}/clean-shader.sh`);
+  toast(r.stdout.trim().split("\n").pop() || r.stderr || "Feito.");
 }
 async function showLog(){
   const box=document.getElementById("logbox");
