@@ -1,0 +1,6 @@
+id=onyx_scroll_fix
+name=Scroll Fix (120Hz lock) - POCO F7 onyx
+version=v2.0
+versionCode=20
+author=alexssandro56 (base: lunatik_kenny)
+description=Smooths app scrolling by locking the display to 120Hz (min+peak refresh rate), re-applied if it drops. Replaces the original one-shot SurfaceFlinger duration call, which used 60Hz-based values (16.6ms) wrong for this 120Hz panel and did not persist. Safe: touches no vendor libraries.
