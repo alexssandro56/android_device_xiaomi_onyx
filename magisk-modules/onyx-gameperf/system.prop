@@ -17,11 +17,3 @@ debug.hwui.use_hint_manager=true
 
 # Do not force Fortnite/games to a reduced default frame rate.
 debug.graphics.game_default_frame_rate.disabled=1
-
-# ---------------------------------------------------------------------------
-# Adreno GPU driver (V842.52) props — from the bundled driver payload.
-# ---------------------------------------------------------------------------
-ro.hardware.vulkan=adreno
-ro.hardware.egl=adreno
-ro.zygote.disable_gl_preload=true
-debug.angle.rules=

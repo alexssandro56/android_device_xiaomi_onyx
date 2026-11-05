@@ -1,6 +1,6 @@
 id=onyx_gameperf
-name=POCO F7 (onyx) Game/Perf + Adreno V842.52 Driver
-version=v3.0.1
-versionCode=30001
-author=alexssandro56 (driver libs: Adreno Laboratory)
-description=All-in-one for POCO F7 (onyx): bundles the Adreno V842.52 GPU driver (installed via standard overlay, with an auditable Adreno compatibility gate) + performance/game tweaks, full-res game render, Fortnite pt-BR language, WebUI with games editor and language selector, shader-cache cleaner, and an optional experimental 120fps spoof. Aborts safely on non-Adreno GPUs.
+name=POCO F7 (onyx) Game & Performance Tweaks
+version=v3.1.0
+versionCode=30100
+author=alexssandro56
+description=Tweaks-only (NO GPU driver, safe). Performance + full-res game render, Fortnite pt-BR language, WebUI with games editor, language selector, shader-cache cleaner and reboot button, optional off-by-default 120fps spoof. Does not replace any vendor library.

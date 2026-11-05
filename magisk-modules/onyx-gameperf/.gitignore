@@ -1,4 +1,0 @@
-# Proprietary Adreno GPU driver blobs (V842.52) are NOT committed here:
-# large (~147 MB) + proprietary Qualcomm libraries. They come from the user's
-# own V842.52-[full].zip and are bundled only into the built flashable zip.
-system/

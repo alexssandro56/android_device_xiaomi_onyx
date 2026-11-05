@@ -139,15 +139,11 @@
 </div>
 
 <div class="card">
-  <h2>🧩 Driver de GPU (Adreno V842.52)</h2>
-  <div class="muted">Este módulo inclui o driver Adreno <b>V842.52</b> (libs em
-    <span class="tag">vendor/lib</span> e <span class="tag">lib64</span>),
-    instalado por overlay com verificação de GPU Adreno. Pode melhorar Vulkan e
-    estabilidade — mas <b>não</b> conserta o borrado do Fortnite (isso é o GSR no
-    jogo).</div>
+  <h2>🧹 Cache de shader/GPU</h2>
+  <div class="muted">Este módulo <b>não</b> troca o driver de GPU (é seguro).
+    Limpe o cache de shader quando texturas bugarem ou após atualizar um jogo.
+    Os apps reconstroem o cache sozinhos.</div>
   <button class="ghost" onclick="cleanShader()">Limpar cache de shader/GPU</button>
-  <div class="hint">Use depois de instalar/trocar driver, ou quando texturas
-    bugarem. Os apps reconstroem o cache sozinhos.</div>
 </div>
 
 <div class="card">
