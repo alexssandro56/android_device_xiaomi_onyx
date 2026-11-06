@@ -4,6 +4,20 @@ Módulo **Magisk / KernelSU / APatch** para o POCO F7 (codinome `onyx`,
 Snapdragon 8s Gen 4 / Adreno 825), para ROMs AOSP / LineageOS / **AxionAOSP**.
 **Versão sem driver de GPU** — segura, não troca nenhuma lib de vendor.
 
+## 🌡️ v3.3.0 — Monitor ao vivo + Perfil térmico
+Inspirado no **Project-Raco** (LoggingNewMemory):
+- **Monitor (ao vivo)** na WebUI: modelo, kernel, bateria + temperatura,
+  temperatura do SoC (zona mais quente), governor e frequências de CPU, GPU
+  (freq + governor), RAM livre, refresh rate e o valor térmico atual. Só leitura.
+- **Perfil térmico**: usa o nó do próprio aparelho
+  `/sys/class/thermal/thermal_message/sconfig`:
+  - **Padrão** → `sconfig=0` (perfil "normal" verificado) + powersave off;
+  - **Resfriar** → `powersave_mode=1` (mais conservador, esquenta menos);
+  - **Custom (nº)** → para quem conhece a cena térmica do onyx (com aviso).
+  > Não embuto um valor que **desliga** a proteção térmica: o mapa de cenas do
+  > onyx fica num blob do vendor e um número errado poderia superaquecer. O
+  > perfil é sempre reversível pelo botão **Padrão**.
+
 ## ✅ v3.1.0 — removido o driver de GPU
 A versão v3.0.x embutia o driver Adreno V842.52, que causou **bootloop** na
 Adreno 825 (driver incompatível). Esta versão **remove o driver por completo** e

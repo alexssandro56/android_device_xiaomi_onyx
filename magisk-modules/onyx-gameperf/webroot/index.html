@@ -129,9 +129,13 @@
   <ol>
     <li><b>Motion Blur</b>: <span class="tag">OFF</span> — é o que mais tira o
       "embaçado" em movimento. Desligue primeiro.</li>
-    <li><b>Anti-Aliasing &amp; Super Resolution</b>: teste <span class="tag">TAA</span>
-      e <span class="tag">High</span> e veja qual fica mais nítido pra você.
-      Evite <span class="tag">Qualcomm GSR</span> (renderiza menor e amplia → borra).</li>
+    <li><b>Usa Qualcomm GSR</b> (ótimo pra Snapdragon): deixe o 3D Resolution em
+      100% e <b>suba o slider "Qualcomm Game Super Resolution"</b> pro lado da
+      qualidade — é ele que controla o quanto o GSR amplia (menos amplia = menos
+      borrado).</li>
+    <li><b>Quer mais nitidez?</b> <span class="tag">SMAA</span> é afiado e leve
+      (sem upscaling); <span class="tag">TAA</span> é limpo mas borra em
+      movimento. Se o foco é performance/bateria, fique no GSR.</li>
     <li><b>3D Resolution</b>: <span class="tag">100%</span>.</li>
     <li><b>View Distance / Textures</b>: Epic.</li>
     <li>A <b>60 FPS</b> o movimento borra mais que a 120. A Epic trava 120fps no
@@ -147,6 +151,38 @@
     Limpe o cache de shader quando texturas bugarem ou após atualizar um jogo.
     Os apps reconstroem o cache sozinhos.</div>
   <button class="ghost" onclick="cleanShader()">Limpar cache de shader/GPU</button>
+</div>
+
+<div class="card">
+  <h2>📈 Monitor (ao vivo)</h2>
+  <div class="row"><span class="k">Modelo</span><span id="m-model">—</span></div>
+  <div class="row"><span class="k">Kernel</span><span id="m-kernel">—</span></div>
+  <div class="row"><span class="k">Bateria</span><span id="m-batt">—</span></div>
+  <div class="row"><span class="k">Temp. bateria</span><span id="m-bt">—</span></div>
+  <div class="row"><span class="k">Temp. SoC (máx)</span><span id="m-soc">—</span></div>
+  <div class="row"><span class="k">CPU governor</span><span id="m-gov">—</span></div>
+  <div class="row"><span class="k">CPU (MHz)</span><span id="m-cpu">—</span></div>
+  <div class="row"><span class="k">GPU</span><span id="m-gpu">—</span></div>
+  <div class="row"><span class="k">RAM livre</span><span id="m-ram">—</span></div>
+  <div class="row"><span class="k">Refresh min/max</span><span id="m-hz">—</span></div>
+  <div class="row"><span class="k">Térmico (sconfig)</span><span id="m-sc">—</span></div>
+  <button id="monBtn" class="ghost" onclick="toggleMonitor()">Iniciar monitor</button>
+</div>
+
+<div class="card">
+  <h2>🌡️ Perfil térmico</h2>
+  <div class="muted">sconfig atual: <b id="t-cur">—</b>. Perfis seguros e
+    reversíveis (usa o nó térmico do próprio aparelho).</div>
+  <button class="ghost" onclick="thermalMode('default')">Padrão (sistema)</button>
+  <button class="ghost" onclick="thermalMode('cool')">Resfriar (esquenta menos)</button>
+  <div class="addrow">
+    <input id="t-val" inputmode="numeric" placeholder="sconfig custom (nº)"
+      autocomplete="off">
+    <button class="addbtn" onclick="thermalSet()">OK</button>
+  </div>
+  <div class="warnbox">O valor custom é para quem conhece a cena térmica do onyx.
+    Um número errado pode <b>reduzir a proteção térmica</b> e superaquecer. Se o
+    aparelho esquentar, toque em <b>Padrão</b>.</div>
 </div>
 
 <div class="card">
@@ -267,6 +303,49 @@ async function cleanShader(){
   const r=await exec(`sh ${SB}/clean-shader.sh`);
   toast(r.stdout.trim().split("\n").pop() || r.stderr || "Feito.");
 }
+
+/* ---------- Monitor ao vivo ---------- */
+let monTimer=null;
+async function refreshMonitor(){
+  const r=await exec(`sh ${SB}/monitor.sh`);
+  let s={}; try{ s=JSON.parse(r.stdout.trim()); }catch(e){ return; }
+  const set=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
+  const hz=(x)=>(!x||x==="null")?"auto":x;
+  set("m-model",s.model||"—"); set("m-kernel",s.kernel||"—");
+  set("m-batt",s.batt?s.batt+"%":"—");
+  set("m-bt",s.batttemp?s.batttemp+" °C":"—");
+  set("m-soc",s.soctemp?s.soctemp+" °C":"—");
+  set("m-gov",s.gov||"—");
+  set("m-cpu",s.cpu?s.cpu+" MHz":"—");
+  set("m-gpu",s.gpu?(s.gpu+" MHz"+(s.gpugov?" · "+s.gpugov:"")):"—");
+  set("m-ram",(s.ramav?(s.ramav+" / "+s.ramtot+" GB"):"—"));
+  set("m-hz",hz(s.minhz)+" / "+hz(s.peakhz));
+  const sc=(s.sconfig!==undefined&&s.sconfig!=="")?s.sconfig:"—";
+  set("m-sc",sc); set("t-cur",sc);
+}
+function toggleMonitor(){
+  const b=document.getElementById("monBtn");
+  if(monTimer){ clearInterval(monTimer); monTimer=null; b.textContent="Iniciar monitor"; return; }
+  refreshMonitor(); monTimer=setInterval(refreshMonitor,2000);
+  b.textContent="Parar monitor";
+}
+
+/* ---------- Perfil térmico ---------- */
+async function thermalMode(mode){
+  toast("Aplicando perfil térmico…");
+  const r=await exec(`sh ${SB}/thermal.sh ${mode}`);
+  toast(r.stdout.trim().split("\n").pop() || r.stderr || "Feito.");
+  refreshMonitor();
+}
+async function thermalSet(){
+  const v=(document.getElementById("t-val").value||"").trim();
+  if(!/^[0-9]+$/.test(v)){ toast("Digite um número."); return; }
+  if(!confirm("Definir sconfig="+v+"?\n\nUm valor errado pode reduzir a proteção "+
+    "térmica e superaquecer. Em caso de calor, toque em Padrão.")) return;
+  const r=await exec(`sh ${SB}/thermal.sh set ${v}`);
+  toast(r.stdout.trim().split("\n").pop() || r.stderr || "Feito.");
+  refreshMonitor();
+}
 async function showLog(){
   const box=document.getElementById("logbox");
   const r=await exec("tail -n 120 /data/adb/onyx_gameperf/service.log");
@@ -357,6 +436,7 @@ async function setGameLang(i){
 fillLocales();
 refresh();
 loadGames();
+refreshMonitor();
 </script>
 </body>
 </html>
