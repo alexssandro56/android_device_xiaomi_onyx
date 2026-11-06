@@ -4,6 +4,17 @@ Módulo **Magisk / KernelSU / APatch** para o POCO F7 (codinome `onyx`,
 Snapdragon 8s Gen 4 / Adreno 825), para ROMs AOSP / LineageOS / **AxionAOSP**.
 **Versão sem driver de GPU** — segura, não troca nenhuma lib de vendor.
 
+## 🗂️ v3.5.0 — WebUI com abas + térmico nomeado + spoof com modelo
+- **WebUI reorganizada em abas**: Jogos / Gráficos / Sistema / Spoof.
+- **Perfis térmicos nomeados**: Equilíbrio / Jogo / Resfriar. Como o thermald da
+  Xiaomi reverte o `sconfig` em ~1s, a aplicação é "única porém reforçada"
+  (escreve o valor 5x seguidas pra segurar um pouco; sem daemon).
+  O perfil **Jogo** usa o número que você descobrir no Monitor e salvar.
+- **Spoof com seletor de modelo** (global): escolha qual topo de linha fingir.
+  > ⚠️ **Spoof por jogo** (só um app, sem afetar o sistema) **exige Zygisk**
+  > (hook por processo). Um módulo shell não consegue — props são globais. Para
+  > por-jogo de verdade, use um módulo Zygisk como o **COPG**.
+
 ## 🔋 v3.4.0 — Economia de bateria (segura) + descoberta do sconfig
 - **Economia de bateria** que NÃO afeta a fluidez: mexe só em segundo
   plano/standby (desativa scan de Wi-Fi/BT em background, garante Doze e o

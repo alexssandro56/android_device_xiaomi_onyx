@@ -15,20 +15,32 @@ DIR=${0%/*}
 . "$DIR/common.sh"
 
 action="${1:-status}"
+MODELF="$CONFIG_DIR/spoof_model.conf"   # format: MODEL|BRAND|MANUFACTURER
 
 case "$action" in
     on)
         : > "$FLAG_120"
-        log "120fps spoof: ENABLED (reboot required)"
+        log "model spoof: ENABLED (reboot required)"
         echo "ON"
-        echo "Spoof de 120 FPS ATIVADO (experimental). Reinicie o aparelho."
-        echo "AVISO: pode nao funcionar e pode quebrar apps de banco/Play Integrity."
+        echo "Spoof de modelo ATIVADO (experimental). Reinicie o aparelho."
+        echo "AVISO: global, pode quebrar Play Integrity/banco e nem funcionar."
         ;;
     off)
         rm -f "$FLAG_120"
-        log "120fps spoof: DISABLED (reboot required)"
+        log "model spoof: DISABLED (reboot required)"
         echo "OFF"
-        echo "Spoof de 120 FPS DESATIVADO. Reinicie o aparelho."
+        echo "Spoof de modelo DESATIVADO. Reinicie o aparelho."
+        ;;
+    setmodel)
+        # $2 = "MODEL|BRAND|MANUFACTURER"
+        case "$2" in
+            *"|"*"|"*) echo "$2" > "$MODELF"; log "spoof model set: $2"
+                       echo "Modelo de spoof salvo. Reinicie para aplicar." ;;
+            *) echo "ERR: formato inválido (MODEL|BRAND|MANUFACTURER)"; exit 1 ;;
+        esac
+        ;;
+    getmodel)
+        cat "$MODELF" 2>/dev/null || echo "SM-S928B|samsung|samsung"
         ;;
     status|*)
         if [ -f "$FLAG_120" ]; then echo "ON"; else echo "OFF"; fi

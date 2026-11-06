@@ -13,14 +13,22 @@ MODDIR=${0%/*}
 # resetprop is provided by Magisk/KernelSU in this context.
 RESETPROP="$(command -v resetprop || echo resetprop)"
 
-# Spoof to a generic recent flagship. This is a best-effort attempt only.
-# NOTE: this changes props system-wide and may affect Play Integrity.
-$RESETPROP -n ro.product.model          "SM-S928B"     2>/dev/null
-$RESETPROP -n ro.product.vendor.model   "SM-S928B"     2>/dev/null
-$RESETPROP -n ro.product.system.model   "SM-S928B"     2>/dev/null
-$RESETPROP -n ro.product.manufacturer   "samsung"      2>/dev/null
-$RESETPROP -n ro.product.vendor.manufacturer "samsung" 2>/dev/null
-$RESETPROP -n ro.product.brand          "samsung"      2>/dev/null
+# Target model: read from config (MODEL|BRAND|MANUFACTURER), default S24 Ultra.
+MODEL="SM-S928B"; BRAND="samsung"; MANUF="samsung"
+MODELF="$CONFIG_DIR/spoof_model.conf"
+if [ -f "$MODELF" ]; then
+    line="$(cat "$MODELF")"
+    m="$(echo "$line" | cut -d'|' -f1)"; b="$(echo "$line" | cut -d'|' -f2)"; u="$(echo "$line" | cut -d'|' -f3)"
+    [ -n "$m" ] && MODEL="$m"; [ -n "$b" ] && BRAND="$b"; [ -n "$u" ] && MANUF="$u"
+fi
 
-log "post-fs-data: 120fps spoof props applied"
+# NOTE: this changes props system-wide and may affect Play Integrity.
+$RESETPROP -n ro.product.model               "$MODEL" 2>/dev/null
+$RESETPROP -n ro.product.vendor.model        "$MODEL" 2>/dev/null
+$RESETPROP -n ro.product.system.model        "$MODEL" 2>/dev/null
+$RESETPROP -n ro.product.manufacturer        "$MANUF" 2>/dev/null
+$RESETPROP -n ro.product.vendor.manufacturer "$MANUF" 2>/dev/null
+$RESETPROP -n ro.product.brand               "$BRAND" 2>/dev/null
+
+log "post-fs-data: model spoof applied ($MODEL / $BRAND)"
 exit 0

@@ -14,9 +14,19 @@
   body{margin:0;background:linear-gradient(160deg,#0b1020,#0d1430 60%,#120f2a);
     color:var(--txt);font-family:-apple-system,Roboto,"Segoe UI",sans-serif;
     padding:env(safe-area-inset-top) 14px 40px;line-height:1.45}
-  header{padding:22px 4px 10px}
-  h1{font-size:20px;margin:0 0 2px;font-weight:800;letter-spacing:.2px}
+  header{padding:18px 4px 6px}
+  h1{font-size:19px;margin:0 0 2px;font-weight:800;letter-spacing:.2px}
   .sub{color:var(--mut);font-size:13px}
+  .tabs{display:flex;gap:6px;position:sticky;top:0;z-index:5;overflow-x:auto;
+    padding:10px 0;margin:0 -14px;padding-left:14px;padding-right:14px;
+    background:linear-gradient(180deg,#0b1020 70%,rgba(11,16,32,0));scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:0 0 auto;padding:10px 15px;border-radius:12px;background:var(--card2);
+    border:1px solid var(--line);color:var(--mut);font-weight:700;font-size:14px;
+    cursor:pointer;white-space:nowrap}
+  .tab.active{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;border-color:transparent}
+  .pane{display:none}
+  .pane.active{display:block}
   .card{background:var(--card);border:1px solid var(--line);border-radius:16px;
     padding:16px;margin:12px 0;box-shadow:0 6px 20px rgba(0,0,0,.25)}
   .card h2{font-size:15px;margin:0 0 10px;display:flex;align-items:center;gap:8px}
@@ -47,17 +57,15 @@
   .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(80px);
     background:#1b2440;border:1px solid var(--line);
     color:var(--txt);padding:12px 18px;border-radius:12px;font-size:14px;
-    box-shadow:0 10px 30px rgba(0,0,0,.4);transition:.25s;opacity:0;max-width:90vw}
+    box-shadow:0 10px 30px rgba(0,0,0,.4);transition:.25s;opacity:0;max-width:90vw;z-index:20}
   .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
   .muted{color:var(--mut);font-size:12px;margin-top:6px}
   .game{display:flex;align-items:center;gap:10px;padding:9px 0;
     border-bottom:1px dashed var(--line)}
   .game:last-of-type{border-bottom:0}
   .game .info{flex:1;min-width:0}
-  .game .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;
-    text-overflow:ellipsis}
-  .game .pk{font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;
-    text-overflow:ellipsis}
+  .game .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .game .pk{font-size:11px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .sw{position:relative;width:44px;height:26px;flex:0 0 auto;border-radius:999px;
     background:var(--card2);border:1px solid var(--line);transition:.15s;cursor:pointer}
   .sw.on{background:linear-gradient(135deg,var(--acc),var(--acc2));border-color:transparent}
@@ -73,8 +81,7 @@
   .addbtn{width:48px;flex:0 0 auto;margin:0;font-size:20px;padding:0}
   .langrow{display:flex;gap:8px;align-items:center;margin-top:10px}
   select{flex:1;background:#070b16;border:1px solid var(--line);border-radius:10px;
-    color:var(--txt);padding:12px;font-size:14px;min-width:0;
-    -webkit-appearance:none;appearance:none}
+    color:var(--txt);padding:12px;font-size:14px;min-width:0;-webkit-appearance:none;appearance:none}
   .lng{flex:0 0 auto;width:34px;height:34px;border-radius:8px;border:1px solid var(--line);
     background:var(--card2);color:#cfe0ff;font-size:15px;line-height:1;padding:0;margin:0;cursor:pointer}
 </style>
@@ -85,143 +92,177 @@
   <div class="sub">Painel de controle do módulo • onyx</div>
 </header>
 
-<div class="card">
-  <h2>📊 Status</h2>
-  <div class="row"><span class="k">Aparelho</span><span id="st-device">…</span></div>
-  <div class="row"><span class="k">Modelo (atual)</span><span id="st-model">…</span></div>
-  <div class="row"><span class="k">Fortnite</span><span id="st-fn" class="pill off">…</span></div>
-  <div class="row"><span class="k">Jogos na lista</span><span id="st-games">…</span></div>
-  <div class="row"><span class="k">Spoof 120 FPS</span><span id="st-spoof" class="pill off">…</span></div>
-</div>
+<nav class="tabs" id="tabs">
+  <div class="tab active" data-tab="jogos"   onclick="showTab('jogos')">🎮 Jogos</div>
+  <div class="tab"        data-tab="graficos" onclick="showTab('graficos')">🎯 Gráficos</div>
+  <div class="tab"        data-tab="sistema"  onclick="showTab('sistema')">🖥️ Sistema</div>
+  <div class="tab"        data-tab="spoof"    onclick="showTab('spoof')">🎭 Spoof</div>
+</nav>
 
-<div class="card">
-  <h2>🚀 Ações</h2>
-  <button onclick="applyTweaks()">Aplicar tweaks agora</button>
-  <div class="langrow">
-    <select id="locale"></select>
-    <button class="ghost" style="margin:0;width:auto;flex:0 0 auto;padding:12px 14px"
-      onclick="fixLang()">Idioma no Fortnite</button>
+<!-- ======================= JOGOS ======================= -->
+<section class="pane active" id="pane-jogos">
+  <div class="card">
+    <h2>📊 Status</h2>
+    <div class="row"><span class="k">Aparelho</span><span id="st-device">…</span></div>
+    <div class="row"><span class="k">Modelo (atual)</span><span id="st-model">…</span></div>
+    <div class="row"><span class="k">Fortnite</span><span id="st-fn" class="pill off">…</span></div>
+    <div class="row"><span class="k">Jogos na lista</span><span id="st-games">…</span></div>
+    <div class="row"><span class="k">Spoof de modelo</span><span id="st-spoof" class="pill off">…</span></div>
   </div>
-  <div class="hint">Força modo performance + resolução cheia nos jogos. O seletor
-    define o idioma por app (Android 13+) — alguns jogos seguem o idioma do
-    sistema (veja README).</div>
-  <button class="danger" onclick="rebootDevice()">🔄 Reiniciar o aparelho</button>
-</div>
 
-<div class="card">
-  <h2>🎮 Jogos ajustados</h2>
-  <div class="muted">Ligue/desligue quais jogos recebem modo performance +
-    resolução cheia. Toque em “Salvar lista” e depois em “Aplicar tweaks”.</div>
-  <div id="gamesList" style="margin-top:8px"></div>
-  <div class="addrow">
-    <input id="newpkg" placeholder="com.exemplo.jogo" autocapitalize="off"
-      autocomplete="off" autocorrect="off" spellcheck="false">
-    <button class="addbtn" onclick="addGame()">+</button>
+  <div class="card">
+    <h2>🚀 Ações</h2>
+    <button onclick="applyTweaks()">Aplicar tweaks agora</button>
+    <div class="langrow">
+      <select id="locale"></select>
+      <button class="ghost" style="margin:0;width:auto;flex:0 0 auto;padding:12px 14px"
+        onclick="fixLang()">Idioma Fortnite</button>
+    </div>
+    <div class="hint">Força modo performance + resolução cheia nos jogos. O seletor
+      define o idioma por app (Android 13+) — alguns jogos seguem o idioma do
+      sistema (veja README).</div>
   </div>
-  <button onclick="saveGames()">Salvar lista</button>
-  <div class="muted" id="gamesMsg"></div>
-</div>
 
-<div class="card">
-  <h2>🎯 Fortnite nítido (ajuste DENTRO do jogo)</h2>
-  <div class="muted">O módulo não muda settings do Fortnite — mas o borrado vem
-    daqui. Faça assim:</div>
-  <ol>
-    <li><b>Motion Blur</b>: <span class="tag">OFF</span> — é o que mais tira o
-      "embaçado" em movimento. Desligue primeiro.</li>
-    <li><b>Usa Qualcomm GSR</b> (ótimo pra Snapdragon): deixe o 3D Resolution em
-      100% e <b>suba o slider "Qualcomm Game Super Resolution"</b> pro lado da
-      qualidade — é ele que controla o quanto o GSR amplia (menos amplia = menos
-      borrado).</li>
-    <li><b>Quer mais nitidez?</b> <span class="tag">SMAA</span> é afiado e leve
-      (sem upscaling); <span class="tag">TAA</span> é limpo mas borra em
-      movimento. Se o foco é performance/bateria, fique no GSR.</li>
-    <li><b>3D Resolution</b>: <span class="tag">100%</span>.</li>
-    <li><b>View Distance / Textures</b>: Epic.</li>
-    <li>A <b>60 FPS</b> o movimento borra mais que a 120. A Epic trava 120fps no
-      Android, então 60 é o teto real aqui — sem jeito pelo módulo.</li>
-    <li>Depois de trocar, <b>reinicie o Fortnite</b> (botão abaixo).</li>
-  </ol>
-  <button class="ghost" onclick="restartFortnite()">Reiniciar o Fortnite</button>
-</div>
-
-<div class="card">
-  <h2>🧹 Cache de shader/GPU</h2>
-  <div class="muted">Este módulo <b>não</b> troca o driver de GPU (é seguro).
-    Limpe o cache de shader quando texturas bugarem ou após atualizar um jogo.
-    Os apps reconstroem o cache sozinhos.</div>
-  <button class="ghost" onclick="cleanShader()">Limpar cache de shader/GPU</button>
-</div>
-
-<div class="card">
-  <h2>📈 Monitor (ao vivo)</h2>
-  <div class="row"><span class="k">Modelo</span><span id="m-model">—</span></div>
-  <div class="row"><span class="k">Kernel</span><span id="m-kernel">—</span></div>
-  <div class="row"><span class="k">Bateria</span><span id="m-batt">—</span></div>
-  <div class="row"><span class="k">Temp. bateria</span><span id="m-bt">—</span></div>
-  <div class="row"><span class="k">Temp. SoC (máx)</span><span id="m-soc">—</span></div>
-  <div class="row"><span class="k">CPU governor</span><span id="m-gov">—</span></div>
-  <div class="row"><span class="k">CPU (MHz)</span><span id="m-cpu">—</span></div>
-  <div class="row"><span class="k">GPU</span><span id="m-gpu">—</span></div>
-  <div class="row"><span class="k">RAM livre</span><span id="m-ram">—</span></div>
-  <div class="row"><span class="k">Refresh min/max</span><span id="m-hz">—</span></div>
-  <div class="row"><span class="k">Térmico (sconfig)</span><span id="m-sc">—</span></div>
-  <button id="monBtn" class="ghost" onclick="toggleMonitor()">Iniciar monitor</button>
-</div>
-
-<div class="card">
-  <h2>🌡️ Perfil térmico</h2>
-  <div class="muted">sconfig atual: <b id="t-cur">—</b>. Perfis seguros e
-    reversíveis (usa o nó térmico do próprio aparelho).</div>
-  <button class="ghost" onclick="thermalMode('default')">Padrão (sistema)</button>
-  <button class="ghost" onclick="thermalMode('cool')">Resfriar (esquenta menos)</button>
-  <div class="addrow">
-    <input id="t-val" inputmode="numeric" placeholder="sconfig custom (nº)"
-      autocomplete="off">
-    <button class="addbtn" onclick="thermalSet()">OK</button>
+  <div class="card">
+    <h2>🎮 Jogos ajustados</h2>
+    <div class="muted">Ligue/desligue quais jogos recebem modo performance +
+      resolução cheia. Toque em “Salvar lista” e depois em “Aplicar tweaks”.</div>
+    <div id="gamesList" style="margin-top:8px"></div>
+    <div class="addrow">
+      <input id="newpkg" placeholder="com.exemplo.jogo" autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false">
+      <button class="addbtn" onclick="addGame()">+</button>
+    </div>
+    <button onclick="saveGames()">Salvar lista</button>
+    <div class="muted" id="gamesMsg"></div>
   </div>
-  <div class="hint">🔎 <b>Descubra o valor de "jogo" do seu aparelho:</b> inicie o
-    Monitor acima, abra um jogo pesado e veja o <b>sconfig</b> mudar — esse número
-    é o perfil de jogo do seu onyx (ex.: cenas <i>mgame</i>/<i>nolimits</i>).
-    Anote e use no campo custom.</div>
-  <div class="warnbox">O valor custom é para quem conhece a cena térmica do onyx.
-    Um número errado pode <b>reduzir a proteção térmica</b> e superaquecer. Se o
-    aparelho esquentar, toque em <b>Padrão</b>.</div>
-</div>
+</section>
 
-<div class="card">
-  <h2>🔋 Economia de bateria (segura)</h2>
-  <div class="muted">Mexe <b>só em segundo plano/standby</b> — <b>não afeta a
-    fluidez</b> da ROM. Desativa scan de Wi-Fi/Bluetooth em segundo plano,
-    garante o Doze e o congelamento de apps em cache.</div>
-  <button id="battBtn" class="ghost" onclick="toggleBattery()">Ativar economia</button>
-  <div class="hint">Pode atrasar um pouco notificações de apps muito em segundo
-    plano. Reversível a qualquer momento.</div>
-</div>
-
-<div class="card">
-  <h2>⚠️ 120 FPS no Ultra — experimental</h2>
-  <div class="warnbox">
-    <b>Leia antes:</b> a Epic <b>nunca liberou 120 FPS no Android</b> e bloqueia
-    pelo servidor. Este spoof de modelo <b>quase sempre não funciona</b>, viola os
-    termos da Epic, pode <b>quebrar Play Integrity</b> (apps de banco, Google
-    Wallet) e tem risco pequeno, mas real, de <b>ban</b>. Não recomendo. Requer
-    reiniciar.
+<!-- ======================= GRÁFICOS ======================= -->
+<section class="pane" id="pane-graficos">
+  <div class="card">
+    <h2>🎯 Fortnite nítido (ajuste DENTRO do jogo)</h2>
+    <div class="muted">O módulo não muda settings do Fortnite — mas o borrado vem
+      daqui. Faça assim:</div>
+    <ol>
+      <li><b>Motion Blur</b>: <span class="tag">OFF</span> — é o que mais tira o
+        "embaçado" em movimento. Desligue primeiro.</li>
+      <li><b>Usa Qualcomm GSR</b> (ótimo pra Snapdragon): deixe o 3D Resolution em
+        100% e <b>suba o slider "Qualcomm Game Super Resolution"</b> pro lado da
+        qualidade — é ele que controla o quanto o GSR amplia.</li>
+      <li><b>Quer mais nitidez?</b> <span class="tag">SMAA</span> é afiado e leve
+        (sem upscaling); <span class="tag">TAA</span> é limpo mas borra em
+        movimento. Pra performance/bateria, fique no GSR.</li>
+      <li><b>3D Resolution</b>: <span class="tag">100%</span>.</li>
+      <li><b>View Distance / Textures</b>: Epic.</li>
+      <li>A <b>60 FPS</b> borra mais que a 120. A Epic trava 120fps no Android,
+        então 60 é o teto real aqui.</li>
+    </ol>
+    <button class="ghost" onclick="restartFortnite()">Reiniciar o Fortnite</button>
   </div>
-  <button id="spoofBtn" class="danger" onclick="toggleSpoof()">Ativar spoof 120 FPS</button>
-</div>
 
-<div class="card">
-  <h2>📜 Log</h2>
-  <button class="ghost" onclick="showLog()">Ver log</button>
-  <pre id="logbox" style="display:none"></pre>
-</div>
+  <div class="card">
+    <h2>🧹 Cache de shader/GPU</h2>
+    <div class="muted">Este módulo <b>não</b> troca o driver de GPU (é seguro).
+      Limpe o cache de shader quando texturas bugarem ou após atualizar um jogo.</div>
+    <button class="ghost" onclick="cleanShader()">Limpar cache de shader/GPU</button>
+  </div>
+</section>
+
+<!-- ======================= SISTEMA ======================= -->
+<section class="pane" id="pane-sistema">
+  <div class="card">
+    <h2>📈 Monitor (ao vivo)</h2>
+    <div class="row"><span class="k">Modelo</span><span id="m-model">—</span></div>
+    <div class="row"><span class="k">Kernel</span><span id="m-kernel">—</span></div>
+    <div class="row"><span class="k">Bateria</span><span id="m-batt">—</span></div>
+    <div class="row"><span class="k">Temp. bateria</span><span id="m-bt">—</span></div>
+    <div class="row"><span class="k">Temp. SoC (máx)</span><span id="m-soc">—</span></div>
+    <div class="row"><span class="k">CPU governor</span><span id="m-gov">—</span></div>
+    <div class="row"><span class="k">CPU (MHz)</span><span id="m-cpu">—</span></div>
+    <div class="row"><span class="k">GPU</span><span id="m-gpu">—</span></div>
+    <div class="row"><span class="k">RAM livre</span><span id="m-ram">—</span></div>
+    <div class="row"><span class="k">Refresh min/max</span><span id="m-hz">—</span></div>
+    <div class="row"><span class="k">Térmico (sconfig)</span><span id="m-sc">—</span></div>
+    <button id="monBtn" class="ghost" onclick="toggleMonitor()">Iniciar monitor</button>
+  </div>
+
+  <div class="card">
+    <h2>🌡️ Perfil térmico</h2>
+    <div class="muted">sconfig atual: <b id="t-cur">—</b>. Aplicação única — o
+      sistema (thermald) pode reverter em segundos; eu escrevo algumas vezes pra
+      segurar um pouco.</div>
+    <button class="ghost" onclick="thermalMode('default')">⚖️ Equilíbrio (padrão)</button>
+    <button class="ghost" onclick="thermalMode('game')">🎮 Jogo (valor salvo)</button>
+    <button class="ghost" onclick="thermalMode('cool')">❄️ Resfriar (esquenta menos)</button>
+    <div class="addrow">
+      <input id="t-val" inputmode="numeric" placeholder="valor de Jogo (nº sconfig)" autocomplete="off">
+      <button class="addbtn" onclick="thermalSet()">OK</button>
+    </div>
+    <div class="hint">🔎 <b>Descubra o valor de Jogo do seu aparelho:</b> inicie o
+      Monitor, abra um jogo pesado e veja o <b>sconfig</b> mudar — ponha esse
+      número aqui e salve. Depois é só o botão <b>Jogo</b>.</div>
+    <div class="warnbox">Valor errado pode <b>reduzir a proteção térmica</b> e
+      superaquecer. Se esquentar, toque em <b>Equilíbrio</b>.</div>
+  </div>
+
+  <div class="card">
+    <h2>🔋 Economia de bateria (segura)</h2>
+    <div class="muted">Mexe <b>só em segundo plano/standby</b> — <b>não afeta a
+      fluidez</b>. Desativa scan de Wi-Fi/BT em background, garante Doze e o
+      congelamento de apps em cache.</div>
+    <button id="battBtn" class="ghost" onclick="toggleBattery()">Ativar economia</button>
+    <div class="hint">Pode atrasar um pouco notificações de apps muito em segundo
+      plano. Reversível a qualquer momento.</div>
+  </div>
+
+  <div class="card">
+    <h2>🔧 Geral</h2>
+    <button class="danger" onclick="rebootDevice()">🔄 Reiniciar o aparelho</button>
+    <button class="ghost" onclick="showLog()">Ver log</button>
+    <pre id="logbox" style="display:none"></pre>
+  </div>
+</section>
+
+<!-- ======================= SPOOF ======================= -->
+<section class="pane" id="pane-spoof">
+  <div class="card">
+    <h2>🎭 Spoof de modelo (global)</h2>
+    <div class="warnbox">Isto é <b>GLOBAL</b> (afeta o sistema todo), não por jogo.
+      Pode <b>quebrar Play Integrity</b> (banco/Wallet), viola o ToS de alguns
+      jogos e tem risco de ban. Requer reiniciar. Pra Fortnite 120fps <b>não
+      funciona</b> (a Epic bloqueia pelo servidor).</div>
+    <div class="muted" style="margin-top:10px">Fingir este modelo:</div>
+    <div class="langrow">
+      <select id="spoofModel" onchange="saveSpoofModel()"></select>
+    </div>
+    <button id="spoofBtn" class="danger" onclick="toggleSpoof()">Ativar spoof</button>
+  </div>
+
+  <div class="card">
+    <h2>🧩 Spoof POR JOGO — precisa de Zygisk</h2>
+    <div class="muted">Spoof só em <b>um jogo</b> (sem afetar o resto do sistema)
+      exige um módulo <b>Zygisk</b> que faz hook por processo. Um módulo shell
+      como este <b>não consegue</b> — props de sistema são globais.</div>
+    <div class="hint">O caminho que realmente funciona por jogo é um módulo Zygisk
+      dedicado, tipo <b>COPG</b> (Change Our Phone Game), que deixa configurar
+      modelo por app. Se quiser, eu gero a config do COPG com a sua lista de
+      jogos — é o jeito seguro e que funciona de verdade.</div>
+  </div>
+</section>
 
 <div class="toast" id="toast"></div>
 
 <script>
 const SB = "/data/adb/modules/onyx_gameperf/scripts";
 let spoofOn = false;
+
+/* ---------- Abas ---------- */
+function showTab(name){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.tab===name));
+  document.querySelectorAll(".pane").forEach(p=>p.classList.toggle("active",p.id==="pane-"+name));
+  window.scrollTo(0,0);
+}
 
 /* Idiomas comuns (código BCP-47 : nome) */
 const LOCALES = [
@@ -238,6 +279,30 @@ function fillLocales(){
   sel.value = "pt-BR";
 }
 function curLocale(){ return document.getElementById("locale").value || "pt-BR"; }
+
+/* Modelos de spoof (MODEL|BRAND|MANUFACTURER : nome) */
+const SPOOF_MODELS = [
+  ["SM-S928B|samsung|samsung","Galaxy S24 Ultra"],
+  ["SM-S938B|samsung|samsung","Galaxy S25 Ultra"],
+  ["ASUS_AI2401_A|asus|asus","ROG Phone 8 Pro"],
+  ["PJZ110|OnePlus|OnePlus","OnePlus 12"],
+  ["2304FPN6DG|Xiaomi|Xiaomi","Xiaomi 13 Pro"]
+];
+function fillSpoofModels(){
+  const sel=document.getElementById("spoofModel");
+  sel.innerHTML = SPOOF_MODELS.map(([v,n])=>`<option value="${v}">${n}</option>`).join("");
+}
+async function loadSpoofModel(){
+  const r=await exec(`sh ${SB}/toggle-120fps.sh getmodel`);
+  const v=(r.stdout||"").trim();
+  const sel=document.getElementById("spoofModel");
+  if(v && SPOOF_MODELS.some(m=>m[0]===v)) sel.value=v;
+}
+async function saveSpoofModel(){
+  const v=document.getElementById("spoofModel").value;
+  await exec(`sh ${SB}/toggle-120fps.sh setmodel '${v}'`);
+  toast("Modelo salvo. Reinicie para aplicar (se o spoof estiver ligado).");
+}
 
 /* KernelSU / APatch / MMRL WebUI exec bridge */
 function exec(cmd){
@@ -272,8 +337,8 @@ async function refresh(){
   spoofOn = (s.spoof120==="on");
   if(spoofOn){sp.textContent="LIGADO";sp.className="pill warn";}
   else{sp.textContent="desligado";sp.className="pill off";}
-  document.getElementById("spoofBtn").textContent =
-    spoofOn ? "Desativar spoof 120 FPS" : "Ativar spoof 120 FPS";
+  const sb=document.getElementById("spoofBtn");
+  if(sb) sb.textContent = spoofOn ? "Desativar spoof" : "Ativar spoof";
 }
 async function applyTweaks(){
   toast("Aplicando…");
@@ -285,7 +350,6 @@ async function fixLang(){
   const loc=curLocale();
   toast("Definindo idioma ("+loc+")…");
   const r = await exec(`sh ${SB}/set-fortnite-lang.sh ${loc}`);
-  // Força o Fortnite a fechar para reler o idioma ao abrir de novo.
   await exec("am force-stop com.epicgames.fortnite");
   toast((r.stdout.trim().split("\n")[0] || "Idioma enviado") + " — reabra o Fortnite.");
 }
@@ -296,13 +360,12 @@ async function restartFortnite(){
 }
 async function toggleSpoof(){
   if(!spoofOn){
-    if(!confirm("Ativar o spoof de 120 FPS?\n\nProvavelmente NÃO vai funcionar "+
-      "(a Epic bloqueia 120 FPS no Android), pode quebrar apps de banco/Play "+
-      "Integrity e tem risco de ban. Continuar?")) return;
-    const r=await exec(`sh ${SB}/toggle-120fps.sh on`);
+    if(!confirm("Ativar o spoof de modelo (global)?\n\nPode quebrar apps de "+
+      "banco/Play Integrity e tem risco de ban. Pode nem funcionar. Continuar?")) return;
+    await exec(`sh ${SB}/toggle-120fps.sh on`);
     toast("Ativado. Reinicie o aparelho.");
   }else{
-    const r=await exec(`sh ${SB}/toggle-120fps.sh off`);
+    await exec(`sh ${SB}/toggle-120fps.sh off`);
     toast("Desativado. Reinicie o aparelho.");
   }
   refresh();
@@ -369,8 +432,8 @@ async function thermalMode(mode){
 async function thermalSet(){
   const v=(document.getElementById("t-val").value||"").trim();
   if(!/^[0-9]+$/.test(v)){ toast("Digite um número."); return; }
-  if(!confirm("Definir sconfig="+v+"?\n\nUm valor errado pode reduzir a proteção "+
-    "térmica e superaquecer. Em caso de calor, toque em Padrão.")) return;
+  if(!confirm("Salvar e aplicar sconfig="+v+" como perfil de Jogo?\n\nValor errado "+
+    "pode reduzir a proteção térmica e superaquecer.")) return;
   const r=await exec(`sh ${SB}/thermal.sh set ${v}`);
   toast(r.stdout.trim().split("\n").pop() || r.stderr || "Feito.");
   refreshMonitor();
@@ -463,10 +526,12 @@ async function setGameLang(i){
 }
 
 fillLocales();
+fillSpoofModels();
 refresh();
 loadGames();
 refreshMonitor();
 loadBattery();
+loadSpoofModel();
 </script>
 </body>
 </html>
