@@ -1,5 +1,5 @@
 {
-  "PACKAGES_REDMAGIC9PRO": [
+  "PACKAGES_FPS_REDMAGIC9PRO": [
     "com.tencent.ig",
     "com.pubg.imobile",
     "com.pubg.krmobile",
@@ -8,14 +8,41 @@
     "com.garena.game.codm",
     "com.dts.freefireth",
     "com.dts.freefiremax",
-    "com.mobile.legends",
-    "com.riotgames.league.wildrift",
-    "com.miHoYo.GenshinImpact",
-    "com.HoYoverse.hkrpgoversea",
-    "com.gameloft.android.ANMP.GloftA9HM",
     "com.proximabeta.mf.uamo"
   ],
-  "PACKAGES_REDMAGIC9PRO_DEVICE": {
+  "PACKAGES_FPS_REDMAGIC9PRO_DEVICE": {
+    "BRAND": "ZTE",
+    "MANUFACTURER": "ZTE",
+    "DEVICE": "NX769J",
+    "MODEL": "NX769J"
+  },
+
+  "PACKAGES_MOBA_ROG8PRO": [
+    "com.mobile.legends",
+    "com.riotgames.league.wildrift"
+  ],
+  "PACKAGES_MOBA_ROG8PRO_DEVICE": {
+    "BRAND": "asus",
+    "MANUFACTURER": "asus",
+    "DEVICE": "ASUS_AI2401_A",
+    "MODEL": "ASUS_AI2401_A"
+  },
+
+  "PACKAGES_GACHA_S24ULTRA": [
+    "com.miHoYo.GenshinImpact",
+    "com.HoYoverse.hkrpgoversea"
+  ],
+  "PACKAGES_GACHA_S24ULTRA_DEVICE": {
+    "BRAND": "samsung",
+    "MANUFACTURER": "samsung",
+    "DEVICE": "e3q",
+    "MODEL": "SM-S928B"
+  },
+
+  "PACKAGES_OUTROS_REDMAGIC9PRO": [
+    "com.gameloft.android.ANMP.GloftA9HM"
+  ],
+  "PACKAGES_OUTROS_REDMAGIC9PRO_DEVICE": {
     "BRAND": "ZTE",
     "MANUFACTURER": "ZTE",
     "DEVICE": "NX769J",

@@ -5,10 +5,18 @@ spoof de aparelho **por jogo** (sem afetar o resto do sistema) — o que um mód
 shell não consegue.
 
 ## O que esta config faz
-Faz os jogos listados acharem que o aparelho é um **RedMagic 9 Pro (ZTE NX769J)**,
-um celular gamer que costuma destravar presets gráficos / FPS maiores. Jogos
-incluídos: PUBG/BGMI, COD Mobile, Free Fire, Mobile Legends, Wild Rift, Genshin,
-Honkai: Star Rail, Asphalt 9, Farlight 84.
+Separada em **4 perfis**, cada um fingindo o aparelho que mais ajuda aquele tipo
+de jogo:
+
+| Perfil | Jogos | Finge ser |
+|---|---|---|
+| **FPS** | PUBG/BGMI, COD Mobile, Free Fire, Farlight 84 | RedMagic 9 Pro (ZTE NX769J) — foco em 120 FPS |
+| **MOBA** | Mobile Legends, Wild Rift | ROG Phone 8 Pro (ASUS_AI2401_A) — alto FPS |
+| **GACHA** | Genshin, Honkai: Star Rail | Galaxy S24 Ultra (SM-S928B) — destravar gráficos altos |
+| **OUTROS** | Asphalt 9 | RedMagic 9 Pro |
+
+Edite/adicione blocos à vontade: cada perfil é um par
+`PACKAGES_<NOME>` (lista de jogos) + `PACKAGES_<NOME>_DEVICE` (BRAND/MODEL/...).
 
 ## Como usar
 1. Instale o **Zygisk** (Magisk Zygisk ON, ou KernelSU/APatch + ZygiskNext).
