@@ -180,9 +180,23 @@
       autocomplete="off">
     <button class="addbtn" onclick="thermalSet()">OK</button>
   </div>
+  <div class="hint">🔎 <b>Descubra o valor de "jogo" do seu aparelho:</b> inicie o
+    Monitor acima, abra um jogo pesado e veja o <b>sconfig</b> mudar — esse número
+    é o perfil de jogo do seu onyx (ex.: cenas <i>mgame</i>/<i>nolimits</i>).
+    Anote e use no campo custom.</div>
   <div class="warnbox">O valor custom é para quem conhece a cena térmica do onyx.
     Um número errado pode <b>reduzir a proteção térmica</b> e superaquecer. Se o
     aparelho esquentar, toque em <b>Padrão</b>.</div>
+</div>
+
+<div class="card">
+  <h2>🔋 Economia de bateria (segura)</h2>
+  <div class="muted">Mexe <b>só em segundo plano/standby</b> — <b>não afeta a
+    fluidez</b> da ROM. Desativa scan de Wi-Fi/Bluetooth em segundo plano,
+    garante o Doze e o congelamento de apps em cache.</div>
+  <button id="battBtn" class="ghost" onclick="toggleBattery()">Ativar economia</button>
+  <div class="hint">Pode atrasar um pouco notificações de apps muito em segundo
+    plano. Reversível a qualquer momento.</div>
 </div>
 
 <div class="card">
@@ -330,6 +344,21 @@ function toggleMonitor(){
   b.textContent="Parar monitor";
 }
 
+/* ---------- Economia de bateria ---------- */
+let battOn=false;
+async function loadBattery(){
+  const r=await exec(`sh ${SB}/battery.sh status`);
+  battOn = r.stdout.trim()==="ON";
+  const b=document.getElementById("battBtn");
+  if(b) b.textContent = battOn ? "Desativar economia" : "Ativar economia";
+}
+async function toggleBattery(){
+  toast("Aplicando…");
+  const r=await exec(`sh ${SB}/battery.sh ${battOn?'off':'on'}`);
+  toast(r.stdout.trim().split("\n").pop() || "Feito.");
+  loadBattery();
+}
+
 /* ---------- Perfil térmico ---------- */
 async function thermalMode(mode){
   toast("Aplicando perfil térmico…");
@@ -437,6 +466,7 @@ fillLocales();
 refresh();
 loadGames();
 refreshMonitor();
+loadBattery();
 </script>
 </body>
 </html>

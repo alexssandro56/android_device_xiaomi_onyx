@@ -4,6 +4,17 @@ Módulo **Magisk / KernelSU / APatch** para o POCO F7 (codinome `onyx`,
 Snapdragon 8s Gen 4 / Adreno 825), para ROMs AOSP / LineageOS / **AxionAOSP**.
 **Versão sem driver de GPU** — segura, não troca nenhuma lib de vendor.
 
+## 🔋 v3.4.0 — Economia de bateria (segura) + descoberta do sconfig
+- **Economia de bateria** que NÃO afeta a fluidez: mexe só em segundo
+  plano/standby (desativa scan de Wi-Fi/BT em background, garante Doze e o
+  congelamento de apps em cache). Toggle na WebUI, totalmente reversível.
+- **Cenas térmicas do onyx**: os perfis existem (`normal`, `mgame`/`hp-mgame`,
+  `highfps`, `nolimits`), mas o **número** de cada `sconfig` é definido pelo
+  thermald da Xiaomi e não há tabela pública confiável. Por isso **não** embuto
+  um valor "performance". Em vez disso: inicie o **Monitor**, abra um jogo e veja
+  o `sconfig` mudar — esse é o número do perfil de jogo do *seu* aparelho; use-o
+  no campo **custom** do card térmico.
+
 ## 🌡️ v3.3.0 — Monitor ao vivo + Perfil térmico
 Inspirado no **Project-Raco** (LoggingNewMemory):
 - **Monitor (ao vivo)** na WebUI: modelo, kernel, bateria + temperatura,
