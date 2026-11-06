@@ -4,6 +4,14 @@ Módulo **Magisk / KernelSU / APatch** para o POCO F7 (codinome `onyx`,
 Snapdragon 8s Gen 4 / Adreno 825), para ROMs AOSP / LineageOS / **AxionAOSP**.
 **Versão sem driver de GPU** — segura, não troca nenhuma lib de vendor.
 
+## 🎛️ v3.9.0 — controle de gráficos real + gerenciador do COPG
+- **Gráficos por jogo (GameManager)**: resolução (cheia/90/75/50%) e FPS
+  (auto/60/90/120) por jogo, + botões **Tudo nítido / Tudo performance**.
+  Funciona nos jogos que respeitam o sistema (o Fortnite ignora).
+- **Gerenciador do COPG**: o COPG (Zygisk) **não** é embutido (é módulo nativo
+  à parte), mas a WebUI **aplica os 4 perfis** direto no `COPG.json` se o COPG
+  estiver instalado. A config fica embutida em `copg/COPG.json`.
+
 ## 🧹 v3.7.0 — idioma removido + config COPG (spoof por jogo)
 - **Idioma do Fortnite removido** (bug do jogo, não do módulo).
 - Gerada uma **config do COPG** (Zygisk) em `magisk-modules/copg-config/` para

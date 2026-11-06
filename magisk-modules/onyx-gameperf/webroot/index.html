@@ -157,6 +157,12 @@
     </div>
     <button onclick="applyGfx()">Aplicar no jogo</button>
     <button class="ghost" onclick="resetGfx()">Resetar (padrão do jogo)</button>
+    <div class="langrow">
+      <button class="ghost" style="margin:0" onclick="gfxAll('disable','disable')">⚡ Tudo nítido</button>
+      <button class="ghost" style="margin:0" onclick="gfxAll('0.5','disable')">🚀 Tudo performance</button>
+    </div>
+    <div class="hint">“Tudo nítido/performance” aplica em todos os jogos da lista
+      de uma vez.</div>
     <div class="muted" id="gfxMsg"></div>
   </div>
 
@@ -284,14 +290,15 @@
   </div>
 
   <div class="card">
-    <h2>🧩 Spoof POR JOGO — precisa de Zygisk</h2>
-    <div class="muted">Spoof só em <b>um jogo</b> (sem afetar o resto do sistema)
-      exige um módulo <b>Zygisk</b> que faz hook por processo. Um módulo shell
-      como este <b>não consegue</b> — props de sistema são globais.</div>
-    <div class="hint">O caminho que realmente funciona por jogo é um módulo Zygisk
-      dedicado, tipo <b>COPG</b> (Change Our Phone Game), que deixa configurar
-      modelo por app. Se quiser, eu gero a config do COPG com a sua lista de
-      jogos — é o jeito seguro e que funciona de verdade.</div>
+    <h2>🧩 COPG — spoof por jogo (Zygisk)</h2>
+    <div class="muted">Status do COPG: <b id="copg-st">verificando…</b>. O COPG é
+      um módulo <b>Zygisk separado</b> que faz spoof <b>por jogo</b> (sem afetar
+      banco/sistema). Este módulo não embute o COPG, mas <b>gerencia a config
+      dele</b>.</div>
+    <button id="copgBtn" class="ghost" onclick="applyCopg()">Aplicar meus 4 perfis no COPG</button>
+    <div class="hint">Perfis: FPS→RedMagic 9 Pro, MOBA→ROG 8 Pro, GACHA→S24 Ultra,
+      Outros→RedMagic. Precisa do <b>COPG instalado + Zygisk</b>; reinicie depois.
+      ⚠️ Spoof em jogos competitivos tem risco de ban.</div>
   </div>
 </section>
 
@@ -533,6 +540,33 @@ async function resetGfx(){
   document.getElementById("gfxMsg").textContent=m;
   toast(m || "Feito.");
 }
+async function gfxAll(ds,fps){
+  toast("Aplicando em todos…");
+  const r=await exec(`sh ${SB}/game-gfx.sh all ${ds} ${fps}`);
+  const m=(r.stdout||r.stderr||"").trim();
+  document.getElementById("gfxMsg").textContent=m;
+  toast(m || "Feito.");
+}
+
+/* ---------- COPG (spoof por jogo) ---------- */
+async function loadCopg(){
+  const r=await exec(`sh ${SB}/copg.sh status`);
+  const st=document.getElementById("copg-st");
+  const btn=document.getElementById("copgBtn");
+  if((r.stdout||"").trim()==="INSTALLED"){
+    if(st){ st.textContent="instalado"; st.style.color="var(--ok)"; }
+    if(btn) btn.disabled=false;
+  }else{
+    if(st){ st.textContent="não instalado"; st.style.color="var(--mut)"; }
+    if(btn){ btn.textContent="Instale o COPG primeiro"; }
+  }
+}
+async function applyCopg(){
+  toast("Aplicando config no COPG…");
+  const r=await exec(`sh ${SB}/copg.sh apply`);
+  toast(r.stdout.trim().split("\n").pop() || r.stderr || "Feito.");
+  loadCopg();
+}
 function renderGames(){
   const box=document.getElementById("gamesList");
   if(!games.length){ box.innerHTML='<div class="muted">Lista vazia.</div>'; return; }
@@ -570,6 +604,7 @@ loadGames();
 refreshMonitor();
 loadBattery();
 loadSpoofModel();
+loadCopg();
 </script>
 </body>
 </html>

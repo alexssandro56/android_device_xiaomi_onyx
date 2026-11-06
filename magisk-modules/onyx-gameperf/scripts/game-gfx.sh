@@ -11,7 +11,26 @@
 DIR=${0%/*}
 . "$DIR/common.sh" 2>/dev/null
 
-act="$1"; pkg="$2"
+act="$1"
+
+# "all <downscale> <fps>": apply to every installed game in the list.
+if [ "$act" = "all" ]; then
+    ds="${2:-disable}"; fps="${3:-disable}"
+    ensure_games_file
+    n=0
+    while IFS= read -r line; do
+        p="$(echo "$line" | tr -d ' \t\r')"
+        [ -z "$p" ] && continue
+        case "$p" in \#*) continue ;; esac
+        pm path "$p" >/dev/null 2>&1 || continue
+        cmd game set --mode performance --downscale "$ds" --fps "$fps" "$p" >/dev/null 2>&1 && n=$((n+1))
+    done < "$GAMES_FILE"
+    log "game-gfx: all downscale=$ds fps=$fps -> $n jogo(s)"
+    echo "Aplicado em $n jogo(s): resolução=$ds, fps=$fps. Reabra os jogos."
+    exit 0
+fi
+
+pkg="$2"
 [ -n "$pkg" ] || { echo "ERR: sem pacote"; exit 1; }
 pm path "$pkg" >/dev/null 2>&1 || { echo "App não instalado: $pkg"; exit 0; }
 

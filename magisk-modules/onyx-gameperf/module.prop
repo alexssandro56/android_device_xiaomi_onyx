@@ -1,6 +1,6 @@
 id=onyx_gameperf
 name=POCO F7 (onyx) Game & Performance Tweaks
-version=v3.8.0
-versionCode=30800
+version=v3.9.0
+versionCode=30900
 author=alexssandro56
 description=Tweaks-only (NO GPU driver, safe). Tabbed WebUI: performance + full-res game render, games editor, live monitor, named thermal profiles (Performance/Balanceado/Bateria), safe battery saver, shader-cache cleaner, reboot, GSR sharpness guide, and an optional global model spoof. Does not replace any vendor library.
