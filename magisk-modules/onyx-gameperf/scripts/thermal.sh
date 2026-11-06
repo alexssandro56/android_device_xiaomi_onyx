@@ -40,21 +40,21 @@ case "${1:-get}" in
     default|balance)
         echo 0 > "$PSAVE" 2>/dev/null
         wsc 0
-        log "thermal: default (sconfig=0)"
-        echo "Perfil: Equilíbrio (sconfig=0)."
+        log "thermal: balanced (sconfig=0)"
+        echo "Perfil: Balanceado (sconfig=0)."
         ;;
     cool|battery)
         echo 1 > "$PSAVE" 2>/dev/null
-        log "thermal: cool (powersave=1)"
-        echo "Perfil: Resfriar (mais conservador, esquenta menos)."
+        log "thermal: battery (powersave=1)"
+        echo "Perfil: Bateria (térmico conservador, esquenta menos)."
         ;;
     game)
         v="$(cat "$GVAL" 2>/dev/null)"
-        case "$v" in ''|*[!0-9]*) echo "Defina antes o valor de Jogo (campo abaixo)."; exit 0 ;; esac
+        case "$v" in ''|*[!0-9]*) echo "Defina antes o valor de Performance (campo abaixo)."; exit 0 ;; esac
         echo 0 > "$PSAVE" 2>/dev/null
         wsc "$v"
-        log "thermal: game (sconfig=$v)"
-        echo "Perfil: Jogo (sconfig=$v). Pode voltar sozinho em segundos."
+        log "thermal: performance (sconfig=$v)"
+        echo "Perfil: Performance (sconfig=$v). Pode voltar sozinho em segundos."
         ;;
     set)
         v="$2"
@@ -62,8 +62,8 @@ case "${1:-get}" in
         echo "$v" > "$GVAL"
         echo 0 > "$PSAVE" 2>/dev/null
         wsc "$v"
-        log "thermal: set game=$v"
-        echo "Valor de Jogo salvo ($v) e aplicado."
+        log "thermal: set performance=$v"
+        echo "Valor de Performance salvo ($v) e aplicado."
         ;;
     *)
         echo "uso: thermal.sh [get|default|cool|game|set N]"

@@ -162,6 +162,28 @@
   </div>
 
   <div class="card">
+    <h2>🔬 GSR mais nítido (passo a passo)</h2>
+    <div class="muted">Não existe botão de sistema seguro pra isso no seu aparelho
+      (checei: o nó <span class="tag">disp_param</span> da Xiaomi não tem slider de
+      nitidez documentado). A nitidez do GSR é no jogo — faça exatamente assim:</div>
+    <ol>
+      <li><b>3D Resolution = 100%</b> → o GSR passa a ampliar de uma base cheia
+        (quanto maior a base, mais nítido o resultado).</li>
+      <li><b>Qualcomm Game Super Resolution</b>: suba o slider pro <b>máximo</b>
+        (lado "qualidade") — menos amplia = mais nítido.</li>
+      <li><b>Motion Blur = OFF</b>.</li>
+      <li><b>Textures / View Distance = Epic</b>; <b>User Interface Contrast = 1x</b>.</li>
+      <li>Se ainda achar mole e puder gastar um pouco mais de GPU: troque o AA pra
+        <span class="tag">SMAA</span> (nítido e leve, sem upscaling). Pra manter o
+        ganho de bateria do Snapdragon, fique no <span class="tag">GSR</span> no
+        máximo.</li>
+    </ol>
+    <div class="hint">Resumo: GSR no máximo + 3D 100% + Motion Blur off é o ponto
+      mais nítido sem abrir mão do GSR. Aplique e reinicie o jogo.</div>
+    <button class="ghost" onclick="restartFortnite()">Reiniciar o Fortnite</button>
+  </div>
+
+  <div class="card">
     <h2>🧹 Cache de shader/GPU</h2>
     <div class="muted">Este módulo <b>não</b> troca o driver de GPU (é seguro).
       Limpe o cache de shader quando texturas bugarem ou após atualizar um jogo.</div>
@@ -192,18 +214,20 @@
     <div class="muted">sconfig atual: <b id="t-cur">—</b>. Aplicação única — o
       sistema (thermald) pode reverter em segundos; eu escrevo algumas vezes pra
       segurar um pouco.</div>
-    <button class="ghost" onclick="thermalMode('default')">⚖️ Equilíbrio (padrão)</button>
-    <button class="ghost" onclick="thermalMode('game')">🎮 Jogo (valor salvo)</button>
-    <button class="ghost" onclick="thermalMode('cool')">❄️ Resfriar (esquenta menos)</button>
+    <button class="ghost" onclick="thermalMode('game')">🚀 Performance</button>
+    <button class="ghost" onclick="thermalMode('default')">⚖️ Balanceado</button>
+    <button class="ghost" onclick="thermalMode('cool')">🔋 Bateria</button>
     <div class="addrow">
-      <input id="t-val" inputmode="numeric" placeholder="valor de Jogo (nº sconfig)" autocomplete="off">
+      <input id="t-val" inputmode="numeric" placeholder="valor do Performance (nº sconfig)" autocomplete="off">
       <button class="addbtn" onclick="thermalSet()">OK</button>
     </div>
-    <div class="hint">🔎 <b>Descubra o valor de Jogo do seu aparelho:</b> inicie o
-      Monitor, abra um jogo pesado e veja o <b>sconfig</b> mudar — ponha esse
-      número aqui e salve. Depois é só o botão <b>Jogo</b>.</div>
-    <div class="warnbox">Valor errado pode <b>reduzir a proteção térmica</b> e
-      superaquecer. Se esquentar, toque em <b>Equilíbrio</b>.</div>
+    <div class="hint">🔎 <b>Performance</b> usa o valor de sconfig que você salvar
+      aqui. Descubra o seu: inicie o Monitor, abra um jogo pesado e veja o
+      <b>sconfig</b> mudar — ponha esse número no campo e salve.
+      <b>Balanceado</b> = padrão do sistema; <b>Bateria</b> = térmico conservador
+      (esquenta menos, economiza).</div>
+    <div class="warnbox">Valor de Performance errado pode <b>reduzir a proteção
+      térmica</b> e superaquecer. Se esquentar, toque em <b>Balanceado</b>.</div>
   </div>
 
   <div class="card">
@@ -432,7 +456,7 @@ async function thermalMode(mode){
 async function thermalSet(){
   const v=(document.getElementById("t-val").value||"").trim();
   if(!/^[0-9]+$/.test(v)){ toast("Digite um número."); return; }
-  if(!confirm("Salvar e aplicar sconfig="+v+" como perfil de Jogo?\n\nValor errado "+
+  if(!confirm("Salvar e aplicar sconfig="+v+" como perfil Performance?\n\nValor errado "+
     "pode reduzir a proteção térmica e superaquecer.")) return;
   const r=await exec(`sh ${SB}/thermal.sh set ${v}`);
   toast(r.stdout.trim().split("\n").pop() || r.stderr || "Feito.");
