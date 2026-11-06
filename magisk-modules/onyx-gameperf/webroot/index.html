@@ -135,6 +135,32 @@
 <!-- ======================= GRÁFICOS ======================= -->
 <section class="pane" id="pane-graficos">
   <div class="card">
+    <h2>🎛️ Gráficos por jogo (real)</h2>
+    <div class="muted">Controle de <b>resolução e FPS por jogo</b> via o
+      GameManager do Android. Funciona nos jogos que respeitam o sistema.
+      <b>O Fortnite ignora</b> (usa o GSR interno dele) — pra ele, veja o guia
+      abaixo.</div>
+    <select id="gfxGame" style="margin-top:10px"></select>
+    <div class="langrow">
+      <select id="gfxDs">
+        <option value="disable">Resolução: Cheia (nítido)</option>
+        <option value="0.9">Resolução: 90%</option>
+        <option value="0.75">Resolução: 75%</option>
+        <option value="0.5">Resolução: 50% (performance)</option>
+      </select>
+      <select id="gfxFps">
+        <option value="disable">FPS: Auto</option>
+        <option value="60">FPS: 60</option>
+        <option value="90">FPS: 90</option>
+        <option value="120">FPS: 120</option>
+      </select>
+    </div>
+    <button onclick="applyGfx()">Aplicar no jogo</button>
+    <button class="ghost" onclick="resetGfx()">Resetar (padrão do jogo)</button>
+    <div class="muted" id="gfxMsg"></div>
+  </div>
+
+  <div class="card">
     <h2>🎯 Fortnite nítido (ajuste DENTRO do jogo)</h2>
     <div class="muted">O módulo não muda settings do Fortnite — mas o borrado vem
       daqui. Faça assim:</div>
@@ -479,6 +505,33 @@ async function loadGames(){
     games.push({pkg:l,on});
   });
   renderGames();
+  fillGfxGames();
+}
+function fillGfxGames(){
+  const sel=document.getElementById("gfxGame");
+  if(!sel) return;
+  const cur=sel.value;
+  sel.innerHTML = games.map(g=>`<option value="${esc(g.pkg)}">${esc(NAMES[g.pkg]||g.pkg)}</option>`).join("");
+  if(cur) sel.value=cur;
+}
+async function applyGfx(){
+  const pkg=document.getElementById("gfxGame").value;
+  if(!pkg){ toast("Nenhum jogo na lista."); return; }
+  const ds=document.getElementById("gfxDs").value;
+  const fps=document.getElementById("gfxFps").value;
+  toast("Aplicando…");
+  const r=await exec(`sh ${SB}/game-gfx.sh set ${pkg} ${ds} ${fps}`);
+  const m=(r.stdout||r.stderr||"").trim();
+  document.getElementById("gfxMsg").textContent=m;
+  toast(m || "Feito.");
+}
+async function resetGfx(){
+  const pkg=document.getElementById("gfxGame").value;
+  if(!pkg){ toast("Nenhum jogo na lista."); return; }
+  const r=await exec(`sh ${SB}/game-gfx.sh reset ${pkg}`);
+  const m=(r.stdout||r.stderr||"").trim();
+  document.getElementById("gfxMsg").textContent=m;
+  toast(m || "Feito.");
 }
 function renderGames(){
   const box=document.getElementById("gamesList");
