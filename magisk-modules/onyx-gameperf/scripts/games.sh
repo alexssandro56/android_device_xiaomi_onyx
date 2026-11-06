@@ -23,7 +23,7 @@ case "${1:-list}" in
             # Basic sanity: keep only lines that look like a package (or #package).
             grep -E '^[#]?[A-Za-z][A-Za-z0-9._]+$' "$tmp" > "$GAMES_FILE" 2>/dev/null
             rm -f "$tmp"
-            n="$(grep -cvE '^\s*(#|$)' "$GAMES_FILE" 2>/dev/null || echo 0)"
+            n="$(grep -cE '^[A-Za-z]' "$GAMES_FILE" 2>/dev/null)"; [ -z "$n" ] && n=0
             log "games.sh: list saved ($n enabled)"
             echo "OK: lista salva ($n jogo(s) ligado(s))"
         else

@@ -8,7 +8,8 @@ device="$(getprop ro.product.device)"
 model="$(getprop ro.product.model)"
 if [ -f "$FLAG_120" ]; then spoof="on"; else spoof="off"; fi
 if pkg_installed "$FORTNITE_PKG"; then fn="installed"; else fn="missing"; fi
-games="$(grep -cvE '^\s*(#|$)' "$GAMES_FILE" 2>/dev/null || echo 0)"
+games="$(grep -cE '^[A-Za-z]' "$GAMES_FILE" 2>/dev/null)"
+[ -z "$games" ] && games=0
 
 printf '{"device":"%s","model":"%s","spoof120":"%s","fortnite":"%s","games":%s}\n' \
     "$device" "$model" "$spoof" "$fn" "$games"

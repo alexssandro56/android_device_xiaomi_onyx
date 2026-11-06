@@ -1,6 +1,6 @@
 id=onyx_gameperf
 name=POCO F7 (onyx) Game & Performance Tweaks
-version=v3.1.0
-versionCode=30100
+version=v3.2.0
+versionCode=30200
 author=alexssandro56
 description=Tweaks-only (NO GPU driver, safe). Performance + full-res game render, Fortnite pt-BR language, WebUI with games editor, language selector, shader-cache cleaner and reboot button, optional off-by-default 120fps spoof. Does not replace any vendor library.

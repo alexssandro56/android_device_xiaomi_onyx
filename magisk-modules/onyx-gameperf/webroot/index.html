@@ -127,15 +127,18 @@
   <div class="muted">O módulo não muda settings do Fortnite — mas o borrado vem
     daqui. Faça assim:</div>
   <ol>
-    <li><b>Anti-Aliasing &amp; Super Resolution</b>: troque de
-      <span class="tag">Qualcomm GSR</span> para <span class="tag">TAA</span>
-      (ou <span class="tag">High</span>). O GSR renderiza menor e amplia → borra.</li>
-    <li><b>3D Resolution</b>: <span class="tag">100%</span> (você já está).</li>
-    <li><b>Rendering Mode</b> (Advanced): prefira o modo nativo, não o de
-      economia.</li>
+    <li><b>Motion Blur</b>: <span class="tag">OFF</span> — é o que mais tira o
+      "embaçado" em movimento. Desligue primeiro.</li>
+    <li><b>Anti-Aliasing &amp; Super Resolution</b>: teste <span class="tag">TAA</span>
+      e <span class="tag">High</span> e veja qual fica mais nítido pra você.
+      Evite <span class="tag">Qualcomm GSR</span> (renderiza menor e amplia → borra).</li>
+    <li><b>3D Resolution</b>: <span class="tag">100%</span>.</li>
     <li><b>View Distance / Textures</b>: Epic.</li>
-    <li>Depois de trocar, <b>reinicie o Fortnite</b>.</li>
+    <li>A <b>60 FPS</b> o movimento borra mais que a 120. A Epic trava 120fps no
+      Android, então 60 é o teto real aqui — sem jeito pelo módulo.</li>
+    <li>Depois de trocar, <b>reinicie o Fortnite</b> (botão abaixo).</li>
   </ol>
+  <button class="ghost" onclick="restartFortnite()">Reiniciar o Fortnite</button>
 </div>
 
 <div class="card">
@@ -232,7 +235,14 @@ async function fixLang(){
   const loc=curLocale();
   toast("Definindo idioma ("+loc+")…");
   const r = await exec(`sh ${SB}/set-fortnite-lang.sh ${loc}`);
-  toast(r.stdout.trim().split("\n")[0] || r.stderr || "Feito.");
+  // Força o Fortnite a fechar para reler o idioma ao abrir de novo.
+  await exec("am force-stop com.epicgames.fortnite");
+  toast((r.stdout.trim().split("\n")[0] || "Idioma enviado") + " — reabra o Fortnite.");
+}
+async function restartFortnite(){
+  toast("Fechando o Fortnite…");
+  await exec("am force-stop com.epicgames.fortnite");
+  toast("Fortnite fechado. Abra de novo para aplicar.");
 }
 async function toggleSpoof(){
   if(!spoofOn){
