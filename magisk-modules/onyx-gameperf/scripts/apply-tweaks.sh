@@ -28,12 +28,7 @@ done < "$GAMES_FILE"
 log "apply-tweaks: game interventions applied to $applied package(s)"
 
 # ---------------------------------------------------------------------------
-# 2) Best-effort Fortnite language = Portuguese (Brazil).
-# ---------------------------------------------------------------------------
-"$DIR/set-fortnite-lang.sh" pt-BR quiet
-
-# ---------------------------------------------------------------------------
-# 3) Light I/O tuning (UFS) - lower latency, no risk.
+# 2) Light I/O tuning (UFS) - lower latency, no risk.
 # ---------------------------------------------------------------------------
 for q in /sys/block/sd*/queue /sys/block/mmcblk0/queue; do
     [ -d "$q" ] || continue

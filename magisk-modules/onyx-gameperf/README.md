@@ -4,6 +4,14 @@ Módulo **Magisk / KernelSU / APatch** para o POCO F7 (codinome `onyx`,
 Snapdragon 8s Gen 4 / Adreno 825), para ROMs AOSP / LineageOS / **AxionAOSP**.
 **Versão sem driver de GPU** — segura, não troca nenhuma lib de vendor.
 
+## 🧹 v3.7.0 — idioma removido + config COPG (spoof por jogo)
+- **Idioma do Fortnite removido** (bug do jogo, não do módulo).
+- Gerada uma **config do COPG** (Zygisk) em `magisk-modules/copg-config/` para
+  spoof **por jogo** — o jeito que realmente funciona para destravar presets/FPS
+  em jogos específicos (o spoof do módulo é global).
+
+## 🔬 v3.6.0 — nomes dos perfis térmicos + guia de nitidez do GSR
+
 ## 🗂️ v3.5.0 — WebUI com abas + térmico nomeado + spoof com modelo
 - **WebUI reorganizada em abas**: Jogos / Gráficos / Sistema / Spoof.
 - **Perfis térmicos nomeados**: Equilíbrio / Jogo / Resfriar. Como o thermald da
@@ -103,18 +111,10 @@ valida isso). Pela sua print, o borrado vem daqui:
 
 ---
 
-## 🌐 Idioma do Fortnite em inglês
-O Fortnite é Unreal Engine e normalmente segue o **idioma do sistema**. O botão
-“Corrigir idioma” tenta `cmd locale set-app-locales` (Android 13+), mas a UE
-pode ignorar. **Correção confiável:**
-1. **Config → Sistema → Idiomas** → deixe **Português (Brasil)** como **1º** da
-   lista (não só adicionado — tem que estar no topo).
-2. **Config → Apps → Fortnite → Armazenamento → Limpar cache** (não limpe dados).
-3. Abra o Fortnite de novo.
-
-> Se o Fortnite foi instalado pela loja da Epic/terceiros, os idiomas ficam nos
-> paks; com o sistema em pt-BR ele deve seguir. Se persistir, reinstalar com o
-> sistema já em pt-BR resolve na maioria dos casos.
+## 🌐 Idioma do Fortnite (removido na v3.7.0)
+O recurso de idioma foi **removido**: o Fortnite em inglês mesmo com o sistema em
+português é um **bug do próprio jogo** (a Epic deve corrigir), não algo que o
+módulo resolva de forma confiável.
 
 ---
 

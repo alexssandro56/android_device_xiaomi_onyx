@@ -8,5 +8,4 @@ MODDIR=${0%/*}
 echo "POCO F7 (onyx) - reaplicando tweaks..."
 sh "$MODDIR/scripts/apply-tweaks.sh"
 echo ""
-echo "Idioma: $(sh "$MODDIR/scripts/set-fortnite-lang.sh" pt-BR 2>&1 | head -1)"
 echo "Pronto. Abra a WebUI do modulo para mais opcoes."

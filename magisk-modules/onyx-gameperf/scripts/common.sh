@@ -1,7 +1,7 @@
 #!/system/bin/sh
 # ===========================================================================
 # common.sh - shared paths, helpers and the game package list.
-# Sourced by apply-tweaks.sh / set-fortnite-lang.sh / toggle-120fps.sh /
+# Sourced by apply-tweaks.sh / toggle-120fps.sh /
 # status.sh / service.sh / action.sh.
 # ===========================================================================
 

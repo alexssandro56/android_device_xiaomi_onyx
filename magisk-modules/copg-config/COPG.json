@@ -1,0 +1,24 @@
+{
+  "PACKAGES_REDMAGIC9PRO": [
+    "com.tencent.ig",
+    "com.pubg.imobile",
+    "com.pubg.krmobile",
+    "com.rekoo.pubgm",
+    "com.activision.callofduty.shooter",
+    "com.garena.game.codm",
+    "com.dts.freefireth",
+    "com.dts.freefiremax",
+    "com.mobile.legends",
+    "com.riotgames.league.wildrift",
+    "com.miHoYo.GenshinImpact",
+    "com.HoYoverse.hkrpgoversea",
+    "com.gameloft.android.ANMP.GloftA9HM",
+    "com.proximabeta.mf.uamo"
+  ],
+  "PACKAGES_REDMAGIC9PRO_DEVICE": {
+    "BRAND": "ZTE",
+    "MANUFACTURER": "ZTE",
+    "DEVICE": "NX769J",
+    "MODEL": "NX769J"
+  }
+}

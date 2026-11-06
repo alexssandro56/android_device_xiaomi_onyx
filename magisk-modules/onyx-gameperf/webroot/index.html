@@ -113,14 +113,8 @@
   <div class="card">
     <h2>🚀 Ações</h2>
     <button onclick="applyTweaks()">Aplicar tweaks agora</button>
-    <div class="langrow">
-      <select id="locale"></select>
-      <button class="ghost" style="margin:0;width:auto;flex:0 0 auto;padding:12px 14px"
-        onclick="fixLang()">Idioma Fortnite</button>
-    </div>
-    <div class="hint">Força modo performance + resolução cheia nos jogos. O seletor
-      define o idioma por app (Android 13+) — alguns jogos seguem o idioma do
-      sistema (veja README).</div>
+    <div class="hint">Força modo performance + resolução cheia (sem downscale do
+      GameManager) nos jogos da lista.</div>
   </div>
 
   <div class="card">
@@ -288,22 +282,6 @@ function showTab(name){
   window.scrollTo(0,0);
 }
 
-/* Idiomas comuns (código BCP-47 : nome) */
-const LOCALES = [
-  ["pt-BR","Português (Brasil)"],["pt-PT","Português (Portugal)"],
-  ["en-US","English (US)"],["es-419","Español (Latam)"],["es-ES","Español (España)"],
-  ["fr-FR","Français"],["de-DE","Deutsch"],["it-IT","Italiano"],
-  ["ru-RU","Русский"],["tr-TR","Türkçe"],["pl-PL","Polski"],["nl-NL","Nederlands"],
-  ["ar","العربية"],["ja-JP","日本語"],["ko-KR","한국어"],
-  ["zh-CN","中文 (简体)"],["zh-TW","中文 (繁體)"]
-];
-function fillLocales(){
-  const sel=document.getElementById("locale");
-  sel.innerHTML = LOCALES.map(([c,n])=>`<option value="${c}">${n} — ${c}</option>`).join("");
-  sel.value = "pt-BR";
-}
-function curLocale(){ return document.getElementById("locale").value || "pt-BR"; }
-
 /* Modelos de spoof (MODEL|BRAND|MANUFACTURER : nome) */
 const SPOOF_MODELS = [
   ["SM-S928B|samsung|samsung","Galaxy S24 Ultra"],
@@ -369,13 +347,6 @@ async function applyTweaks(){
   const r = await exec(`sh ${SB}/apply-tweaks.sh`);
   toast(r.stdout.trim().split("\n").pop() || r.stderr || "Feito.");
   refresh();
-}
-async function fixLang(){
-  const loc=curLocale();
-  toast("Definindo idioma ("+loc+")…");
-  const r = await exec(`sh ${SB}/set-fortnite-lang.sh ${loc}`);
-  await exec("am force-stop com.epicgames.fortnite");
-  toast((r.stdout.trim().split("\n")[0] || "Idioma enviado") + " — reabra o Fortnite.");
 }
 async function restartFortnite(){
   toast("Fechando o Fortnite…");
@@ -518,7 +489,6 @@ function renderGames(){
         <div class="nm">${esc(NAMES[g.pkg]||g.pkg)}</div>
         <div class="pk">${esc(g.pkg)}</div>
       </div>
-      <button class="lng" onclick="setGameLang(${i})" title="Definir idioma">🌐</button>
       <div class="sw ${g.on?'on':''}" onclick="toggleGame(${i})"></div>
       <button class="rm" onclick="removeGame(${i})">×</button>
     </div>`).join("");
@@ -541,15 +511,6 @@ async function saveGames(){
   toast(msg || "Salvo.");
   refresh();
 }
-async function setGameLang(i){
-  const g=games[i]; const loc=curLocale();
-  const nm=NAMES[g.pkg]||g.pkg;
-  toast("Idioma "+loc+" em "+nm+"…");
-  const r = await exec(`sh ${SB}/set-lang.sh ${g.pkg} ${loc}`);
-  toast(r.stdout.trim().split("\n")[0] || r.stderr || "Feito.");
-}
-
-fillLocales();
 fillSpoofModels();
 refresh();
 loadGames();
