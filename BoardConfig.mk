@@ -264,6 +264,9 @@ BOARD_AVB_ODM_ADD_HASHTREE_FOOTER_ARGS += --hash_algorithm sha256
 # Game Turbo
 -include packages/apps/NotGameTurbo/BoardConfig.mk
 
+# Pentas game sidebar sepolicy
+-include packages/apps/Pentas/sepolicy/sepolicy.mk
+
 # Vendor
 include vendor/xiaomi/onyx/BoardConfigVendor.mk
 

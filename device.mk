@@ -136,6 +136,10 @@ PRODUCT_PRODUCT_PROPERTIES += \
 PRODUCT_PACKAGES += \
     LunarisDolby
 
+# Pentas game sidebar
+PRODUCT_PACKAGES += \
+    Pentas
+
 # Extra: build property spoofing (Spoofify), see vendor/extra
 $(call inherit-product-if-exists, vendor/extra/product.mk)
 
