@@ -386,13 +386,13 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     rfs_msm_mpss_readonly_mbnconfig_symlink
 
-# Thermal
+# Thermal: keep the QTI thermal HAL (the framework thermal API reads thermal
+# zones through it, independent of any daemon), but do NOT start the stock
+# thermal-engine-v2. mithermald owns CPU/GPU/charging throttling, and running
+# both daemons fights over cpufreq and hangs the boot, so init.thermal-engine.rc
+# and its config are intentionally not installed.
 PRODUCT_PACKAGES += \
-    android.hardware.thermal-service.qti \
-    init.thermal-engine.rc
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/thermal/thermal-engine-onyx.conf:$(TARGET_COPY_OUT_VENDOR)/etc/thermal-engine-onyx.conf
+    android.hardware.thermal-service.qti
 
 # Open-source Xiaomi thermal daemon (mithermald): reacts to
 # persist.sys.mithermal.ss_profile (set by Pentas) and applies per-profile
