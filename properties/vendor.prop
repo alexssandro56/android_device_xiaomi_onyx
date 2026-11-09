@@ -58,8 +58,8 @@ vendor.gatekeeper.is_security_level_spu=0
 debug.sf.enable_adpf_cpu_hint=true
 debug.sf.enable_transaction_tracing=false
 debug.sf.region_sampling_period_ns=200000000
-debug.sf.region_sampling_timer_timeout_ns=200000000debug.hwui.use_hint_manager=true
-debug.renderengine.backend=skiavkthreaded
+debug.sf.region_sampling_timer_timeout_ns=200000000
+debug.hwui.use_hint_manager=true
 graphics.gpu.profiler.support=true
 ro.gfx.driver.1=com.qualcomm.qti.gpudrivers.sun.api35
 ro.hardware.egl=adreno
