@@ -1,9 +1,5 @@
 # thermal-engine-v2 with the onyx configuration.
-#
-# The active config lives in /data/vendor/thermal so Pentas's thermal-profile
-# switcher can swap it at runtime (see the ss_profile triggers below). It is
-# seeded from the balanced /vendor config on every boot.
-service vendor.thermal-engine /vendor/bin/thermal-engine-v2 -c /data/vendor/thermal/active.conf
+service vendor.thermal-engine /vendor/bin/thermal-engine-v2 -c /vendor/etc/thermal-engine-onyx.conf
     class main
     user root
     group root
@@ -12,68 +8,8 @@ service vendor.thermal-engine /vendor/bin/thermal-engine-v2 -c /data/vendor/ther
     socket thermal-recv-passive-client stream 0660 system oem_2907
     socket thermal-send-rule stream 0660 system oem_2907
 
-# Seed the active config before the engine runs for real.
-on post-fs-data
-    mkdir /data/vendor/thermal 0771 system system
-    copy /vendor/etc/thermal-engine-onyx.conf /data/vendor/thermal/active.conf
-    restart vendor.thermal-engine
-
 # thermal-engine only looks for sensors and cooling devices when it starts.
 # Restart it once boot completes, as Qualcomm's own rc does, so it also
 # picks up the ones that register late.
 on property:sys.boot_completed=1
-    restart vendor.thermal-engine
-
-# ── Pentas thermal profiles ──────────────────────────────────────────────
-# Pentas writes persist.sys.mithermal.ss_profile when the user picks a profile.
-# Map each profile to one of three thermal-engine configs and restart the
-# engine: performance/gaming run hotter before throttling, battery saver
-# throttles earlier, everything else uses the balanced default.
-on property:persist.sys.mithermal.ss_profile=performance
-    copy /vendor/etc/thermal-engine-onyx-perf.conf /data/vendor/thermal/active.conf
-    restart vendor.thermal-engine
-on property:persist.sys.mithermal.ss_profile=gaming
-    copy /vendor/etc/thermal-engine-onyx-perf.conf /data/vendor/thermal/active.conf
-    restart vendor.thermal-engine
-on property:persist.sys.mithermal.ss_profile=heavy_gaming
-    copy /vendor/etc/thermal-engine-onyx-perf.conf /data/vendor/thermal/active.conf
-    restart vendor.thermal-engine
-on property:persist.sys.mithermal.ss_profile=genshin
-    copy /vendor/etc/thermal-engine-onyx-perf.conf /data/vendor/thermal/active.conf
-    restart vendor.thermal-engine
-on property:persist.sys.mithermal.ss_profile=hsr
-    copy /vendor/etc/thermal-engine-onyx-perf.conf /data/vendor/thermal/active.conf
-    restart vendor.thermal-engine
-on property:persist.sys.mithermal.ss_profile=high_fps
-    copy /vendor/etc/thermal-engine-onyx-perf.conf /data/vendor/thermal/active.conf
-    restart vendor.thermal-engine
-on property:persist.sys.mithermal.ss_profile=battery_saver
-    copy /vendor/etc/thermal-engine-onyx-batt.conf /data/vendor/thermal/active.conf
-    restart vendor.thermal-engine
-on property:persist.sys.mithermal.ss_profile=default
-    copy /vendor/etc/thermal-engine-onyx.conf /data/vendor/thermal/active.conf
-    restart vendor.thermal-engine
-on property:persist.sys.mithermal.ss_profile=camera
-    copy /vendor/etc/thermal-engine-onyx.conf /data/vendor/thermal/active.conf
-    restart vendor.thermal-engine
-on property:persist.sys.mithermal.ss_profile=recording_4k
-    copy /vendor/etc/thermal-engine-onyx.conf /data/vendor/thermal/active.conf
-    restart vendor.thermal-engine
-on property:persist.sys.mithermal.ss_profile=video
-    copy /vendor/etc/thermal-engine-onyx.conf /data/vendor/thermal/active.conf
-    restart vendor.thermal-engine
-on property:persist.sys.mithermal.ss_profile=video_chat
-    copy /vendor/etc/thermal-engine-onyx.conf /data/vendor/thermal/active.conf
-    restart vendor.thermal-engine
-on property:persist.sys.mithermal.ss_profile=navigation
-    copy /vendor/etc/thermal-engine-onyx.conf /data/vendor/thermal/active.conf
-    restart vendor.thermal-engine
-on property:persist.sys.mithermal.ss_profile=phone_call
-    copy /vendor/etc/thermal-engine-onyx.conf /data/vendor/thermal/active.conf
-    restart vendor.thermal-engine
-on property:persist.sys.mithermal.ss_profile=arvr
-    copy /vendor/etc/thermal-engine-onyx.conf /data/vendor/thermal/active.conf
-    restart vendor.thermal-engine
-on property:persist.sys.mithermal.ss_profile=data_transfer
-    copy /vendor/etc/thermal-engine-onyx.conf /data/vendor/thermal/active.conf
     restart vendor.thermal-engine
