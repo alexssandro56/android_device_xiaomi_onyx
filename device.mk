@@ -394,6 +394,12 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/thermal/thermal-engine-onyx.conf:$(TARGET_COPY_OUT_VENDOR)/etc/thermal-engine-onyx.conf
 
+# Open-source Xiaomi thermal daemon (mithermald): reacts to
+# persist.sys.mithermal.ss_profile (set by Pentas) and applies per-profile
+# CPU/GPU/charging limits. Its init .rc ships with the module.
+PRODUCT_PACKAGES += \
+    mi_thermal_engine
+
 # Task Profiles
 PRODUCT_COPY_FILES += \
     system/core/libprocessgroup/profiles/task_profiles.json:$(TARGET_COPY_OUT_VENDOR)/etc/task_profiles.json \
