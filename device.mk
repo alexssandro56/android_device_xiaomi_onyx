@@ -400,6 +400,11 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     mi_thermal_engine
 
+# Pentas game sidebar: the UI that picks the thermal profile
+# (sets persist.sys.mithermal.ss_profile, which mi_thermal_engine follows).
+PRODUCT_PACKAGES += \
+    Pentas
+
 # Task Profiles
 PRODUCT_COPY_FILES += \
     system/core/libprocessgroup/profiles/task_profiles.json:$(TARGET_COPY_OUT_VENDOR)/etc/task_profiles.json \
