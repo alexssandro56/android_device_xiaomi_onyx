@@ -1,0 +1,16 @@
+# Battery-temperature charge limiter.
+# Ported from xiaomi-sm8735-dev/device_xiaomi_onyx (b22fb54), by zenin1504.
+
+# Charging service
+service vendor.charging /vendor/bin/charging
+    class main
+    user system
+    group system
+    seclabel u:r:charging:s0
+
+# The limit node is root-owned by default; hand it to the service's user before
+# (re)starting it.
+on property:sys.boot_completed=1
+    chown system system /sys/class/power_supply/battery/charge_control_limit
+    chmod 0664 /sys/class/power_supply/battery/charge_control_limit
+    restart vendor.charging

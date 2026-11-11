@@ -386,13 +386,15 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     rfs_msm_mpss_readonly_mbnconfig_symlink
 
-# Thermal
+# Thermal: thermal-engine-v2 runs with its built-in defaults; the onyx
+# configuration (configs/thermal/thermal-engine-onyx.conf) is not installed.
 PRODUCT_PACKAGES += \
     android.hardware.thermal-service.qti \
     init.thermal-engine.rc
 
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/thermal/thermal-engine-onyx.conf:$(TARGET_COPY_OUT_VENDOR)/etc/thermal-engine-onyx.conf
+# Charging: battery-temperature charge limiter (battery/)
+PRODUCT_PACKAGES += \
+    charging
 
 # Pentas game sidebar
 PRODUCT_PACKAGES += \

@@ -1,0 +1,15 @@
+# Battery-temperature charge limiter (battery/charging.cpp).
+type charging, domain;
+type charging_exec, exec_type, vendor_file_type, file_type;
+
+# Allow init to transition to this domain
+init_daemon_domain(charging)
+
+# Read the battery temperature and write charge_control_limit. On this tree
+# /sys/class/power_supply/battery is labeled vendor_sysfs_battery_supply.
+allow charging vendor_sysfs_battery_supply:dir r_dir_perms;
+allow charging vendor_sysfs_battery_supply:file rw_file_perms;
+allow charging vendor_sysfs_battery_supply:lnk_file r_file_perms;
+
+# Silent dac spamming
+dontaudit charging self:capability dac_override;

@@ -1,5 +1,7 @@
-# thermal-engine-v2 with the onyx configuration.
-service vendor.thermal-engine /vendor/bin/thermal-engine-v2 -c /vendor/etc/thermal-engine-onyx.conf
+# thermal-engine-v2 with its built-in defaults (no device configuration), as in
+# xiaomi-sm8735-dev/device_xiaomi_onyx (b22fb54). Charge throttling is handled
+# by the vendor.charging service instead.
+service vendor.thermal-engine /vendor/bin/thermal-engine-v2
     class main
     user root
     group root
