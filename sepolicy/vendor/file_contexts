@@ -165,8 +165,5 @@
 # UFS BSG (qseecomd talks to RPMB through it)
 /dev/0:0:0:[0-9]+ u:object_r:vendor_ufs_bsg_device:s0
 
-# Open-source Xiaomi thermal daemon (mithermald)
-/vendor/bin/mi_thermal_engine u:object_r:mi_thermal_engine_exec:s0
-
 # Pentas OSS touch filter (node present only with the Yasvara kernel patch)
 /sys/devices/virtual/touch/touch_dev/gamespace_touch_.* u:object_r:sysfs_gamespace_touch:s0
