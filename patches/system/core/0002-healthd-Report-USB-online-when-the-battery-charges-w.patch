@@ -1,0 +1,43 @@
+From 71d39acb7ba9b70f81b3b6bc75560d3bd6c00bca Mon Sep 17 00:00:00 2001
+From: Alex <05jeelo30@gmail.com>
+Date: Thu, 22 Oct 2026 11:25:39 +0000
+Subject: [PATCH] healthd: Report USB online when the battery charges with no
+ charger online
+
+Xiaomi's MCA charger driver never sets "online" on its USB power supply,
+so healthd sees no charger while the battery charges and the framework
+treats the phone as unplugged: no charging icon in the status bar and no
+charging indication on the lock screen. If the battery reports charging
+or full and no charger is online, report USB as the source.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QY97AsgNLyAwQpzrsxC9zt
+---
+ healthd/BatteryMonitor.cpp | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/healthd/BatteryMonitor.cpp b/healthd/BatteryMonitor.cpp
+index e506940..57f1368 100644
+--- a/healthd/BatteryMonitor.cpp
++++ b/healthd/BatteryMonitor.cpp
+@@ -604,6 +604,17 @@ void BatteryMonitor::updateValues(void) {
+             }
+         }
+     }
++
++    // Some charger drivers (Xiaomi MCA) never set "online" on their USB power
++    // supply, so no charger looks connected while the battery charges and the
++    // framework shows the phone as unplugged. If the battery says it is charging
++    // or full and no charger is online, report USB as the source.
++    if (!mHealthInfo->chargerAcOnline && !mHealthInfo->chargerUsbOnline &&
++        !mHealthInfo->chargerWirelessOnline && !mHealthInfo->chargerDockOnline &&
++        (mHealthInfo->batteryStatus == BatteryStatus::CHARGING ||
++         mHealthInfo->batteryStatus == BatteryStatus::FULL)) {
++        mHealthInfo->chargerUsbOnline = true;
++    }
+ }
+ 
+ static void doLogTemperature(const HealthInfo& props, const char* devPath) {
+-- 
+2.43.0
+
