@@ -1,0 +1,856 @@
+From 6a32663a7ba77b7e19f8ceb0bcc346e06cf5854c Mon Sep 17 00:00:00 2001
+From: keosh <conquer2152016@gmail.com>
+Date: Tue, 13 Oct 2026 11:48:59 +0000
+Subject: [PATCH 12/14] services: Bind Pentas sessions from GameSpaceService
+
+---
+ .../statusbar/phone/CentralSurfacesImpl.java  |   2 +-
+ .../statusbar/policy/GameSpaceManager.kt      | 196 +++++++++---------
+ .../server/GameSpaceManagerService.java       | 119 ++++++++---
+ .../android/server/PentasSessionBinder.java   | 129 ++++++++++++
+ .../server/PentasSessionBinderTest.java       | 147 +++++++++++++
+ 5 files changed, 464 insertions(+), 129 deletions(-)
+ create mode 100644 services/core/java/com/android/server/PentasSessionBinder.java
+ create mode 100644 services/tests/servicestests/src/com/android/server/PentasSessionBinderTest.java
+
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/phone/CentralSurfacesImpl.java b/packages/SystemUI/src/com/android/systemui/statusbar/phone/CentralSurfacesImpl.java
+index 5083e70678b..1b8330a8bf4 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/phone/CentralSurfacesImpl.java
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/phone/CentralSurfacesImpl.java
+@@ -725,7 +725,7 @@ public class CentralSurfacesImpl implements CoreStartable, CentralSurfaces {
+         mActivityIntentHelper = new ActivityIntentHelper(mContext);
+         mActivityTransitionAnimator = activityTransitionAnimator;
+ 
+-        mGameSpaceManager = new GameSpaceManager(mContext, mKeyguardStateController);
++        mGameSpaceManager = new GameSpaceManager(mContext, mKeyguardStateController, mUserTracker);
+ 
+         // TODO(b/190746471): Find a better home for this.
+         DateTimeView.setReceiverHandler(timeTickHandler);
+diff --git a/packages/SystemUI/src/com/android/systemui/statusbar/policy/GameSpaceManager.kt b/packages/SystemUI/src/com/android/systemui/statusbar/policy/GameSpaceManager.kt
+index 80052fafaab..0093033b851 100644
+--- a/packages/SystemUI/src/com/android/systemui/statusbar/policy/GameSpaceManager.kt
++++ b/packages/SystemUI/src/com/android/systemui/statusbar/policy/GameSpaceManager.kt
+@@ -21,26 +21,30 @@ package com.android.systemui.statusbar.policy
+ import android.app.ActivityTaskManager
+ import android.app.TaskStackListener
+ import android.content.BroadcastReceiver
+-import android.content.ComponentName
+ import android.content.Context
+ import android.content.Intent
+ import android.content.IntentFilter
++import android.database.ContentObserver
++import android.os.Handler
++import android.os.Looper
+ import android.os.PowerManager
+ import android.os.RemoteException
+ import android.os.UserHandle
+ import android.provider.Settings
++import android.util.Log
+ 
+ import com.android.systemui.dagger.SysUISingleton
++import com.android.systemui.settings.UserTracker
+ 
+ import kotlinx.coroutines.*
+ import kotlinx.coroutines.flow.*
+-import kotlinx.coroutines.channels.awaitClose
+ import javax.inject.Inject
+ 
+ @SysUISingleton
+ class GameSpaceManager @Inject constructor(
+     private val context: Context,
+     private val keyguardStateController: KeyguardStateController,
++    private val userTracker: UserTracker,
+ ) {
+     private val taskManager by lazy { ActivityTaskManager.getService() }
+     private val powerManager by lazy { context.getSystemService(Context.POWER_SERVICE) as PowerManager }
+@@ -51,24 +55,39 @@ class GameSpaceManager @Inject constructor(
+ 
+     private val refreshTrigger = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+     private var observationJob: Job? = null
++    private var dispatchedUser = UserHandle.USER_NULL
+ 
+     private val taskStackListener = object : TaskStackListener() {
+         override fun onTaskStackChanged() = refresh()
+         override fun onTaskRemoved(taskId: Int) = refresh()
++        override fun onTaskMovedToFront(taskInfo: android.app.ActivityManager.RunningTaskInfo?) =
++            refresh()
+     }
+ 
+     private val broadcastReceiver = object : BroadcastReceiver() {
+         override fun onReceive(context: Context?, intent: Intent?) {
+             when (intent?.action) {
+-                Intent.ACTION_SCREEN_OFF -> _activeGame.value = null
+-                Intent.ACTION_SCREEN_ON -> refresh()
++                Intent.ACTION_SCREEN_OFF, Intent.ACTION_SCREEN_ON -> refresh()
+             }
+         }
+     }
+ 
+     private val keyguardCallback = object : KeyguardStateController.Callback {
+         override fun onKeyguardShowingChanged() {
+-            if (!keyguardStateController.isShowing) refresh()
++            refresh()
++        }
++    }
++
++    private val gameListObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
++        override fun onChange(selfChange: Boolean) = refresh()
++    }
++    private val userCallback = object : UserTracker.Callback {
++        override fun onBeforeUserSwitching(newUser: Int) {
++            setActiveGame(null, userTracker.userId)
++        }
++
++        override fun onUserChanged(newUser: Int, userContext: Context) {
++            refresh()
+         }
+     }
+ 
+@@ -80,20 +99,19 @@ class GameSpaceManager @Inject constructor(
+         if (observationJob != null) return
+ 
+         observationJob = coroutineScope.launch {
+-            merge(
+-                refreshTrigger,
+-                screenAndKeyguardFlow()
+-            ).collect {
+-                updateGameState()
+-            }
++            refreshTrigger.collectLatest { updateGameState() }
+         }
+ 
+         registerReceivers()
++        // Also send an initial stop after a SystemUI restart if no game is in front.
++        dispatchedUser = UserHandle.USER_NULL
++        refresh()
+     }
+ 
+     fun unobserve() {
+         observationJob?.cancel()
+         observationJob = null
++        setActiveGame(null, userTracker.userId)
+         unregisterReceivers()
+     }
+ 
+@@ -101,7 +119,7 @@ class GameSpaceManager @Inject constructor(
+         return Settings.System.getIntForUser(
+             context.contentResolver,
+             Settings.System.GAMESPACE_SUPPRESS_FULLSCREEN_INTENT, 0,
+-            UserHandle.USER_CURRENT
++            userTracker.userId
+         ) == 1 && activeGame.value != null
+     }
+ 
+@@ -112,114 +130,92 @@ class GameSpaceManager @Inject constructor(
+     private fun registerReceivers() {
+         try {
+             taskManager.registerTaskStackListener(taskStackListener)
+-            context.registerReceiver(
+-                broadcastReceiver,
+-                IntentFilter().apply {
+-                    addAction(Intent.ACTION_SCREEN_OFF)
+-                    addAction(Intent.ACTION_SCREEN_ON)
+-                },
+-                Context.RECEIVER_NOT_EXPORTED
+-            )
+-            keyguardStateController.addCallback(keyguardCallback)
+-        } catch (_: Exception) {}
++        } catch (e: RemoteException) {
++            Log.w(TAG, "Could not observe foreground tasks", e)
++        }
++        context.registerReceiver(
++            broadcastReceiver,
++            IntentFilter().apply {
++                addAction(Intent.ACTION_SCREEN_OFF)
++                addAction(Intent.ACTION_SCREEN_ON)
++            },
++            Context.RECEIVER_NOT_EXPORTED,
++        )
++        keyguardStateController.addCallback(keyguardCallback)
++        context.contentResolver.registerContentObserver(
++            Settings.System.getUriFor(Settings.System.GAMESPACE_GAME_LIST),
++            false, gameListObserver, UserHandle.USER_ALL,
++        )
++        userTracker.addCallback(userCallback, context.mainExecutor)
+     }
+ 
+     private fun unregisterReceivers() {
+         try {
+             taskManager.unregisterTaskStackListener(taskStackListener)
+-            context.unregisterReceiver(broadcastReceiver)
+-            keyguardStateController.removeCallback(keyguardCallback)
+-        } catch (_: Exception) {}
+-    }
+-
+-    private fun screenAndKeyguardFlow(): Flow<Unit> = callbackFlow {
+-        val screenFilter = IntentFilter().apply {
+-            addAction(Intent.ACTION_SCREEN_ON)
+-            addAction(Intent.ACTION_SCREEN_OFF)
+-        }
+-        val receiver = object : BroadcastReceiver() {
+-            override fun onReceive(context: Context?, intent: Intent?) {
+-                trySend(Unit)
+-            }
+-        }
+-
+-        val callback = object : KeyguardStateController.Callback {
+-            override fun onKeyguardShowingChanged() {
+-                trySend(Unit)
+-            }
+-        }
+-
+-        context.registerReceiver(receiver, screenFilter, Context.RECEIVER_NOT_EXPORTED)
+-        keyguardStateController.addCallback(callback)
+-        awaitClose {
+-            context.unregisterReceiver(receiver)
+-            keyguardStateController.removeCallback(callback)
++        } catch (e: RemoteException) {
++            Log.w(TAG, "Could not remove foreground task observer", e)
+         }
++        context.unregisterReceiver(broadcastReceiver)
++        keyguardStateController.removeCallback(keyguardCallback)
++        context.contentResolver.unregisterContentObserver(gameListObserver)
++        userTracker.removeCallback(userCallback)
+     }
+ 
+     private suspend fun updateGameState() {
+-        if (!powerManager.isInteractive || keyguardStateController.isShowing) {
+-            if (_activeGame.value != null) {
+-                _activeGame.value = null
+-                dispatchGameState()
+-            }
++        val userId = userTracker.userId
++        if (!powerManager.isInteractive || keyguardStateController.isShowing ||
++            userTracker.isUserSwitching) {
++            setActiveGame(null, userId)
+             return
+         }
+-
+-        val currentPackage = getForegroundPackage()
+-        val isGame = currentPackage != null && isInGameList(currentPackage)
+-
+-        if (_activeGame.value != currentPackage && isGame) {
+-            _activeGame.value = currentPackage
+-            dispatchGameState()
+-        } else if (!isGame && _activeGame.value != null) {
+-            _activeGame.value = null
+-            dispatchGameState()
++        val currentPackage = withContext(Dispatchers.IO) {
++            try {
++                taskManager.focusedRootTaskInfo?.topActivity?.packageName
++            } catch (e: RemoteException) {
++                null
++            }
+         }
+-    }
+-
+-    private suspend fun getForegroundPackage(): String? = withContext(Dispatchers.IO) {
+-        try {
+-            taskManager.focusedRootTaskInfo?.topActivity?.packageName
+-        } catch (e: RemoteException) {
+-            null
++        // The user or lock state may have changed while querying ActivityTaskManager.
++        if (userId != userTracker.userId) return
++        if (!powerManager.isInteractive || keyguardStateController.isShowing ||
++            userTracker.isUserSwitching) {
++            setActiveGame(null, userId)
++            return
+         }
++        // Transient system surfaces such as the shade should not tear down the game sidebar.
++        if (currentPackage in TRANSIENT_PACKAGES &&
++            activeGame.value?.let { isInGameList(it, userId) } == true) return
++        setActiveGame(currentPackage?.takeIf { isInGameList(it, userId) }, userId)
+     }
+ 
+-    private fun isInGameList(packageName: String): Boolean {
++    private fun isInGameList(packageName: String, userId: Int): Boolean {
+         val games = Settings.System.getStringForUser(
+-            context.contentResolver,
+-            Settings.System.GAMESPACE_GAME_LIST,
+-            UserHandle.USER_CURRENT
++            context.contentResolver, Settings.System.GAMESPACE_GAME_LIST, userId,
+         ) ?: return false
+-
+-        return games.split(";").mapNotNull {
+-            it.substringBefore('=').takeIf(String::isNotBlank)
+-        }.toSet().contains(packageName)
+-    }
+-
+-    private fun dispatchGameState() {
+-        val action = if (_activeGame.value != null) ACTION_GAME_START else ACTION_GAME_STOP
+-        Intent(action).apply {
+-            setPackage(GAMESPACE_PACKAGE)
+-            component = ComponentName.unflattenFromString(RECEIVER_CLASS)
+-            putExtra(EXTRA_CALLER_NAME, context.packageName)
+-            _activeGame.value?.let { putExtra(EXTRA_ACTIVE_GAME, it) }
+-            addFlags(
+-                Intent.FLAG_RECEIVER_REPLACE_PENDING or
+-                        Intent.FLAG_RECEIVER_FOREGROUND or
+-                        Intent.FLAG_RECEIVER_INCLUDE_BACKGROUND
+-            )
+-            context.sendBroadcastAsUser(this, UserHandle.CURRENT, android.Manifest.permission.MANAGE_GAME_MODE)
++        return games.split(';').any {
++            it.substringBefore('=').trim() == packageName &&
++                    it.substringAfter('=', "").trim() in VALID_MODES
+         }
+     }
+ 
++    private fun setActiveGame(packageName: String?, userId: Int) {
++        if (_activeGame.value == packageName && dispatchedUser == userId) return
++        _activeGame.value = packageName
++        dispatchedUser = userId
++        val intent = Intent(ACTION_GAME_STATE_CHANGED).setPackage("android")
++            .putExtra(Intent.EXTRA_USER_HANDLE, userId)
++        packageName?.let { intent.putExtra(EXTRA_GAME_PACKAGE, it) }
++        // The receiving system_server bridge requires this permission on the sender too.
++        context.sendBroadcastAsUser(
++            intent, UserHandle.of(userId), android.Manifest.permission.MANAGE_GAME_MODE,
++        )
++    }
++
+     companion object {
+-        private const val ACTION_GAME_START = "io.chaldeaprjkt.gamespace.action.GAME_START"
+-        private const val ACTION_GAME_STOP = "io.chaldeaprjkt.gamespace.action.GAME_STOP"
+-        private const val GAMESPACE_PACKAGE = "io.chaldeaprjkt.gamespace"
+-        private const val RECEIVER_CLASS = "io.chaldeaprjkt.gamespace/.gamebar.GameBroadcastReceiver"
+-        private const val EXTRA_CALLER_NAME = "source"
+-        private const val EXTRA_ACTIVE_GAME = "package_name"
++        private const val TAG = "GameSpaceManager"
++        private const val ACTION_GAME_STATE_CHANGED = "com.android.server.action.PENTAS_GAME_STATE_CHANGED"
++        private const val EXTRA_GAME_PACKAGE = "package_name"
++        private val VALID_MODES = setOf("1", "2", "3")
++        private val TRANSIENT_PACKAGES = setOf("android", "com.android.systemui")
+     }
+ }
+diff --git a/services/core/java/com/android/server/GameSpaceManagerService.java b/services/core/java/com/android/server/GameSpaceManagerService.java
+index c200d22c8fd..3e1fe043f45 100644
+--- a/services/core/java/com/android/server/GameSpaceManagerService.java
++++ b/services/core/java/com/android/server/GameSpaceManagerService.java
+@@ -16,6 +16,7 @@
+  */
+ package com.android.server;
+ 
++import android.app.ActivityManager;
+ import android.content.BroadcastReceiver;
+ import android.content.ContentResolver;
+ import android.content.Context;
+@@ -43,6 +44,11 @@ public class GameSpaceManagerService extends SystemService {
+ 
+     private static final String TAG = "GameSpaceManagerService";
+     private static final String GAME_LIST_SETTING = Settings.System.GAMESPACE_GAME_LIST;
++    private static final String AUTO_DETECT_SETTING = "gamespace_auto_game_detect";
++    private static final String DENIED_LIST_SETTING = "gamespace_denied_list";
++    private static final String ACTION_GAME_STATE_CHANGED =
++            "com.android.server.action.PENTAS_GAME_STATE_CHANGED";
++    private static final String EXTRA_GAME_PACKAGE = "package_name";
+     private static final Set<String> VALID_MODES = Set.of("1", "2", "3");
+ 
+     private final Context mContext;
+@@ -50,6 +56,8 @@ public class GameSpaceManagerService extends SystemService {
+     private final Handler mBackgroundHandler;
+     private final BroadcastReceiver mPackageChangeReceiver = new PackageChangeReceiver();
+     private final ContentObserver mGameListObserver;
++    private final PentasSessionBinder mPentasSessions;
++    private int mCurrentUserId;
+ 
+     public GameSpaceManagerService(Context context) {
+         super(context);
+@@ -59,13 +67,55 @@ public class GameSpaceManagerService extends SystemService {
+         HandlerThread handlerThread = new HandlerThread("GameSpaceManagerThread");
+         handlerThread.start();
+         mBackgroundHandler = new Handler(handlerThread.getLooper());
++        mPentasSessions = new PentasSessionBinder(context, mBackgroundHandler);
+ 
+         mGameListObserver = new GameListObserver(mBackgroundHandler);
+     }
+ 
+     @Override
+     public void onStart() {
+-        // No-op
++        mCurrentUserId = ActivityManager.getCurrentUser();
++        // SystemUI detects foreground games, but only system_server binds Pentas's private
++        // session service. Require the sender's privileged permission on this bridge.
++        mContext.registerReceiverAsUser(new BroadcastReceiver() {
++            @Override
++            public void onReceive(Context context, Intent intent) {
++                final int userId = intent.getIntExtra(
++                        Intent.EXTRA_USER_HANDLE, UserHandle.USER_NULL);
++                if (userId != mCurrentUserId || userId != ActivityManager.getCurrentUser()) return;
++                final String packageName = intent.getStringExtra(EXTRA_GAME_PACKAGE);
++                if (packageName != null && isInGameList(packageName, userId)) {
++                    mPentasSessions.start(packageName, userId);
++                } else {
++                    mPentasSessions.stop();
++                }
++            }
++        }, UserHandle.ALL, new IntentFilter(ACTION_GAME_STATE_CHANGED),
++                android.Manifest.permission.MANAGE_GAME_MODE, mBackgroundHandler,
++                Context.RECEIVER_EXPORTED);
++    }
++
++    @Override
++    public void onUserSwitching(TargetUser from, TargetUser to) {
++        mBackgroundHandler.post(() -> {
++            mCurrentUserId = to.getUserIdentifier();
++            mPentasSessions.stop();
++            sanitizeGameList(mCurrentUserId);
++        });
++    }
++
++    private boolean isInGameList(String packageName, int userId) {
++        final String games = Settings.System.getStringForUser(
++                mContext.getContentResolver(), GAME_LIST_SETTING, userId);
++        if (games == null) return false;
++        for (String entry : games.split(";")) {
++            final int separator = entry.indexOf('=');
++            if (separator > 0 && packageName.equals(entry.substring(0, separator).trim())
++                    && isValidMode(entry.substring(separator + 1).trim())) {
++                return true;
++            }
++        }
++        return false;
+     }
+ 
+     @Override
+@@ -75,54 +125,63 @@ public class GameSpaceManagerService extends SystemService {
+             filter.addAction(Intent.ACTION_PACKAGE_ADDED);
+             filter.addAction(Intent.ACTION_PACKAGE_FULLY_REMOVED);
+             filter.addDataScheme("package");
+-            mContext.registerReceiver(mPackageChangeReceiver, filter);
++            mContext.registerReceiverAsUser(mPackageChangeReceiver, UserHandle.ALL, filter,
++                    null, mBackgroundHandler);
+ 
+             mContext.getContentResolver().registerContentObserver(
+                 Settings.System.getUriFor(GAME_LIST_SETTING), false,
+                 mGameListObserver, UserHandle.USER_ALL);
+ 
+-            sanitizeGameList();
++            mBackgroundHandler.post(() -> sanitizeGameList(ActivityManager.getCurrentUser()));
+         }
+     }
+ 
+     private class PackageChangeReceiver extends BroadcastReceiver {
+         @Override
+         public void onReceive(Context context, Intent intent) {
+-            String packageName = intent.getData().getSchemeSpecificPart();
++            String packageName = intent.getData() != null
++                    ? intent.getData().getSchemeSpecificPart() : null;
+             if (packageName == null) return;
++            final int userId = intent.getIntExtra(
++                    Intent.EXTRA_USER_HANDLE, UserHandle.USER_SYSTEM);
+ 
+             mBackgroundHandler.post(() -> {
+                 if (Intent.ACTION_PACKAGE_ADDED.equals(intent.getAction())) {
+-                    handlePackageAdded(packageName);
++                    handlePackageAdded(packageName, userId);
+                 } else if (Intent.ACTION_PACKAGE_FULLY_REMOVED.equals(intent.getAction())) {
+-                    handlePackageRemoved(packageName);
++                    removeFromGameSpace(packageName, userId);
+                 }
+             });
+         }
+     }
+ 
+-    private void handlePackageAdded(String packageName) {
+-        if (isGame(packageName)) {
+-            addToGameSpace(packageName);
++    private void handlePackageAdded(String packageName, int userId) {
++        final ContentResolver cr = mContext.getContentResolver();
++        if (Settings.System.getIntForUser(cr, AUTO_DETECT_SETTING, 1, userId) == 0) return;
++        final String denied = Settings.System.getStringForUser(cr, DENIED_LIST_SETTING, userId);
++        if (denied != null) {
++            for (String entry : denied.split(";")) {
++                if (packageName.equals(entry.trim())) return;
++            }
++        }
++        if (isGame(packageName, userId)) {
++            addToGameSpace(packageName, userId);
+         }
+     }
+ 
+-    private void handlePackageRemoved(String packageName) {
+-        removeFromGameSpace(packageName);
+-    }
+-
+-    private boolean isGame(String packageName) {
++    private boolean isGame(String packageName, int userId) {
+         try {
+-            ApplicationInfo appInfo = mPackageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA);
++            ApplicationInfo appInfo = mPackageManager.getApplicationInfoAsUser(
++                    packageName, PackageManager.GET_META_DATA, userId);
+             return appInfo != null && appInfo.category == ApplicationInfo.CATEGORY_GAME;
+         } catch (PackageManager.NameNotFoundException e) {
+             return false;
+         }
+     }
+ 
+-    private void addToGameSpace(String packageName) {
++    private void addToGameSpace(String packageName, int userId) {
+         ContentResolver cr = mContext.getContentResolver();
+-        String currentList = Settings.System.getStringForUser(cr, GAME_LIST_SETTING, UserHandle.USER_CURRENT);
++        String currentList = Settings.System.getStringForUser(cr, GAME_LIST_SETTING, userId);
+         Map<String, String> gameMap = new HashMap<>();
+ 
+         if (currentList != null && !currentList.isEmpty()) {
+@@ -138,14 +197,16 @@ public class GameSpaceManagerService extends SystemService {
+         if (!gameMap.containsKey(packageName)) {
+             gameMap.put(packageName, "2");
+             String updatedList = serializeGameMap(gameMap);
+-            Settings.System.putStringForUser(cr, GAME_LIST_SETTING, updatedList, UserHandle.USER_CURRENT);
+-            sendGameAddedNotification(packageName);
++            Settings.System.putStringForUser(cr, GAME_LIST_SETTING, updatedList, userId);
++            if (userId == ActivityManager.getCurrentUser()) {
++                sendGameAddedNotification(packageName, userId);
++            }
+         }
+     }
+ 
+-    private void removeFromGameSpace(String packageName) {
++    private void removeFromGameSpace(String packageName, int userId) {
+         ContentResolver cr = mContext.getContentResolver();
+-        String currentList = Settings.System.getStringForUser(cr, GAME_LIST_SETTING, UserHandle.USER_CURRENT);
++        String currentList = Settings.System.getStringForUser(cr, GAME_LIST_SETTING, userId);
+         if (currentList == null || currentList.isEmpty()) return;
+ 
+         Map<String, String> gameMap = new HashMap<>();
+@@ -158,16 +219,16 @@ public class GameSpaceManagerService extends SystemService {
+         }
+ 
+         String updatedList = serializeGameMap(gameMap);
+-        Settings.System.putStringForUser(cr, GAME_LIST_SETTING, updatedList, UserHandle.USER_CURRENT);
++        Settings.System.putStringForUser(cr, GAME_LIST_SETTING, updatedList, userId);
+     }
+ 
+     private boolean isValidMode(String modeStr) {
+         return VALID_MODES.contains(modeStr);
+     }
+ 
+-    private void sanitizeGameList() {
++    private void sanitizeGameList(int userId) {
+         ContentResolver cr = mContext.getContentResolver();
+-        String currentList = Settings.System.getStringForUser(cr, GAME_LIST_SETTING, UserHandle.USER_CURRENT);
++        String currentList = Settings.System.getStringForUser(cr, GAME_LIST_SETTING, userId);
+         if (currentList == null || currentList.isEmpty()) return;
+ 
+         Map<String, String> gameMap = new HashMap<>();
+@@ -184,7 +245,9 @@ public class GameSpaceManagerService extends SystemService {
+         }
+ 
+         String sanitizedList = serializeGameMap(gameMap);
+-        Settings.System.putStringForUser(cr, GAME_LIST_SETTING, sanitizedList, UserHandle.USER_CURRENT);
++        if (!sanitizedList.equals(currentList)) {
++            Settings.System.putStringForUser(cr, GAME_LIST_SETTING, sanitizedList, userId);
++        }
+     }
+ 
+     private String serializeGameMap(Map<String, String> gameMap) {
+@@ -203,15 +266,15 @@ public class GameSpaceManagerService extends SystemService {
+         @Override
+         public void onChange(boolean selfChange) {
+             super.onChange(selfChange);
+-            sanitizeGameList();
++            sanitizeGameList(ActivityManager.getCurrentUser());
+         }
+     }
+ 
+-    private void sendGameAddedNotification(String packageName) {
++    private void sendGameAddedNotification(String packageName, int userId) {
+         String appName;
+         try {
+             appName = mPackageManager.getApplicationLabel(
+-                mPackageManager.getApplicationInfo(packageName, 0)).toString();
++                mPackageManager.getApplicationInfoAsUser(packageName, 0, userId)).toString();
+         } catch (PackageManager.NameNotFoundException e) {
+             appName = packageName;
+         }
+diff --git a/services/core/java/com/android/server/PentasSessionBinder.java b/services/core/java/com/android/server/PentasSessionBinder.java
+new file mode 100644
+index 00000000000..b150b3b116f
+--- /dev/null
++++ b/services/core/java/com/android/server/PentasSessionBinder.java
+@@ -0,0 +1,129 @@
++/*
++ * Copyright (C) 2026 PenguinOS Project
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *      http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package com.android.server;
++
++import android.content.ComponentName;
++import android.content.Context;
++import android.content.Intent;
++import android.content.ServiceConnection;
++import android.net.Uri;
++import android.os.Handler;
++import android.os.IBinder;
++import android.os.UserHandle;
++import android.util.Slog;
++
++/** Keeps Pentas bound for a game session. All calls and callbacks use the supplied handler. */
++final class PentasSessionBinder {
++    private static final String TAG = "PentasSessionBinder";
++    private static final ComponentName SESSION_SERVICE = new ComponentName(
++            "org.yasvara.pentas", "org.yasvara.pentas.session.SessionService");
++    private static final int BIND_FLAGS = Context.BIND_AUTO_CREATE
++            | Context.BIND_FOREGROUND_SERVICE | Context.BIND_IMPORTANT;
++
++    private final Context mContext;
++    private final Handler mHandler;
++    private Connection mConnection;
++
++    PentasSessionBinder(Context context, Handler handler) {
++        mContext = context;
++        mHandler = handler;
++    }
++
++    void start(String packageName, int userId) {
++        final Connection previous = mConnection;
++        if (previous != null && previous.mUserId == userId
++                && packageName.equals(previous.mPackageName)) {
++            return;
++        }
++        // SessionService uses distinct URIs to distinguish overlapping binds. Bind the new
++        // session before releasing the old one so its onUnbind cannot stop the new session.
++        mConnection = bind(packageName, userId, true /* rebindOnDeath */);
++        unbind(previous);
++    }
++
++    void stop() {
++        final Connection connection = mConnection;
++        mConnection = null;
++        unbind(connection);
++    }
++
++    private Connection bind(String packageName, int userId, boolean rebindOnDeath) {
++        final Connection connection = new Connection(packageName, userId, rebindOnDeath);
++        try {
++            final Intent intent = new Intent().setComponent(SESSION_SERVICE)
++                    .setData(new Uri.Builder().scheme("pentas").authority("session")
++                            .appendPath(packageName).appendQueryParameter("mode", "1").build());
++            if (mContext.bindServiceAsUser(intent, connection, BIND_FLAGS, mHandler,
++                    UserHandle.of(userId))) {
++                return connection;
++            }
++            Slog.w(TAG, "Pentas is not available for " + packageName + " in user " + userId);
++        } catch (Exception e) {
++            Slog.w(TAG, "Failed to bind Pentas for " + packageName, e);
++        }
++        // A failed bind can still have registered the connection with Context.
++        unbind(connection);
++        return null;
++    }
++
++    private void unbind(Connection connection) {
++        if (connection == null) return;
++        try {
++            mContext.unbindService(connection);
++        } catch (IllegalArgumentException e) {
++            // A failed bind may never have registered this connection.
++        } catch (Exception e) {
++            Slog.w(TAG, "Failed to unbind Pentas for " + connection.mPackageName, e);
++        }
++    }
++
++    private final class Connection implements ServiceConnection {
++        final String mPackageName;
++        final int mUserId;
++        final boolean mRebindOnDeath;
++
++        Connection(String packageName, int userId, boolean rebindOnDeath) {
++            mPackageName = packageName;
++            mUserId = userId;
++            mRebindOnDeath = rebindOnDeath;
++        }
++
++        @Override
++        public void onServiceConnected(ComponentName name, IBinder service) {}
++
++        @Override
++        public void onServiceDisconnected(ComponentName name) {
++            // ActivityManager reconnects this binding after the service process restarts.
++        }
++
++        @Override
++        public void onBindingDied(ComponentName name) {
++            if (mConnection != this) return;
++            mConnection = null;
++            unbind(this);
++            if (mRebindOnDeath) {
++                mConnection = bind(mPackageName, mUserId, false /* rebindOnDeath */);
++            }
++        }
++
++        @Override
++        public void onNullBinding(ComponentName name) {
++            if (mConnection != this) return;
++            mConnection = null;
++            unbind(this);
++        }
++    }
++}
+diff --git a/services/tests/servicestests/src/com/android/server/PentasSessionBinderTest.java b/services/tests/servicestests/src/com/android/server/PentasSessionBinderTest.java
+new file mode 100644
+index 00000000000..a6af3f136f0
+--- /dev/null
++++ b/services/tests/servicestests/src/com/android/server/PentasSessionBinderTest.java
+@@ -0,0 +1,147 @@
++/*
++ * Copyright (C) 2026 The Android Open Source Project
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *      http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++package com.android.server;
++
++import static org.junit.Assert.assertEquals;
++
++import android.content.ContextWrapper;
++import android.content.Intent;
++import android.content.ServiceConnection;
++import android.os.Handler;
++import android.os.Looper;
++import android.os.UserHandle;
++
++import org.junit.Before;
++import org.junit.Test;
++
++import java.util.ArrayList;
++import java.util.List;
++
++public class PentasSessionBinderTest {
++    private final TestContext mContext = new TestContext();
++    private PentasSessionBinder mSessions;
++
++    @Before
++    public void setUp() {
++        mSessions = new PentasSessionBinder(mContext, new Handler(Looper.getMainLooper()));
++    }
++
++    @Test
++    public void replacementBindsBeforeReleasingPreviousSession() {
++        mSessions.start("game.one", 0);
++        mSessions.start("game.two", 0);
++        assertEquals(List.of("bind:game.one:0", "bind:game.two:0", "unbind:game.one:0"),
++                mContext.events);
++        assertEquals("pentas://session/game.two?mode=1", mContext.bindings.get(1).intent
++                .getData().toString());
++        assertEquals("org.yasvara.pentas.session.SessionService", mContext.bindings.get(1)
++                .intent.getComponent().getClassName());
++    }
++
++    @Test
++    public void duplicateStartDoesNotRebindButUserChangeDoes() {
++        mSessions.start("game.one", 0);
++        mSessions.start("game.one", 0);
++        assertEquals(1, mContext.bindings.size());
++        mSessions.start("game.one", 10);
++        assertEquals(List.of("bind:game.one:0", "bind:game.one:10", "unbind:game.one:0"),
++                mContext.events);
++    }
++
++    @Test
++    public void staleDeathCannotReplaceNewSession() {
++        mSessions.start("game.one", 0);
++        ServiceConnection old = mContext.bindings.get(0).connection;
++        mSessions.start("game.two", 0);
++        old.onBindingDied(null);
++        assertEquals(2, mContext.bindings.size());
++    }
++
++    @Test
++    public void bindingDeathRetriesOnlyOnce() {
++        mSessions.start("game.one", 10);
++        mContext.bindings.get(0).connection.onBindingDied(null);
++        assertEquals(2, mContext.bindings.size());
++        assertEquals(10, mContext.bindings.get(1).userId);
++        mContext.bindings.get(1).connection.onBindingDied(null);
++        assertEquals(2, mContext.bindings.size());
++        mSessions.stop();
++        assertEquals(4, mContext.events.size());
++    }
++
++    @Test
++    public void unavailableServiceDoesNotPreventLaterStart() {
++        mContext.available = false;
++        mSessions.start("game.one", 0);
++        mSessions.stop();
++        mContext.available = true;
++        mSessions.start("game.two", 0);
++        mSessions.stop();
++        assertEquals(List.of("bind:game.one:0", "unbind:game.one:0",
++                "bind:game.two:0", "unbind:game.two:0"), mContext.events);
++    }
++
++    @Test
++    public void nullBindingIsReleasedAndStopIsIdempotent() {
++        mSessions.start("game.one", 0);
++        mContext.bindings.get(0).connection.onNullBinding(null);
++        mSessions.stop();
++        mSessions.stop();
++        assertEquals(List.of("bind:game.one:0", "unbind:game.one:0"), mContext.events);
++    }
++
++    private static final class Binding {
++        final Intent intent;
++        final ServiceConnection connection;
++        final int userId;
++
++        Binding(Intent intent, ServiceConnection connection, int userId) {
++            this.intent = intent;
++            this.connection = connection;
++            this.userId = userId;
++        }
++
++        String name() {
++            return intent.getData().getLastPathSegment() + ":" + userId;
++        }
++    }
++
++    private static final class TestContext extends ContextWrapper {
++        final List<String> events = new ArrayList<>();
++        final List<Binding> bindings = new ArrayList<>();
++        boolean available = true;
++
++        TestContext() {
++            super(null);
++        }
++
++        @Override
++        public boolean bindServiceAsUser(Intent intent, ServiceConnection connection, int flags,
++                Handler handler, UserHandle user) {
++            Binding binding = new Binding(intent, connection, user.getIdentifier());
++            bindings.add(binding);
++            events.add("bind:" + binding.name());
++            return available;
++        }
++
++        @Override
++        public void unbindService(ServiceConnection connection) {
++            Binding binding = bindings.stream().filter(b -> b.connection == connection)
++                    .findFirst().orElseThrow();
++            events.add("unbind:" + binding.name());
++        }
++    }
++}
+-- 
+2.43.0
+

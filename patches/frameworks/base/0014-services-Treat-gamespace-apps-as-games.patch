@@ -1,0 +1,42 @@
+From d59012d5d62df46a518c15ef71c805bb11514f94 Mon Sep 17 00:00:00 2001
+From: rmp22 <195054967+rmp22@users.noreply.github.com>
+Date: Mon, 22 Sep 2025 19:53:17 +0800
+Subject: [PATCH 14/14] services: Treat gamespace apps as games
+
+Change-Id: I0f6dc1467bb059b82e07ec60551d2c9ddd23e810
+Signed-off-by: rmp22 <195054967+rmp22@users.noreply.github.com>
+Signed-off-by: Pranav Vashi <neobuddy89@gmail.com>
+Signed-off-by: kenway214 <kenway214@outlook.com>
+---
+ .../android/server/app/GameManagerService.java    | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/services/core/java/com/android/server/app/GameManagerService.java b/services/core/java/com/android/server/app/GameManagerService.java
+index 319b3bd06cb..b3222a0e323 100644
+--- a/services/core/java/com/android/server/app/GameManagerService.java
++++ b/services/core/java/com/android/server/app/GameManagerService.java
+@@ -1048,7 +1048,20 @@ public final class GameManagerService extends IGameManagerService.Stub {
+         try {
+             final ApplicationInfo applicationInfo = mPackageManager
+                     .getApplicationInfoAsUser(packageName, PackageManager.MATCH_ALL, userId);
+-            return applicationInfo.category == ApplicationInfo.CATEGORY_GAME;
++            if (applicationInfo.category == ApplicationInfo.CATEGORY_GAME) return true;
++            // Pentas also offers GameManager controls for apps the user adds manually.
++            final String games = Settings.System.getStringForUser(
++                    mContext.getContentResolver(), Settings.System.GAMESPACE_GAME_LIST, userId);
++            if (games != null) {
++                for (String entry : games.split(";")) {
++                    final int separator = entry.indexOf('=');
++                    if (separator > 0
++                            && packageName.equals(entry.substring(0, separator).trim())) {
++                        return true;
++                    }
++                }
++            }
++            return false;
+         } catch (PackageManager.NameNotFoundException e) {
+             return false;
+         }
+-- 
+2.43.0
+

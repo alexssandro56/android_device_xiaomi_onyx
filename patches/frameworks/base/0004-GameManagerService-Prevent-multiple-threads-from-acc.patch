@@ -1,0 +1,70 @@
+From c5174282c98fca54350dffef497bc1e9be7e00de Mon Sep 17 00:00:00 2001
+From: minaripenguin <minaripenguin@users.noreply.github.com>
+Date: Sat, 18 May 2024 08:01:14 +0800
+Subject: [PATCH 04/14] GameManagerService: Prevent multiple threads from
+ accessing settings observer onChange
+
+* this could lead to potential increase of cpu usage in system_server
+
+Signed-off-by: minaripenguin <minaripenguin@users.noreply.github.com>
+Signed-off-by: Pranav Vashi <neobuddy89@gmail.com>
+Signed-off-by: Jackeagle <jackeagle102@gmail.com>
+Signed-off-by: Jis G Jacob <studiokeys@blissroms.org>
+---
+ .../server/app/GameManagerService.java        | 40 ++++++++++---------
+ 1 file changed, 21 insertions(+), 19 deletions(-)
+
+diff --git a/services/core/java/com/android/server/app/GameManagerService.java b/services/core/java/com/android/server/app/GameManagerService.java
+index 098e06c2a62..dcf5321ada4 100644
+--- a/services/core/java/com/android/server/app/GameManagerService.java
++++ b/services/core/java/com/android/server/app/GameManagerService.java
+@@ -2380,25 +2380,27 @@ public final class GameManagerService extends IGameManagerService.Stub {
+ 
+         @Override
+         public void onChange(boolean selfChange, Uri uri) {
+-            String newValue = Settings.Secure.getString(mContentResolver,
+-                    Settings.Secure.GAME_OVERLAY);
+-            // We write key and value of the device_config property as a single string
+-            // from our GameSpace.
+-            // ';;' is the separator betweeen key and value.
+-            // Example: com.libremobileos.game;;mode=2,downscaleFactor=0.7:mode=3,downscaleFactor=0.8
+-            // So split the key and value from the string
+-            // and set the device_config propery.
+-            String[] parsedValues = newValue.split(";;");
+-            // Value should contain both package name and config.
+-            // Otherwise don't do anything.
+-            if (parsedValues.length < 2) return;
+-            // We don't need to care about any format and all.
+-            // It will be handled by the GamePackageConfiguration while
+-            // parsing the device_config property.
+-            String packageName = parsedValues[0];
+-            String configValue = parsedValues[1];
+-            DeviceConfig.setProperty(DeviceConfig.NAMESPACE_GAME_OVERLAY,
+-                    packageName, configValue, false);
++            synchronized (mDeviceConfigLock) {
++                String newValue = Settings.Secure.getString(mContentResolver,
++                        Settings.Secure.GAME_OVERLAY);
++                // We write key and value of the device_config property as a single string
++                // from our GameSpace.
++                // ';;' is the separator betweeen key and value.
++                // Example: com.libremobileos.game;;mode=2,downscaleFactor=0.7:mode=3,downscaleFactor=0.8
++                // So split the key and value from the string
++                // and set the device_config propery.
++                String[] parsedValues = newValue.split(";;");
++                // Value should contain both package name and config.
++                // Otherwise don't do anything.
++                if (parsedValues.length < 2) return;
++                // We don't need to care about any format and all.
++                // It will be handled by the GamePackageConfiguration while
++                // parsing the device_config property.
++                String packageName = parsedValues[0];
++                String configValue = parsedValues[1];
++                DeviceConfig.setProperty(DeviceConfig.NAMESPACE_GAME_OVERLAY,
++                        packageName, configValue, false);
++            }
+         }
+     }
+ 
+-- 
+2.43.0
+
