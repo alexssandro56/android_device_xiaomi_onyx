@@ -1,0 +1,34 @@
+From a1a66936a803b50b3aa72cef67ea0e9836421661 Mon Sep 17 00:00:00 2001
+From: alexssandro56 <56209544+alexssandro56@users.noreply.github.com>
+Date: Sat, 14 Nov 2026 16:24:02 +0000
+Subject: [PATCH] core: Declare the GameSpace toast symbol inside <resources>
+
+The java-symbol for gamespace_new_game_added ended up after the closing
+</resources> tag of aospa_symbols.xml when the GameSpace commits were
+re-anchored onto this base, so it was never exported to
+com.android.internal.R and GameSpaceManagerService failed to compile.
+Move it inside the element.
+
+Co-Authored-By: Claude Fable 5.2 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01QY97AsgNLyAwQpzrsxC9zt
+---
+ core/res/res/values/aospa_symbols.xml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/core/res/res/values/aospa_symbols.xml b/core/res/res/values/aospa_symbols.xml
+index 91adeb2f5af..7a68e025b30 100644
+--- a/core/res/res/values/aospa_symbols.xml
++++ b/core/res/res/values/aospa_symbols.xml
+@@ -102,7 +102,7 @@
+     <!-- Whether to use Richtap vibration -->
+     <java-symbol type="bool" name="config_usesRichtapVibration" />
+ 
+-</resources>
+-
+     <!-- GameSpace -->
+     <java-symbol type="string" name="gamespace_new_game_added" />
++
++</resources>
+-- 
+2.43.0
+
