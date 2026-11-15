@@ -1,0 +1,167 @@
+From de83047bf48f0f7713d84eb7eba53839659c8092 Mon Sep 17 00:00:00 2001
+From: zenin1504 <me.zenin1504.dev@gmail.com>
+Date: Fri, 13 Nov 2026 13:09:58 +0100
+Subject: [PATCH] drivers: mca: Add charging throttling for thermal-engine-v2
+ handling
+
+Change-Id: I3f59152bb8d04004be3fe1c572d2dbc9
+Signed-off-by: zenin1504 <me.zenin1504.dev@gmail.com>
+---
+ .../inc/mca_charger_thermal.h                 |  2 +
+ .../strategy_charger/mca_charger_thermal.c    | 92 ++++++++++++++++++-
+ 2 files changed, 92 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/power/supply/mca/mca_strategy/strategy_charger/inc/mca_charger_thermal.h b/drivers/power/supply/mca/mca_strategy/strategy_charger/inc/mca_charger_thermal.h
+index f39a3cd2417e..326f393a0953 100644
+--- a/drivers/power/supply/mca/mca_strategy/strategy_charger/inc/mca_charger_thermal.h
++++ b/drivers/power/supply/mca/mca_strategy/strategy_charger/inc/mca_charger_thermal.h
+@@ -120,6 +120,8 @@ struct mca_sic_data sic_init_list[POWER_MAX_LIST] = {
+ #define BATT_CELL_SELECT_MAX 3
+ 
+ struct mca_thermal_info {
++	struct delayed_work poll_work;
++	struct power_supply *batt_psy;
+ 	struct device *dev;
+ 	struct thermal_cooling_device *tcd;
+ 	struct delayed_work init_voter_work;
+diff --git a/drivers/power/supply/mca/mca_strategy/strategy_charger/mca_charger_thermal.c b/drivers/power/supply/mca/mca_strategy/strategy_charger/mca_charger_thermal.c
+index 2418298e7d2e..de67077f7773 100644
+--- a/drivers/power/supply/mca/mca_strategy/strategy_charger/mca_charger_thermal.c
++++ b/drivers/power/supply/mca/mca_strategy/strategy_charger/mca_charger_thermal.c
+@@ -27,6 +27,7 @@
+ #include <linux/of.h>
+ #include <linux/of_device.h>
+ #include <linux/thermal.h>
++#include <linux/power_supply.h>
+ #include <linux/platform_device.h>
+ #include <mca/platform/platform_wireless_class.h>
+ #include <mca/common/mca_parse_dts.h>
+@@ -757,10 +758,16 @@ static void mca_charger_thermal_flip_parse_data(const char *name,
+ 
+ static void mca_charger_thermal_parse_dt(struct mca_thermal_info *info)
+ {
++	static const int default_wired[] = { 5400, 4500, 3500, 2500, 1500, 800, 400 };
+ 	struct device_node *node = info->dev->of_node;
+ 
+-	if (!node)
++	if (!node) {
++		memcpy(info->wired_thermal_data, default_wired, sizeof(default_wired));
++		info->wired_ctrl_info.max_level = ARRAY_SIZE(default_wired) - 1;
++		info->support_base_flip = false;
++		info->support_wireless = false;
+ 		return;
++	}
+ 
+ 	mca_parse_dts_u32(node, "support_wireless", &info->support_wireless, 0);
+ 	info->support_base_flip =
+@@ -977,14 +984,89 @@ static int mca_charger_thermal_get_cur_level(struct thermal_cooling_device *tcd,
+ 	return 0;
+ }
+ 
++
++#define MCA_POLL_INTERVAL_MS	5000
++#define MCA_TEMP_MC(t)		((t) * 100)
++
++static int mca_batt_temp_mc(struct mca_thermal_info *info)
++{
++	static const char * const zones[] = {
++		"charger_therm", "xo_therm", "battery"
++	};
++	int temp_mc = -1, t;
++	size_t i;
++
++	for (i = 0; i < ARRAY_SIZE(zones); i++) {
++		struct thermal_zone_device *tz = thermal_zone_get_zone_by_name(zones[i]);
++		if (!IS_ERR_OR_NULL(tz) && thermal_zone_get_temp(tz, &t) == 0) {
++			if (t > temp_mc) temp_mc = t;
++		}
++	}
++
++	if (temp_mc < 0 && info->batt_psy) {
++		union power_supply_propval val = {0};
++		if (power_supply_get_property(info->batt_psy, POWER_SUPPLY_PROP_TEMP, &val) == 0)
++			temp_mc = MCA_TEMP_MC(val.intval);
++	}
++	return temp_mc;
++}
++
++
++static void mca_charger_thermal_poll_work(struct work_struct *work)
++{
++	struct mca_thermal_info *info =
++		container_of(to_delayed_work(work),
++			     struct mca_thermal_info, poll_work);
++	int temp_mc, level;
++
++	if (!info->wired_voter[0] && !info->flip_voter)
++		goto reschedule;
++
++	temp_mc = mca_batt_temp_mc(info);
++	if (temp_mc < 0)
++		goto reschedule;
++
++	if	(temp_mc >= 45000) level = 6;
++	else if (temp_mc >= 43000) level = 5;
++	else if (temp_mc >= 41000) level = 4;
++	else if (temp_mc >= 39000) level = 3;
++	else if (temp_mc >= 37000) level = 2;
++	else if (temp_mc >= 35000) level = 1;
++	else			   level = 0;
++
++	info->wired_ctrl_info.limit_level = level;
++	mca_log_err("thermal poll active: %d mC -> level %d\n", temp_mc, level);
++
++	if (info->support_base_flip && info->flip_voter)
++		mca_charger_thermal_flip_handle_limit(
++			&info->wired_ctrl_info,
++			info->wired_flip_thermal_data, info->flip_voter);
++	else if (info->wired_voter[0])
++		mca_charger_thermal_handle_limit(
++			&info->wired_ctrl_info,
++			info->wired_thermal_data, info->wired_voter);
++
++reschedule:
++	schedule_delayed_work(&info->poll_work,
++			      msecs_to_jiffies(MCA_POLL_INTERVAL_MS));
++}
++
+ static int mca_charger_thermal_set_cur_level(struct thermal_cooling_device *tcd,
+-					     unsigned long state)
++                                             unsigned long state)
+ {
+ 	struct mca_thermal_info *info = tcd->devdata;
++	int temp_mc;
+ 
+ 	if (!info)
+ 		return -1;
+ 
++	if (state == 0) {
++		temp_mc = mca_batt_temp_mc(info);
++		if (temp_mc > 40000) {
++						return 0;
++		}
++	}
++
+ 	info->wired_ctrl_info.limit_level = (int)state;
+ 
+ 	if (info->support_base_flip)
+@@ -1258,6 +1340,7 @@ static int mca_charger_thermal_probe(struct platform_device *pdev)
+ 	g_wlscharger_thermal_info = info;
+ 	mca_log_charge_log_register(MCA_CHARGE_LOG_ID_THERMAL,
+ 				    &g_mca_thermal_log_ops, info);
++	INIT_DELAYED_WORK(&info->poll_work, mca_charger_thermal_poll_work);
+ 	mca_log_err("probe end\n");
+ 
+ 	return 0;
+@@ -1265,6 +1348,11 @@ static int mca_charger_thermal_probe(struct platform_device *pdev)
+ 
+ static int mca_charger_thermal_remove(struct platform_device *pdev)
+ {
++	struct mca_thermal_info *info = platform_get_drvdata(pdev);
++	if (info) {
++		cancel_delayed_work_sync(&info->poll_work);
++		if (info->batt_psy) { power_supply_put(info->batt_psy); info->batt_psy = NULL; }
++	}
+ 	mca_charger_thermal_remove_group(&pdev->dev);
+ 	return 0;
+ }
